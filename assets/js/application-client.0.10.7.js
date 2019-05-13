@@ -1,4 +1,4 @@
-(() => {
+//(() => {
   // Application Client v 0.10.7
   // tool, utils, view, model, controller, application, client
   'use strict'
@@ -616,6 +616,7 @@
     init = ( application ) => {
       applicationModule = application;
       applicationObj = obj(application);
+      console.log(this)
       this.config = applicationModule.config;
       model.load(config)
       main = element(config.main);
@@ -770,4 +771,4 @@
 
   })()
 
-});
+//});

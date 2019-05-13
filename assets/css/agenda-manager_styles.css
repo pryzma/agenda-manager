@@ -1,0 +1,3 @@
+header span.inner{ display: none; }
+header a.navbar-brand{ display: block; width: 250px; height: 65px;
+  background-image: url('../img/logo_sm_250.png'); background-repeat: no-repeat;}

@@ -4,6 +4,8 @@
 'use strict'
 const agendamanager = (function(){
   return {
-    
+    config : {
+      
+    }
   }
 })();
