@@ -1,18 +1,12 @@
 //(() => {
-  // Application Client v 0.10.7
-  // tool, utils, view, model, controller, application, client
+
+  // DOM, utils, view, model, controller, UI, application, client
   'use strict'
 
-  /*
-  * tool
-  */
-  const tool = (function() {
-    /* ---------------------------------------------------------------------------
-    * make
-    tool.make( [ 'div', { id : 'id', class : 'class'}, 'content ', [ 'a', { href : 'https://developer.mozilla.org/' }, 'link' ] ] )
-    */
-    function make( tag, callback ){
-      let isArray = ( array ) => Object.prototype.toString.call( array ) === '[object Array]'
+  const DOM = (function() {
+
+    function create( tag, callback ){
+      let isArray = ( arr ) => Array.isArray(arr);
       if ( !isArray( tag ) ) return make.call( this, Array.prototype.slice.call( arguments ) )
       let name = tag[0],
           attributes = tag[1],
@@ -25,7 +19,7 @@
       }
       for ( let index = start; index < tag.length; index++ ) {
         if( isArray( tag[ index ] ) ){
-          element.appendChild( tool.make( tag[ index ] ) )
+          element.appendChild(DOM.create( tag[ index ] ) )
         } else {
           element.appendChild( document.createTextNode( tag[ index ] ) )
         }
@@ -33,10 +27,7 @@
       if( callback ) callback()
       return element
     }
-    /* ---------------------------------------------------------------------------
-    * insert
-    tool.insert( 'content' )
-    */
+
     function insert( content, callback ){
       let output, main = UI.main;
       content.output ? output = content.output : output = config.output;
@@ -44,7 +35,7 @@
       if ( typeof content === 'object'  ) {
         if( content.html ){
           if( content.append ) {
-            output.appendChild( tool.make( content.tag, { id : content.id }, content.html ) )
+            output.appendChild( DOM.create( content.tag, { id : content.id }, content.html ) )
           }else {
               output.innerHTML = content.html
           }
@@ -58,156 +49,16 @@
       if( callback ) callback()
       return output
     }
-    // UI.mainContent.insert( tool.make( 'div', 'content' ) )
-    Object.prototype.insert = function( content, callback ) {
-        if ( !typeof content === 'object'  ) content = { html : content }
-        content[ 'output' ] = `#${this.id}`;
-        tool.insert( content, callback )
-    }
-    /* ---------------------------------------------------------------------------
-    * response
-    tool.make( 'button', 'button' ).addEventListener( 'click', (event) => tool.response(event) )
-    */
-    function response( event, property, response, target, targetProperty, callback ){
-      let eventTarget = event.target;
-      targetProperty ? target[ targetProperty ] = eventTarget[ property ] : target = eventTarget[ property ]
-      if( !application.data.response[ response ] ) application.data.response[ response ] = {}
-      application.data.response[ response ][ property ] = eventTarget[ property ]
-      if( callback ) callback()
-      return application.data.response
-    }
 
-    /* ---------------------------------------------------------------------------
-    * xhr
-
-    */
-    function xhr( args, callback ){
-      let xhr = new XMLHttpRequest()
-      if( !args ) args = {}
-      if( !args.type ) args[ 'type' ] = 'GET'
-      if( !args.status ) args[ 'status' ] = 200
-      if( !callback ) callback = tool.response;
-      xhr.addEventListener( 'load',  ( event ) => {
-        if ( xhr.readyState === 4 && xhr.status === args.status ) {
-          callback( event, args.property, args.response, args.target, args.targetProperty, args.callback )
-        }
-      })
-      xhr.open( args.type, args.url, true )
-      xhr.send( args.data )
-    }
-    // 'test.json'.xhr()
-    String.prototype.xhr = function(args, callback) {
-        if( !args ) args = {}
-        args[ 'url' ] = this;
-        xhr( args, callback )
-    }
-    /* ---------------------------------------------------------------------------
-    * fetchXhr
-
-
-    let args = {
-      // xhr args
-      type : 'GET',
-      url : 'test.json',
-      status : 200,
-      // callback args
-      response : 'application.data.response.test',
-      property : 'responseText',
-      target : document.querySelector( '#response' ),
-      target_property : 'innerText',
-      callback : () => {
-        let response = JSON.parse( application.data.response.test.responseText )
-        console.log( response.glossary.title )
-      }
-    }
-    tool.xhr( args , tool.response )
-    tool.fetchXhr( args ).then( tool.response )
-    */
-    function fetchXhr( args ) {
-      if( !args ) args = {}
-      if( !args.type ) args[ 'type' ] = 'GET'
-      if( !args.status ) args[ 'status' ] = 200
-      return new Promise( ( resolve, reject ) => {
-        let xhr = new XMLHttpRequest()
-        xhr.open( args.type, args.url )
-        xhr.onload = ( event ) => xhr.status === args.status ? resolve( event ) : reject( Error( event ) )
-        xhr.send( args.data )
-      })
-    }
-
-
-    const formData = ( form ) => {
-      let data = {},
-      formData = new FormData( form )
-      for( let item of formData.entries() ) data[ item[0] ] = item[1]
-      return data
-    }
-    /*
-    let form = document.getElementById('form');
-    form.addEventListener( 'submit', (event) =>{
-      let formData = form.formData()
-    })
-
-    */
-    Object.prototype.formData = function() {
-        tool.formData( this )
-    }
-
-    /* ---------------------------------------------------------------------------
-    * get
-    */
-    // let arr = [ { id : 1 , text : 'test' }, { id : 2 , text : 'test' } ]
-    // let item = tool.get( { data : arr, match : 1 })
-    const get = ( args ) => {
-      let data = args.data, key;
-      args.key ? key = args.key : key = 'id'
-      for( let item of data ){
-        let match = (pointer) => isNaN( pointer ) ?  item[ key ] : item[ key ]/1
-        if( match( args.match ) === args.match ) return item
-      }
-    }
-    /* let arr = [ { id : 1 , text : 'test' }, { id : 2 , text : 'test' } ]
-    let item = arr.get( 1 ) */
-    Array.prototype.get = function( args ) {
-        if( typeof args !== 'object' ) args = { match : args }
-        args[ 'data' ] = this
-        tool.get( args )
-    }
-
-    const getAll = ( args ) => {
-      let data = args.data, key, arr = []
-      args.key ? key = args.key : key = 'id'
-      for( let item of data ){
-        if( args.match.indexOf('>') ){
-          if( item[ key ]/1 > args.match.slice(1)/1 ) arr.push( item )
-        }else if ( args.match.indexOf('<') ) {
-          if( item[ key ]/1 < args.match.slice(1)/1 ) arr.push( item )
-        } else {
-          let match = (pointer) => isNaN( pointer ) ?  item[ key ] : item[ key ]/1
-          if( match( args.match ) === args.match ) arr.push( item )
-        }
-      }
-      arr = new Set( arr )
-      return arr
-    }
-
-    Array.prototype.getAll = function( args ) {
-        if( typeof args !== 'object' ) args = { match : args }
-        args[ 'data' ] = this
-        tool.getAll( args )
-    }
 
 
     /* ---------------------------------------------------------------------------
     *
     */
     return {
-      make : make,
-      insert : insert,
-      response : response,
-      xhr : xhr,
-      fetchXhr : fetchXhr,
-      formData : formData
+      create : create,
+      insert : insert
+
     }
   })()
   /*
@@ -494,7 +345,7 @@
   // UI
   const UI = ( function() {
 
-    const make = tool.make
+
     const set = view.set
     const add = view.add
 
@@ -502,7 +353,7 @@
 
     //...........................................................................
       addComponent : (args) => {
-        const create = (args) => make( [
+        const create = (args) => DOM.create( [
           args.element,
           { id : args.id, class : args.class },
           args.html
@@ -518,25 +369,25 @@
       //...........................................................................
       overviewTable : (args) => {
         if( ! args.data ) console.error('UI.overview : args.data is undefined');
-        const overviewTable = make( [
+        const overviewTable = DOM.create( [
           'table', { id : `overview_${args.component}`, class : 'table' }
         ] ),
-        overviewHeader = make( [ 'thead' ] ),
-        overviewHeaderRow = make( [ 'tr' ] ),
-        overviewBody = make( [ 'tbody' ] ),
-        overviewTitle = make( [ 'h2', `${args.data.length} ${args.title}` ] );
+        overviewHeader = DOM.create( [ 'thead' ] ),
+        overviewHeaderRow = DOM.create( [ 'tr' ] ),
+        overviewBody = DOM.create( [ 'tbody' ] ),
+        overviewTitle = DOM.create( [ 'h2', `${args.data.length} ${args.title}` ] );
 
         args.fields = utils.obj(args.fields);
-        for( let header of args.fields.properties) set( overviewHeaderRow, make( [ 'th', header ]) );
+        for( let header of args.fields.properties) set( overviewHeaderRow, DOM.create( [ 'th', header ]) );
         set( overviewTable,
           set( overviewHeader, overviewHeaderRow )
         );
 
         for( let entry of args.data ){
-          let overviewRow = make( [ 'tr', { id : entry.id } ] );
+          let overviewRow = DOM.create( [ 'tr', { id : entry.id } ] );
           if( args.controller ) controller.add(overviewRow,'click',args.controller)
           for( let item of args.fields.values){
-            let overviewRowField = make( [ 'td'] )
+            let overviewRowField = DOM.create( [ 'td'] )
             add( overviewRow,
               set( overviewRowField, item(entry) )
             );
@@ -603,10 +454,10 @@
 
     nav = () => {
       for( let item of moduleNames){
-        if( applicationModule[ item ].label ){
+        if( applicationModule[ item ].name ){
           let menuItem = view.add( menu, "li",{ id : item })
           const prefix = applicationModule.config.navMenuItemPrefix ? applicationModule.config.navMenuItemPrefix : '#'
-          view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].label)
+          view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].name)
         }
       }
     },
@@ -617,17 +468,15 @@
       applicationModule = application;
       applicationObj = obj(application);
       console.log(this)
-      this.config = applicationModule.config;
-      model.load(config)
+      config = applicationModule.config;
+      //model.load(config)
       main = element(config.main);
       menu = element(config.menu);
       //apiBasePath = config.apiBasePath;
       moduleNames = applicationObj.properties;
       moduleFunctions = applicationObj.values;
       if(menu) nav()
-      config.loadEvent
-      ? loadEvent = config.loadEvent
-      : loadEvent = 'hashchange'
+      config.loadEvent ? loadEvent = config.loadEvent : loadEvent = 'hashchange'
       controller.add( window, loadEvent, (event) => load(event) );
       controller.add( window, 'load', (event) => load(event) )
 

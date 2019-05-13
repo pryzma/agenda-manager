@@ -4,7 +4,13 @@
 'use strict'
 const main = (function(){
   requirejs([
-    'application-client.0.10.7',
+    'application',
+    'modules/dashboard',
+    'modules/options',
+    'modules/shows',
+    'modules/blockdates',
+    'modules/profiles',
+    'modules/repetitions',
     'agendamanager'
   ],()=>{
     application.init(agendamanager);
