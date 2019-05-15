@@ -449,6 +449,10 @@
       thisRoute[1]
         ? thisApp[endpoint][thisRoute[1]](thisRoute[2])
         : thisApp[endpoint].default()
+
+      if(thisApp.callback) thisApp.callback()
+      if(thisApp[endpoint].callback) thisApp.callback()
+
     },
 
     //...........................................................................
@@ -456,7 +460,8 @@
     nav = () => {
 
       for( let item of moduleNames){
-        if( applicationModule[ item ].name ){
+        if( typeof applicationModule[ item ] === 'object' &&  applicationModule[ item ].name ){
+          
           let menuItem = view.add( menu, "li",{ id : item })
           const prefix = applicationModule.config.navMenuItemPrefix ? applicationModule.config.navMenuItemPrefix : '#'
           view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].name)

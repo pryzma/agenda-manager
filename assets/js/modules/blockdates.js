@@ -7,7 +7,6 @@ const blockdates = (function(){
     console.log('blockdates main')
   }
   return {
-    name : 'Block Dates',
     default : main
   }
 })();

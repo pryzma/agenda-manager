@@ -9,22 +9,23 @@ const agendamanager = (function(){
     nav : 'nav#headerNav',
     default : 'dashboard'
   }
-  // set current nav item as active
-  const navDefault = document.querySelector(`${config.nav}`)
-  console.log(`li#${config.default} a`)
-  console.log(navDefault)
+  const callback = function(){
+    // set current nav item as active
 
-  //$( document.querySelector(`li#${config.default} a`) ).addClass('active');
-  $( window ).on('hashchange',function(event){
-    $(`${config.nav} a`).removeClass('active');
-    ( application.route()[0] === '') ?
-    $(`${config.nav} li#${config.default} a`).addClass('active')
-    : $(`${config.nav} li#${application.route()[0]} a`).addClass('active');
+    $( `li#${config.default} a` ).addClass('active');
+    $( window ).on('hashchange',function(event){
+      $(`${config.nav} a`).removeClass('active');
+      ( application.route()[0] === '') ?
+      $(`${config.nav} li#${config.default} a`).addClass('active')
+      : $(`${config.nav} li#${application.route()[0]} a`).addClass('active');
 
 
-  });
+    });
+
+  }
 
   return {
+    callback : callback,
     config : config,
     name : 'Agenda Manager',
     dashboard : dashboard,
