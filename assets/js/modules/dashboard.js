@@ -3,7 +3,7 @@
 */
 'use strict'
 const dashboard = (function(){
-  const main = () => {
+  const main = function() {
     console.log('dashboard main')
   }
   return {

@@ -438,7 +438,7 @@
     const element = view.element
     const add = view.add
 
-    const route = (config) => config.route ? config.route : location.hash.slice(1).split('/'),
+    const route = () => location.hash.slice(1).split('/'),
     //...........................................................................
 
     load = (event) => {
@@ -473,7 +473,7 @@
       //model.load(config)
       main = element(config.main);
       menu = element(config.nav);
-      
+
       //apiBasePath = config.apiBasePath;
       moduleNames = applicationObj.properties;
       moduleFunctions = applicationObj.values;

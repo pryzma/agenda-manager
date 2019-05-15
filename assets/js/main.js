@@ -4,7 +4,7 @@
 'use strict'
 const main = (function(){
   requirejs([
-    'application',
+    'application.min',
     'modules/dashboard',
     'modules/options',
     'modules/shows',
