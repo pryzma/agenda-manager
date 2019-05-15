@@ -4,6 +4,6 @@
 'use strict'
 const profiles = (function(){
   return {
-
+    name : 'Profiles'
   }
 })();

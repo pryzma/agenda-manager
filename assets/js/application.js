@@ -445,14 +445,16 @@
       const thisApp = applicationModule
       const thisRoute = route(thisApp.config)
       const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
+
       thisRoute[1]
-        ? thisApp[endpoint]()[thisRoute[1]](thisRoute[2])
-        : thisApp[endpoint]().default()
+        ? thisApp[endpoint][thisRoute[1]](thisRoute[2])
+        : thisApp[endpoint].default()
     },
 
     //...........................................................................
 
     nav = () => {
+
       for( let item of moduleNames){
         if( applicationModule[ item ].name ){
           let menuItem = view.add( menu, "li",{ id : item })
@@ -467,14 +469,15 @@
     init = ( application ) => {
       applicationModule = application;
       applicationObj = obj(application);
-      console.log(this)
       config = applicationModule.config;
       //model.load(config)
       main = element(config.main);
-      menu = element(config.menu);
+      menu = element(config.nav);
+      
       //apiBasePath = config.apiBasePath;
       moduleNames = applicationObj.properties;
       moduleFunctions = applicationObj.values;
+
       if(menu) nav()
       config.loadEvent ? loadEvent = config.loadEvent : loadEvent = 'hashchange'
       controller.add( window, loadEvent, (event) => load(event) );

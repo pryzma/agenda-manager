@@ -3,9 +3,12 @@
 */
 'use strict'
 const dashboard = (function(){
-  return {
-    default : function(){
-      console.log('dashboard.default');
-    }
+  const main = () => {
+    console.log('dashboard main')
   }
+  return {
+    name : 'Dashboard',
+    default : main
+  }
+
 })();

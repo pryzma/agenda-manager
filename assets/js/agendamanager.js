@@ -1,3 +1,4 @@
+
 /*
 * assets/js/agendamanager.js
 */
@@ -9,6 +10,7 @@ const agendamanager = (function(){
       nav : 'nav#headerNav',
       default : 'dashboard'
     },
+    name : 'Agenda Manager',
     dashboard : dashboard,
     options : options,
     shows : shows,

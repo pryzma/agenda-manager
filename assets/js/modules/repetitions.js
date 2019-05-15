@@ -4,6 +4,6 @@
 'use strict'
 const repetitions = (function(){
   return {
-
+    name : 'Repetitions'
   }
 })();

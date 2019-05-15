@@ -4,6 +4,6 @@
 'use strict'
 const shows = (function(){
   return {
-
+    name : 'Shows'
   }
 })();

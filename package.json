@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/pryzma/agenda-manager/issues"
   },
-  "homepage": "https://github.com/pryzma/agenda-manager#readme"
+  "homepage": "https://github.com/pryzma/agenda-manager#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }

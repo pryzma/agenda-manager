@@ -4,6 +4,6 @@
 'use strict'
 const options = (function(){
   return {
-
+    name : 'Options'
   }
 })();

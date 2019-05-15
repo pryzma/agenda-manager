@@ -4,6 +4,6 @@
 'use strict'
 const blockdates = (function(){
   return {
-
+    name : 'Block Dates'
   }
 })();
