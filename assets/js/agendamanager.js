@@ -7,12 +7,13 @@ const agendamanager = (function(){
     config : {
       main : 'section#mainContent',
       nav : 'nav#headerNav',
-      dashboard : dashboard,
-      options : options,
-      shows : shows,
-      blockdates : blockkdates,
-      profiles : profiles,
-      repetitions : repetitions
-    }
+      default : 'dashboard'
+    },
+    dashboard : dashboard,
+    options : options,
+    shows : shows,
+    blockdates : blockdates,
+    profiles : profiles,
+    repetitions : repetitions
   }
 })();
