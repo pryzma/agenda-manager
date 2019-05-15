@@ -1,5 +1,5 @@
 /*
-* assets/js/agendmanager.js
+* assets/js/agendamanager.js
 */
 'use strict'
 const agendamanager = (function(){
