@@ -10,7 +10,7 @@ const main = (function(){
     'modules/shows',
     'modules/blockdates',
     'modules/profiles',
-    'modules/repetitions',
+    'modules/rehearsals',
     'agendamanager'
   ],()=>{
     application.init(agendamanager);

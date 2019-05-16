@@ -42,7 +42,7 @@ const agendamanager = (function(){
     shows : shows,
     blockdates : blockdates,
     profiles : profiles,
-    repetitions : repetitions
+    rehearsals : rehearsals
   }
 
 })();
