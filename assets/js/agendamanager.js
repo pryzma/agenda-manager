@@ -10,14 +10,24 @@ const agendamanager = (function(){
     default : 'dashboard'
   }
   const callback = function(){
+    const applicationObj = application.object();
+    const applicationRoute = application.route();
     // set default nav item as active
     $( `${config.nav} li#${config.default} a` ).addClass('active');
     $( window ).on('hashchange',function(event){
       // set current nav item as active on hashchange
       $(`${config.nav} a`).removeClass('active');
-      ( application.route()[0] === '') ?
+      ( applicationRoute[0] === '') ?
       $(`${config.nav} li#${config.default} a`).addClass('active')
-      : $(`${config.nav} li#${application.route()[0]} a`).addClass('active');
+      : $(`${config.nav} li#${applicationRoute[0]} a`).addClass('active');
+
+      // set page title
+      let pageTitle = ( applicationRoute[0] === '') ?
+      `${applicationObj.name}`
+      : `${applicationObj.name} ${applicationObj[applicationRoute[0]].name}`
+
+      $('title').html(pageTitle)
+      
     });
 
   }

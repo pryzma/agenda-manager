@@ -4,6 +4,7 @@
 'use strict'
 const shows = (function(){
   return {
-    name : 'Shows'
+    name : 'Shows',
+    default : () => console.log('shows default')
   }
 })();
