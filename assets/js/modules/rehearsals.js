@@ -3,7 +3,9 @@
 */
 'use strict'
 const rehearsals = (function(){
-  const main = function() {}
+  const main = function() {
+    console.log('rehearsals main')
+  }
   return {
     name : 'Rehearsals',
     default : main

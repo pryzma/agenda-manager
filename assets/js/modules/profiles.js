@@ -4,6 +4,7 @@
 'use strict'
 const profiles = (function(){
   return {
-    name : 'Profiles'
+    name : 'Profiles',
+    default : () => console.log('profiles default')
   }
 })();
