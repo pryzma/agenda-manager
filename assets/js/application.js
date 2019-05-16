@@ -461,7 +461,7 @@
 
       for( let item of moduleNames){
         if( typeof applicationModule[ item ] === 'object' &&  applicationModule[ item ].name ){
-          
+
           let menuItem = view.add( menu, "li",{ id : item })
           const prefix = applicationModule.config.navMenuItemPrefix ? applicationModule.config.navMenuItemPrefix : '#'
           view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].name)
@@ -531,13 +531,15 @@
       }else if( hooks[exc]){
         hooks[exc]()
       }
-    }
+    },
+    getObj = () => applicationModule
 
 
 
     return {
       route : route,
       config : config,
+      object : getObj,
       init : init,
       call : call,
       hooks : hooks,
