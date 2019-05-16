@@ -6,13 +6,13 @@ const main = (function(){
   requirejs([
     'application',
     'modules/dashboard',
-    'modules/options',
     'modules/shows',
+    'modules/options',
+    'modules/rehearsals',
     'modules/blockdates',
     'modules/profiles',
-    'modules/rehearsals',
     'agendamanager'
-  ],()=>{
+  ],()=> {
     application.init(agendamanager);
   });
 })();
