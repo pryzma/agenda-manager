@@ -42,3 +42,8 @@ header nav a:hover {
 header nav li a:hover {
   text-decoration: none;
 }
+#mainNav {
+  margin-top: -10px;
+  background-color: #e0efff !important;
+  border-right: solid 1px #90c6ff;
+}
