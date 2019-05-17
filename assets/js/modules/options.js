@@ -4,10 +4,10 @@
 'use strict'
 const options = (function(){
   const main = function(){
-    console.log('options main')
+    agendamanager.initPage()
   }
   const add = function(){
-    console.log('options add')
+    agendamanager.initPage()
   }
   return {
     name : 'Options',
