@@ -5,6 +5,6 @@
 const profiles = (function(){
   return {
     name : 'Profiles',
-    default : () => console.log('profiles default')
+    default : () => agendamanager.initPage()
   }
 })();
