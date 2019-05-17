@@ -14,7 +14,15 @@ const agendamanager = (function() {
   const getModuleName = (route) => applicationObj()[route].name // current module name
   // get template for current module
   const getTemplate = (route) => applicationObj()[route].template ? applicationObj()[route].template : 'pageLayout'
-
+  const getModules = function(){
+    const arrModules = [];
+    for(let module of Object.getOwnPropertyNames(applicationObj())){
+      if(applicationObj()[module].default && applicationObj()[module].name && module != config.default){
+        arrModules.push( module );
+      }
+    }
+    return arrModules;
+  }
   const initPage = function(route,callback) {
     if(typeof route === 'function' ) {
       callback = route;
@@ -44,7 +52,7 @@ const agendamanager = (function() {
   }
   // set page title with application and module name
   const setPageTitle = function( route ) {
-    
+
     if(route === '') route = config.default;
     let pageTitle = ( route === '') ?
     applicationObj().name
@@ -79,6 +87,7 @@ const agendamanager = (function() {
     name : 'Agenda Manager',
     init : init,
     initPage : initPage,
+    modules : getModules,
     // modules
     dashboard : dashboard,
     shows : shows,
