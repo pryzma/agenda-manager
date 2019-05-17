@@ -13,6 +13,11 @@ const main = (function(){
     'modules/profiles',
     'agendamanager'
   ],()=> {
-    application.init(agendamanager);
+    try{
+      application.init(agendamanager);
+    }catch(error){
+      location.reload();
+    }
+
   });
 })();
