@@ -4,7 +4,7 @@
 'use strict'
 const rehearsals = (function(){
   const main = function() {
-    console.log('rehearsals main')
+    agendamanager.initPage()
   }
   return {
     name : 'Rehearsals',
