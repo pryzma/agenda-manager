@@ -42,6 +42,9 @@ header nav a:hover {
 header nav li a:hover {
   text-decoration: none;
 }
+main {
+  margin-top: 92px;
+}
 #mainNav {
   margin-top: -10px;
   background-color: #e0efff !important;
