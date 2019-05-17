@@ -7,7 +7,7 @@
 
     function create( tag, callback ){
       let isArray = ( arr ) => Array.isArray(arr);
-      if ( !isArray( tag ) ) return make.call( this, Array.prototype.slice.call( arguments ) )
+      if ( !isArray( tag ) ) return create.call( this, Array.prototype.slice.call( arguments ) )
       let name = tag[0],
           attributes = tag[1],
           element = document.createElement( name ),
@@ -441,17 +441,22 @@
     const route = () => location.hash.slice(1).split('/'),
     //...........................................................................
 
-    load = (event) => {
+    load = () => {
+      
       const thisApp = applicationModule
       const thisRoute = route(thisApp.config)
       const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
+
+      if(thisApp.callbefore) thisApp.callbefore()
+      if(thisApp[endpoint].callbefore) thisApp[endpoint].callbefore()
+
 
       thisRoute[1]
         ? thisApp[endpoint][thisRoute[1]](thisRoute[2])
         : thisApp[endpoint].default()
 
       if(thisApp.callback) thisApp.callback()
-      if(thisApp[endpoint].callback) thisApp.callback()
+      if(thisApp[endpoint].callback) thisApp[endpoint].callback()
 
     },
 
@@ -473,6 +478,7 @@
 
     init = ( application ) => {
       applicationModule = application;
+      if( applicationModule.init ) applicationModule.init();
       applicationObj = obj(application);
       config = applicationModule.config;
       //model.load(config)
