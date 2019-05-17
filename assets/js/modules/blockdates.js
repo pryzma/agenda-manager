@@ -4,10 +4,13 @@
 'use strict';
 const blockdates = (function() {
   const main = function() {
-    console.log('blockdates main');
+    agendamanager.initPage(()=>{
+      console.log(utils.occurence($('#pageLayout p').html(),'TV'))
+    });
   }
   return {
-    name: 'Blockdates',
+    name: 'Block Dates',
     default : main
   }
 })();
+
