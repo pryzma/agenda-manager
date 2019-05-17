@@ -4,11 +4,16 @@
 'use strict'
 const dashboard = (function(){
   const main = function() {
-    console.log('dashboard main')
+    agendamanager.initPage(()=> {
+      console.log(view.element('#dashboardBadges').innerHTML);
+    });
+    //console.log(view.element('#dashboardBadges').innerHTML);
   }
+
   return {
     name : 'Dashboard',
-    default : main
+    default : main,
+    template : 'dashboard'
   }
 
 })();
