@@ -7,10 +7,13 @@ const options = (function(){
     agendamanager.initPage()
   }
   const add = function(){
-    agendamanager.initPage()
+    agendamanager.initPage(()=>{
+      $('#mainContent').html('This is add option')
+    })
   }
   return {
     name : 'Options',
+    color : 'rgb(224, 102, 102)',
     default : main,
     add : add
   }

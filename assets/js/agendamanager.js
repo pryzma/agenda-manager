@@ -14,7 +14,7 @@ const agendamanager = (function() {
   const getModuleName = (route) => applicationObj()[route].name // current module name
   // get template for current module
   const getTemplate = (route) => applicationObj()[route].template ? applicationObj()[route].template : 'pageLayout'
-  const getModules = function(){
+  const getModules = function(){ // returns array with modules
     const arrModules = [];
     for(let module of Object.getOwnPropertyNames(applicationObj())){
       if(applicationObj()[module].default && applicationObj()[module].name && module != config.default){
@@ -23,7 +23,7 @@ const agendamanager = (function() {
     }
     return arrModules;
   }
-  const initPage = function(route,callback) {
+  const initPage = function(route,callback) { //
     if(typeof route === 'function' ) {
       callback = route;
       route = applicationRoute()[0]
@@ -64,7 +64,7 @@ const agendamanager = (function() {
   const loadPage = function( route, callback ) {
 
     if(route === '') route = config.default;
-    console.log(`loadPage : ${route}`)
+    //console.log(`loadPage : ${route}`)
     let template = getTemplate(route);
     $(config.main).load(`html/templates/${template}.html`,function() {
       $(`#${template} h2`).html(getModuleName(route));
@@ -92,7 +92,7 @@ const agendamanager = (function() {
     dashboard : dashboard,
     shows : shows,
     options : options,
-    rehearsals : rehearsals,
+    repetitions : repetitions,
     blockdates : blockdates,
     profiles : profiles
   }

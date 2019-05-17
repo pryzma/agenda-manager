@@ -17,8 +17,6 @@ header nav a.active {
   margin-right: 10px;
   border: solid 1px #dee2e6;
   border-bottom: solid 1px #fff;
-
-  border-radius: 8px 8px 0 0;
   background-color: #fff;
 }
 header {
@@ -31,6 +29,7 @@ header {
 
 }
 header nav a {
+  border-radius: 8px 8px 0 0;
   margin-right: 10px;
   padding: 10px;
 }
@@ -38,7 +37,7 @@ header nav li {
   list-style: none;
 }
 header nav a:hover {
-  border-radius: 10px 10px 0 0;
+
   background-color: #90c6ff;
 }
 header nav li a:hover {
@@ -49,8 +48,8 @@ main {
 }
 #mainNav {
   margin-top: -10px;
-  background-color: #e0efff !important;
-  border-right: solid 1px #90c6ff;
+  /*background-color: #e0efff !important;
+  border-right: solid 1px #90c6ff; */
 }
 .card {
   margin: 5px;
