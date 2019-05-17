@@ -29,7 +29,7 @@ header {
 
 }
 header nav a {
-  border-radius: 8px 8px 0 0;
+  border-radius: .25rem .25rem 0 0;
   margin-right: 10px;
   padding: 10px;
 }
@@ -38,7 +38,7 @@ header nav li {
 }
 header nav a:hover {
 
-  background-color: #90c6ff;
+  background-color: #F8F9FA;
 }
 header nav li a:hover {
   text-decoration: none;

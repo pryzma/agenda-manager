@@ -44,10 +44,10 @@ const agendamanager = (function() {
   // set selected nav item as active
   const updateNav = function(route) {
 
-    $(`${config.nav} a`).removeClass('active');
+    $(`${config.nav} a`).removeClass('active').attr('style','');
     ( route === '') ?
     $(`${config.nav} li#${config.default} a`).addClass('active')
-    : $(`${config.nav} li#${applicationRoute()[0]} a`).addClass('active');
+    : $(`${config.nav} li#${applicationRoute()[0]} a`).addClass('active').attr('style',`border-top: 3px solid ${applicationObj()[applicationRoute()[0]].color}`);
 
   }
   // set page title with application and module name
@@ -66,10 +66,14 @@ const agendamanager = (function() {
     if(route === '') route = config.default;
     //console.log(`loadPage : ${route}`)
     let template = getTemplate(route);
-    $(config.main).load(`html/templates/${template}.html`,function() {
-      $(`#${template} h2`).html(getModuleName(route));
-      if(callback) callback();
+    $(config.main).fadeOut(400,() => {
+      $(config.main).load(`html/templates/${template}.html`,function() {
+        $(`#${template} h2`).html(getModuleName(route));
+        if(callback) callback();
+        $(config.main).fadeIn();
+      });
     });
+
 
   }
 

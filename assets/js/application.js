@@ -14,7 +14,8 @@
           start = 1
 
       if ( typeof attributes === 'object' && attributes !== null && !isArray( attributes ) ) {
-        for ( let attribute in attributes ) element[ attribute ] = attributes[ attribute]
+        //for ( let attribute in attributes ) element[ attribute ] = attributes[ attribute]
+        for ( let attribute in attributes ) element.setAttribute(attribute,attributes[ attribute])
         start = 2
       }
       for ( let index = start; index < tag.length; index++ ) {
@@ -442,7 +443,7 @@
     //...........................................................................
 
     load = () => {
-      
+
       const thisApp = applicationModule
       const thisRoute = route(thisApp.config)
       const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
