@@ -84,6 +84,21 @@ const agendamanager = (function() {
 
 
   }
+
+  const showModal = function(args){
+    const template = args.template ? args.template : 'modal'; // get template
+    // load template file if element does not exist
+    if( ! $(`#${template}`) ) $('#modalContainer').load(`html/templates/${template}.html`);
+    // get items from arguments object & set values
+    const items = Object.getOwnPropertyNames(args);
+    for(let item of items){
+      $(`#${template} .${item}`).html(args[item]);
+    }
+
+    $(`#${template}`).modal();
+    if(args.onclose) $(`#${template}`).on('hidden.bs.modal', args.onclose());
+    if(args.callback) args.callback();
+  }
   /*
   //  attempt to attach initPage to each module instance;
   // (initPage is now called from each module instead)
@@ -104,6 +119,7 @@ const agendamanager = (function() {
     //init : init,
     initPage : initPage,
     modules : getModules,
+    modal : showModal,
     // modules
     dashboard : dashboard,
     shows : shows,
