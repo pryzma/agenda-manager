@@ -30,7 +30,7 @@
     }
 
     function insert( content, callback ){
-      let output, main = UI.main;
+      let output, main = UI.main();
       content.output ? output = content.output : output = config.output;
       if( !typeof output === 'object'  ) output = main.querySelector( output )
       if ( typeof content === 'object'  ) {
@@ -351,6 +351,7 @@
     const add = view.add
 
     return {
+      main : () => application.config.main,
 
     //...........................................................................
       addComponent : (args) => {
