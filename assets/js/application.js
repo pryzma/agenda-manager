@@ -446,9 +446,9 @@
     load = () => {
 
       const thisApp = applicationModule
-      const thisRoute = route(thisApp.config)
+      const thisRoute = route();
       const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
-      if(config.debug) console.log(`application.load : ${endpoint}`);
+      if(config.debug) console.log(`application.load : ${thisRoute.join('/')}`);
       if(thisApp.callbefore) thisApp.callbefore()
       if(thisApp[endpoint].callbefore) thisApp[endpoint].callbefore()
 

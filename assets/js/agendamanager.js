@@ -8,7 +8,8 @@ const agendamanager = (function() {
     nav : 'nav#headerNav',
     default : 'dashboard',
     template : 'pageLayout',
-    debug : true
+    debug : true,
+    reloadOnError : true
   }
 
   const applicationObj = () => application.object(); // application & modules object
@@ -30,7 +31,7 @@ const agendamanager = (function() {
     }
     return arrModules;
   }
-
+  let currentPage
   const initPage = function(route,callback) {
 
     if(typeof route === 'function' ) {
@@ -38,10 +39,14 @@ const agendamanager = (function() {
       route = applicationRoute()[0]
     }
     if(!route) route = applicationRoute()[0] // get current route if route not provided
-    if(config.debug) console.log(`initPage : ${route}`);
-    updateNav( route ); // set active nav item
-    setPageTitle( route ); // set page title
-    loadPage( route, callback );  // load template, display page (callback to module)
+    //if(!route===currentPage){
+      if(config.debug) console.log(`initPage : ${route}`);
+      updateNav( route ); // set active nav item
+      setPageTitle( route ); // set page title
+      loadPage( route, callback );  // load template, display page (callback to module)
+      currentPage = route;
+    //}
+
   }
 
   // set default nav item as active

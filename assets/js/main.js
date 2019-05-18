@@ -17,7 +17,7 @@ const main = (function(){
     try{
       application.init(agendamanager);
     }catch(error){
-      location.reload();
+      if(agendamanager.config.reloadOnError) location.reload();
     }
 
   });
