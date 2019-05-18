@@ -8,7 +8,8 @@ const main = (function(){
     'modules/dashboard',
     'modules/shows',
     'modules/options',
-    'modules/repetitions',
+    //'modules/repetitions',
+    'modules/rehearsals',
     'modules/blockdates',
     'modules/profiles',
     'agendamanager'

@@ -124,7 +124,8 @@ const agendamanager = (function() {
     dashboard : dashboard,
     shows : shows,
     options : options,
-    repetitions : repetitions,
+    //repetitions : repetitions,
+    rehearsals : rehearsals,
     blockdates : blockdates,
     profiles : profiles
   }
