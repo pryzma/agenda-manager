@@ -5,16 +5,35 @@
 const dashboard = (function(){
 
   const dashboardBadges = function(){
-    const card = $('#dashboardBadges').html(); // get card from template
+    const badge = $('#dashboardBadges').html(); // get template html
     $('#dashboardBadges').html(''); // clear template div
-    for(let module of agendamanager.modules()){ // append card for each module
-      let addCard = card.replace('{title}',  application.object()[module].name )
-      addCard = addCard.replace('{id}',module )
-      addCard = addCard.replace('{addBtnLink}',`#${module}/add` )
-      addCard = addCard.replace('{addBtnTxt}',application.object()[module].name.substring(0, application.object()[module].name.length-1) )
+    // loop through modules
+    for(let module of agendamanager.modules()){
 
-      $('#dashboardBadges').append(addCard)
-      $(`#card_${module} .card-title`).attr('style',`color:${application.object()[module].color};`)
+      let dashboardBadge = badge;
+      // replace values for each badge
+      dashboardBadge = dashboardBadge.replace(
+        '{title}',
+        application.object()[module].name
+      );
+      dashboardBadge = dashboardBadge.replace('{id}', module );
+      dashboardBadge = dashboardBadge.replace(
+        '{addBtnLink}',
+        `#${module}/add` // add button link
+      );
+      dashboardBadge = dashboardBadge.replace(
+        '{addBtnTxt}',
+        // strip last character of string (s)
+        application.object()[module].name.substring(
+          0, application.object()[module].name.length-1
+        )
+      );
+      // append modified badge
+      $('#dashboardBadges').append(dashboardBadge);
+      $(`#badge_${module} .card-title`).attr(
+        // set color of badge title
+        'style',`color:${application.object()[module].color};`
+      );
     }
   }
 
