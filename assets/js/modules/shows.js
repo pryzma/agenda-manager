@@ -9,13 +9,13 @@ const shows = (function(){
     default : () => agendamanager.initPage(()=>{
       const showOccurence = DOM.create(['div',{id:'showOccurence'}]);
       const showOccurenceInput = DOM.create(['input',{id:'showOccurenceInput',class:'form-control'}]);
-      const showOccurenceOutput = DOM.create(['div',{id:'showOccurenceOutput',style:'text-align: right;position: absolute;  width: 80%;margin-top: 8px;  color: #c1c1c1;margin-left: 100px;'}]);
+      const showOccurenceOutput = DOM.create(['div',{id:'showOccurenceOutput',style:'text-align: right;position: absolute;  width: 85%;margin-top: 8px;  color: #c1c1c1;margin-left: 100px;'}]);
       view.add(showOccurence, showOccurenceOutput)
       view.add(showOccurence, showOccurenceInput);
       controller.add(showOccurenceInput,'input',(event)=>{
         const matchOccurence = event.target.value;
         if(matchOccurence!='') {
-          view.set(showOccurenceOutput, `'${matchOccurence}' has <b>${utils.occurence($('#pageLayout p').html(), matchOccurence)}</b> matches`)
+          view.set(showOccurenceOutput, `'${matchOccurence}' has <b>${utils.occurence($('#pageLayout table').html(), matchOccurence)}</b> matches`)
         }else{
           view.set(showOccurenceOutput, ``)
         }
