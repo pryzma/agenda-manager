@@ -448,7 +448,7 @@
       const thisApp = applicationModule
       const thisRoute = route(thisApp.config)
       const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
-
+      if(config.debug) console.log(`application.load : ${endpoint}`);
       if(thisApp.callbefore) thisApp.callbefore()
       if(thisApp[endpoint].callbefore) thisApp[endpoint].callbefore()
 
@@ -466,14 +466,17 @@
 
     nav = () => {
 
+      const added = [];
       for( let item of moduleNames){
         if( typeof applicationModule[ item ] === 'object' &&  applicationModule[ item ].name ){
 
           let menuItem = view.add( menu, "li",{ id : item })
           const prefix = applicationModule.config.navMenuItemPrefix ? applicationModule.config.navMenuItemPrefix : '#'
           view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].name)
+          added.push(applicationModule[ item ].name)
         }
       }
+      if(config.debug) console.log(`application.nav : ${added.join(',')}`);
     },
 
     //...........................................................................
@@ -483,6 +486,7 @@
       if( applicationModule.init ) applicationModule.init();
       applicationObj = obj(application);
       config = applicationModule.config;
+      if(config.debug) console.log(`application.init : ${applicationModule.name}`);
       //model.load(config)
       main = element(config.main);
       menu = element(config.nav);
@@ -494,7 +498,9 @@
       if(menu) nav()
       config.loadEvent ? loadEvent = config.loadEvent : loadEvent = 'hashchange'
       controller.add( window, loadEvent, (event) => load(event) );
-      controller.add( window, 'load', (event) => load(event) )
+
+      //controller.add( window, 'load', (event) => load(event) )
+      load()
 
     },
 

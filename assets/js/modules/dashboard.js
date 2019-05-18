@@ -5,8 +5,9 @@
 const dashboard = (function(){
 
   const dashboardBadges = function(){
-    const badge = $('#dashboardBadges').html(); // get template html
-    $('#dashboardBadges').html(''); // clear template div
+    const badgeContainer = $('#dashboardBadges');
+    const badge = badgeContainer.html(); // get template html
+    badgeContainer.html(''); // clear template div
     // loop through modules
     for(let module of agendamanager.modules()){
 
@@ -29,7 +30,7 @@ const dashboard = (function(){
         )
       );
       // append modified badge
-      $('#dashboardBadges').append(dashboardBadge);
+      badgeContainer.append(dashboardBadge);
       $(`#badge_${module} .card-title`).attr(
         // set color of badge title
         'style',`color:${application.object()[module].color};`
