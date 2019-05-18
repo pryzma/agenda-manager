@@ -48,7 +48,7 @@ const agendamanager = (function() {
 
     $(`${config.nav} a`).removeClass('active').attr('style','');
     ( route === '') ?
-    $(`${config.nav} li#${config.default} a`).addClass('active');
+    $(`${config.nav} li#${config.default} a`).addClass('active')
     : $(`${config.nav} li#${applicationRoute()[0]} a`)
       .addClass('active')
       .attr(
