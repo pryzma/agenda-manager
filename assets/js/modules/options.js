@@ -4,13 +4,16 @@
 'use strict'
 const options = (function(){
   const main = function(){
-    console.log('options main')
+    agendamanager.initPage()
   }
   const add = function(){
-    console.log('options add')
+    agendamanager.initPage(()=>{
+      $('#mainContent').html('This is add option')
+    })
   }
   return {
     name : 'Options',
+    color : 'rgb(224, 102, 102)',
     default : main,
     add : add
   }
