@@ -10,12 +10,12 @@ const dashboard = (function(){
     badgeContainer.html(''); // clear template div
     // loop through modules
     for(let module of agendamanager.modules()){
-
+      let moduleObj = application.object()[module]
       let dashboardBadge = badge;
       // replace values for each badge
       dashboardBadge = dashboardBadge.replace(
         '{title}',
-        application.object()[module].name
+        moduleObj.name
       );
       dashboardBadge = dashboardBadge.replace('{id}', module );
       dashboardBadge = dashboardBadge.replace(
@@ -23,18 +23,32 @@ const dashboard = (function(){
         `#${module}/add` // add button link
       );
       dashboardBadge = dashboardBadge.replace(
-        '{addBtnTxt}',
-        // strip last character of string (s)
-        application.object()[module].name.substring(
-          0, application.object()[module].name.length-1
-        )
+        '{addBtnTxt}',moduleObj.name.substring(0, moduleObj.name.length-1)
       );
+
+
       // append modified badge
       badgeContainer.append(dashboardBadge);
+      $(`#badge_${module}`).attr(
+        'style',
+        // set top border color of active nav item
+        `border-top: 3px solid ${moduleObj.color};`
+      );
       $(`#badge_${module} .card-title`).attr(
         // set color of badge title
-        'style',`color:${application.object()[module].color};`
+        'style',`color:${moduleObj.color};`
       );
+      // get badge body provided by module
+      if(moduleObj.badge){
+        if(typeof moduleObj.badge === 'object' ){
+
+        } else {
+          let badgeBody = (typeof moduleObj.badge === 'function') ?
+          moduleObj.badge() : moduleObj.badge;
+          $(`#badge_${module} .card-text`).html(badgeBody);
+        }
+
+      }
     }
   }
 
