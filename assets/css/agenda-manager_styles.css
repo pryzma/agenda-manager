@@ -36,6 +36,17 @@ header {
   margin-top: 38px !important;
 
 }
+
+#profile{
+  position: fixed;
+  right: 5px;
+  top: 5px;
+}
+
+#profile a:hover{
+  text-decoration: none;
+}
+
 header nav a {
   border-radius: .25rem .25rem 0 0;
   margin-right: 10px;
@@ -73,7 +84,7 @@ main {
 
 .card {
   margin: 5px;
-  background: linear-gradient(to bottom, rgba(255,255,255,1) 39%,rgba(255,255,255,1) 39%,rgba(234,234,234,1) 100%); 
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 39%,rgba(255,255,255,1) 39%,rgba(234,234,234,1) 100%);
 }
 .table{
   margin-top: 10px;
