@@ -39,8 +39,8 @@ header {
 
 #profile{
   position: fixed;
-  right: 5px;
-  top: 5px;
+  right: 10px;
+  top: 10px;
 }
 
 #profile a:hover{
@@ -122,9 +122,8 @@ main {
   margin-left: 2px;
 }
   .btn-primary{
-    /* http://colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100;Blue+Gloss+Default  */
-    background: linear-gradient(to bottom, #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%);
 
+    background: linear-gradient(to bottom, #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%);
     box-shadow: 1px 1px 2px #000;
     text-shadow: 0 0 5px #666;
   }
