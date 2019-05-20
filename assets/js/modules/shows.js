@@ -5,6 +5,31 @@
 const shows = (function(){
   return {
     name : 'Shows',
-    default : () => console.log('shows default')
+    color : 'rgb(147, 196, 125)',
+    default : () => agendamanager.initPage(()=>{
+      const showOccurence = DOM.create(['div',{id:'showOccurence'},` `]);
+      const showOccurenceInput = DOM.create(['input',{id:'showOccurenceInput',class:'form-control'}]);
+      const showOccurenceOutput = DOM.create(['div',{id:'showOccurenceOutput',style:'text-align: right;/* position: absolute; *//* width: 100%; */margin-top: 8px;color: #c1c1c1;margin-right: 20px;/* float: right; */margin-bottom: -30px;'}]);
+      view.add(showOccurence, showOccurenceOutput)
+      view.add(showOccurence, showOccurenceInput);
+      controller.add(showOccurenceInput,'input',(event)=>{
+        const matchOccurence = event.target.value;
+        if(matchOccurence!='') {
+          view.set(showOccurenceOutput, `'${matchOccurence}' has <b>${utils.occurence($('#pageLayout table').html(), matchOccurence)}</b> matches`)
+        }else{
+          view.set(showOccurenceOutput, ` `)
+        }
+
+      });
+      view.add('#mainContent',showOccurence)
+    }),
+    add : () => {
+      $('#amModal .modal-title').html('Add Show')
+      $('#amModal').modal()
+      $('#amModal').on('hidden.bs.modal', function (e) {
+         location.hash = '#dashboard'
+      })
+    },
+    badge : 'This is shows.badge'
   }
 })();

@@ -3,11 +3,15 @@
 */
 'use strict';
 const blockdates = (function() {
+
   const main = function() {
-    console.log('blockdates main');
+    agendamanager.initPage(()=>{
+      
+    });
   }
   return {
-    name: 'Blockdates',
+    name: 'Block Dates',
+    color : 'rgb(246, 178, 107)',
     default : main
   }
 })();

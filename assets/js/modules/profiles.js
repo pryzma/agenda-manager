@@ -5,6 +5,7 @@
 const profiles = (function(){
   return {
     name : 'Profiles',
-    default : () => console.log('profiles default')
+    color : 'rgb(118, 165, 175)',
+    default : () => agendamanager.initPage()
   }
 })();

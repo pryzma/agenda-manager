@@ -7,14 +7,15 @@
 
     function create( tag, callback ){
       let isArray = ( arr ) => Array.isArray(arr);
-      if ( !isArray( tag ) ) return make.call( this, Array.prototype.slice.call( arguments ) )
+      if ( !isArray( tag ) ) return create.call( this, Array.prototype.slice.call( arguments ) )
       let name = tag[0],
           attributes = tag[1],
           element = document.createElement( name ),
           start = 1
 
       if ( typeof attributes === 'object' && attributes !== null && !isArray( attributes ) ) {
-        for ( let attribute in attributes ) element[ attribute ] = attributes[ attribute]
+        //for ( let attribute in attributes ) element[ attribute ] = attributes[ attribute]
+        for ( let attribute in attributes ) element.setAttribute(attribute,attributes[ attribute])
         start = 2
       }
       for ( let index = start; index < tag.length; index++ ) {
@@ -29,7 +30,7 @@
     }
 
     function insert( content, callback ){
-      let output, main = UI.main;
+      let output, main = UI.main();
       content.output ? output = content.output : output = config.output;
       if( !typeof output === 'object'  ) output = main.querySelector( output )
       if ( typeof content === 'object'  ) {
@@ -350,6 +351,7 @@
     const add = view.add
 
     return {
+      main : () => application.config.main,
 
     //...........................................................................
       addComponent : (args) => {
@@ -441,17 +443,22 @@
     const route = () => location.hash.slice(1).split('/'),
     //...........................................................................
 
-    load = (event) => {
+    load = () => {
+
       const thisApp = applicationModule
-      const thisRoute = route(thisApp.config)
+      const thisRoute = route();
       const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
+      if(config.debug) console.log(`application.load : ${thisRoute.join('/')}`);
+      if(thisApp.callbefore) thisApp.callbefore()
+      if(thisApp[endpoint].callbefore) thisApp[endpoint].callbefore()
+
 
       thisRoute[1]
         ? thisApp[endpoint][thisRoute[1]](thisRoute[2])
         : thisApp[endpoint].default()
 
       if(thisApp.callback) thisApp.callback()
-      if(thisApp[endpoint].callback) thisApp.callback()
+      if(thisApp[endpoint].callback) thisApp[endpoint].callback()
 
     },
 
@@ -459,22 +466,27 @@
 
     nav = () => {
 
+      const added = [];
       for( let item of moduleNames){
         if( typeof applicationModule[ item ] === 'object' &&  applicationModule[ item ].name ){
 
           let menuItem = view.add( menu, "li",{ id : item })
           const prefix = applicationModule.config.navMenuItemPrefix ? applicationModule.config.navMenuItemPrefix : '#'
           view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].name)
+          added.push(applicationModule[ item ].name)
         }
       }
+      if(config.debug) console.log(`application.nav : ${added.join(',')}`);
     },
 
     //...........................................................................
 
     init = ( application ) => {
       applicationModule = application;
+      if( applicationModule.init ) applicationModule.init();
       applicationObj = obj(application);
       config = applicationModule.config;
+      if(config.debug) console.log(`application.init : ${applicationModule.name}`);
       //model.load(config)
       main = element(config.main);
       menu = element(config.nav);
@@ -486,7 +498,9 @@
       if(menu) nav()
       config.loadEvent ? loadEvent = config.loadEvent : loadEvent = 'hashchange'
       controller.add( window, loadEvent, (event) => load(event) );
-      controller.add( window, 'load', (event) => load(event) )
+
+      //controller.add( window, 'load', (event) => load(event) )
+      load()
 
     },
 
