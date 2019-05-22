@@ -434,21 +434,153 @@
   */
   const application = (function(){
 
-    let applicationModule,applicationObj,config,main,menu,moduleNames,moduleFunctions,filePath,loadEvent;
+    let applicationModule,applicationObj,config,loadEvent;
 
     const obj = utils.obj
     const element = view.element
     const add = view.add
+    const modules = {}
+    const route = () => location.hash.slice(1).split('/')
+    const getModuleName = (route) => getObj()[route].name;// current module name
+    const getTemplateName = (route) =>
+      getObj()[route].template ?
+      getObj()[route].template
+      : config.template;
+    //
+    const getModules = function(){ // returns array with modules
+      const arrModules = [];
+      for(let module of Object.getOwnPropertyNames(getObj())){
+        // check if application object property is module; exclude default module
+        if(getObj()[module].default && getObj()[module].name && module != config.default){
+          arrModules.push( module );
+        }
+      }
+      return arrModules;
+    }
+    //
+    const initPage = function(_route,callback) {
 
-    const route = () => location.hash.slice(1).split('/'),
+      if(typeof _route === 'function' ) {
+        callback = _route; // route argument as callback
+        _route = route()[0]
+      }else if (typeof _route === 'object') {
+        if(callback) _route['callback'] = callback;
+        parsePage(_route) // call parser if route is object
+      }else{
+        if(!_route) _route = applicationRoute()[0] // get current route if route not provided
+
+          if(config.debug) console.log(`application.initPage : ${_route}`);
+          updateNav( _route ); // set active nav item
+          setPageTitle( _route ); // set page title
+          loadPage( _route, callback );  // load template, display page (callback to module)
+
+      }
+
+
+    }
+    const parsePage = function(args){
+      const route = args.route ? args.route : applicationRoute()[0];
+      if(config.debug) console.log(`application.parsePage : ${JSON.stringify(args)}`);
+      if (args.html) $(config.main).html(args.html)
+      args.nav ? updateNav(args.nav) : updateNav(route);
+      args.title ? setPageTitle( args.title ) : setPageTitle( route );
+      args.callback ? loadPage( route, args.callback ) : loadPage( route );
+    }
+    // set default nav item as active
+    //$( `${config.nav} li#${config.default} a` ).addClass('active');
+    const updateNav = function(route) { // set active nav item
+      if(config.debug) console.log(`application.updateNav : ${route}`);
+      $(`${config.nav} a`).removeClass('active').attr('style','');
+      ( route === '') ?
+      $(`${config.nav} li#${config.default} a`).addClass('active')
+      : $(`${config.nav} li#${applicationRoute()[0]} a`)
+        .addClass('active')
+        .attr(
+          'style',
+          // set top border color of active nav item
+          `border-top: 3px solid ${applicationObj()[applicationRoute()[0]].color}`
+        );
+
+    }
+    const setPageTitle = function( route ) {  // set page title with application and module name
+
+      if(route === '') route = config.default;
+      if(config.debug) console.log(`application.setPageTitle : ${route}`);
+      let pageTitle = ( route === '') ?
+      applicationObj().name
+      : `${getModuleName(route)} - ${applicationObj().name}`;
+
+      $('title').html(pageTitle);
+    }
+    const loadPage = function( route, callback ) { // load template html, display page (callback to module)
+
+      if(route === '') route = config.default; // get default route if route not provided
+      if(config.debug) console.log(`application.loadPage : ${route}`);
+      //console.log(`loadPage : ${route}`)
+      let template = getTemplateName(route); // get default or module template
+      $(config.main).fadeOut(400,() => { // page transition out
+        $(config.main).load(`html/templates/${template}.html`,function() { // load template file
+          $(`#${template} h2`).html(getModuleName(route)); // set template header title
+          if(callback) callback(); // callback (module)
+          $(config.main).fadeIn(); // page transition in
+        });
+      });
+
+
+    }
+    // ...........................................................................
+
+    const showModal = function(args){
+      const template = args.template ? args.template : 'modal'; // get template
+      args[ 'template' ] = template
+      template = getTemplate(args); /*
+      // load template file if element does not exist
+      if( ! $(`#${template}`) ) $('#modalContainer').load(`html/templates/${template}.html`);
+      // get items from arguments object & set values
+      const items = Object.getOwnPropertyNames(args);
+      for(let item of items){
+        $(`#${template} .${item}`).html(args[item]);
+      }
+      */
+      template.modal();
+      if(args.onclose) template.on('hidden.bs.modal', args.onclose());
+      if(args.callback) args.callback();
+    }
+
+    const getTemplate = function(args){
+
+        const template = args.template ? args.template : args;
+        const target = args.target ? args.target : config.main;
+        if( ! $(`#${template}`) ) $(target).load(`html/templates/${template}.html`);
+        const items = Object.getOwnPropertyNames(args);
+        for(let item of items){
+          $(`#${template} .${item}`).html(args[item]);
+        }
+        if(args.callback) args.callback();
+        return $(`#${template}`);
+    }
+    /*
+    //  attempt to attach initPage to each module instance;
+    // (initPage is now called from each module instead)
+    // init is loaded once when the application is loaded
+    // callbefore method is executed before module is excuted in application.load;
+
+    const init = function() {
+      for(let module of Object.getOwnPropertyNames(applicationObj())){
+        // attach initPage as callbefore for each module
+        if(applicationObj()[module].name) agendamanager[ module ][ 'callbefore' ] = initPage
+      }
+    }
+    */
+
     //...........................................................................
-
+    const addModule = (module,obj) => modules[ module ] = obj,
     load = () => {
 
       const thisApp = applicationModule
       const thisRoute = route();
       const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
-      if(config.debug) console.log(`application.load : ${thisRoute.join('/')}`);
+      if(config.debug) console.log(`application.load : ${endpoint}`);
       if(thisApp.callbefore) thisApp.callbefore()
       if(thisApp[endpoint].callbefore) thisApp[endpoint].callbefore()
 
@@ -467,13 +599,13 @@
     nav = () => {
 
       const added = [];
-      for( let item of moduleNames){
+      for( let item of applicationObj.properties){
         if( typeof applicationModule[ item ] === 'object' &&  applicationModule[ item ].name ){
 
-          let menuItem = view.add( menu, "li",{ id : item })
-          const prefix = applicationModule.config.navMenuItemPrefix ? applicationModule.config.navMenuItemPrefix : '#'
+          let menuItem = view.add( config.nav, "li",{ id : item })
+          const prefix = config.navMenuItemPrefix ? config.navMenuItemPrefix : '#'
           view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].name)
-          added.push(applicationModule[ item ].name)
+          added.push(item);
         }
       }
       if(config.debug) console.log(`application.nav : ${added.join(',')}`);
@@ -482,24 +614,15 @@
     //...........................................................................
 
     init = ( application ) => {
-      applicationModule = application;
+      applicationModule = application ? application : application.modules;
       if( applicationModule.init ) applicationModule.init();
-      applicationObj = obj(application);
+      applicationObj = obj(applicationModule);
       config = applicationModule.config;
       if(config.debug) console.log(`application.init : ${applicationModule.name}`);
-      //model.load(config)
-      main = element(config.main);
-      menu = element(config.nav);
 
-      //apiBasePath = config.apiBasePath;
-      moduleNames = applicationObj.properties;
-      moduleFunctions = applicationObj.values;
-
-      if(menu) nav()
+      if(element(config.nav)) nav();
       config.loadEvent ? loadEvent = config.loadEvent : loadEvent = 'hashchange'
       controller.add( window, loadEvent, (event) => load(event) );
-
-      //controller.add( window, 'load', (event) => load(event) )
       load()
 
     },
@@ -551,6 +674,8 @@
 
 
     return {
+      modules : modules,
+      add : addModule,
       route : route,
       config : config,
       object : getObj,

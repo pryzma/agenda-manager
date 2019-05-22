@@ -3,6 +3,13 @@
 */
 'use strict'
 const dashboard = (function(){
+  
+  const main = function() {
+    agendamanager.initPage(()=> {
+      dashboardBadges();
+    });
+    //console.log(view.element('#dashboardBadges').innerHTML);
+  }
 
   const dashboardBadges = function(){
     const badgeContainer = $('#dashboardBadges');
@@ -52,12 +59,7 @@ const dashboard = (function(){
     }
   }
 
-  const main = function() {
-    agendamanager.initPage(()=> {
-      dashboardBadges();
-    });
-    //console.log(view.element('#dashboardBadges').innerHTML);
-  }
+
 
   return {
     name : 'Dashboard',
