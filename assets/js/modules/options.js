@@ -8,7 +8,7 @@ const options = (function(){
   }
   const add = function(){
     agendamanager.initPage(()=>{
-      $('#mainContent').html('This is add option')
+      $(agendamanager.config.main).html('This is add option')
     })
   }
   return {

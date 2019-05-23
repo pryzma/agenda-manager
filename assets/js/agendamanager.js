@@ -13,7 +13,8 @@ const agendamanager = (function() {
   }
 
   const applicationObj = () => application.object(); // application & modules object
-  const applicationRoute = () => application.route(); // current route
+  const applicationRoute = () =>
+    application.route() === '' ? config.default : application.route(); // current route
   const getModuleName = (route) => applicationObj()[route].name;// current module name
   // get template for current module
   const getTemplateName = (route) =>
@@ -40,7 +41,7 @@ const agendamanager = (function() {
     }
     if(!route) route = applicationRoute()[0] // get current route if route not provided
     //if(!route===currentPage){
-      if(config.debug) console.log(`initPage : ${route}`);
+      if(config.debug) console.log(`agendamanager.initPage : ${route}`);
       updateNav( route ); // set active nav item
       setPageTitle( route ); // set page title
       loadPage( route, callback );  // load template, display page (callback to module)
@@ -53,7 +54,7 @@ const agendamanager = (function() {
   $( `${config.nav} li#${config.default} a` ).addClass('active');
 
   const updateNav = function(route) { // set active nav item
-    if(config.debug) console.log(`updateNav : ${route}`);
+    if(config.debug) console.log(`agendamanager.updateNav : ${route}`);
     $(`${config.nav} a`).removeClass('active').attr('style','');
     ( route === '') ?
     $(`${config.nav} li#${config.default} a`).addClass('active')
@@ -70,7 +71,7 @@ const agendamanager = (function() {
   const setPageTitle = function( route ) {  // set page title with application and module name
 
     if(route === '') route = config.default;
-    if(config.debug) console.log(`setPageTitle : ${route}`);
+    if(config.debug) console.log(`agendamanager.setPageTitle : ${route}`);
     let pageTitle = ( route === '') ?
     applicationObj().name
     : `${getModuleName(route)} - ${applicationObj().name}`;
@@ -81,7 +82,7 @@ const agendamanager = (function() {
   const loadPage = function( route, callback ) { // load template html, display page (callback to module)
 
     if(route === '') route = config.default; // get default route if route not provided
-    if(config.debug) console.log(`loadPage : ${route}`);
+    if(config.debug) console.log(`agendamanager.loadPage : ${route}`);
     //console.log(`loadPage : ${route}`)
     let template = getTemplateName(route); // get default or module template
     $(config.main).fadeOut(400,() => { // page transition out

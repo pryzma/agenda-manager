@@ -14,11 +14,11 @@ const main = (function(){
     'modules/profiles',
     'agendamanager'
   ],()=> {
-    try{
+    //try{
       application.init(agendamanager);
-    }catch(error){
-      if(agendamanager.config.reloadOnError) location.reload();
-    }
+    //}catch(error){
+    //  if(agendamanager.config.reloadOnError) location.reload();
+    //}
 
   });
 })();

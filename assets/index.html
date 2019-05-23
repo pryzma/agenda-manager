@@ -18,14 +18,33 @@
   <body>
     <header class="d-flex flex-column flex-md-row align-items-center p-2 px-md-3 mb-2 bg-white fixed-top">
       <a class="navbar-brand col-sm-3 col-md-3 mr-0" href="#"><span class="inner">Agenda Manager</span></a>
-      <nav id="headerNav" class="my-2 my-md-0 mr-md-3">
+      <nav id="headerNav" class="my-2 my-md-0 mr-auto">
 
       </nav>
+      <div id="profile" >
+
+          <a href="#profile"><i class="fas fa-user"></i> Profile Name</a> | <a href="#profile/logout" >Logout</a>
+
+      </div>
     </header>
     <main role="main" class="container-fluid">
       <div class="row">
         <nav class="col-md-3 d-none d-md-block bg-light sidebar" id="mainNav">
+          <ul class="nav flex-column">
 
+          <li class="nav-item">
+            <a class="nav-link active" href="#options/add">
+              + Add New Option
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="#profiles/add">
+              + Create Profile
+            </a>
+          </li>
+
+        </ul>
         </nav>
         <section class="col-md-9 ml-sm-auto col-lg-9 px-4" id="mainContent">
 
