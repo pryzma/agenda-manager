@@ -13,12 +13,16 @@ const main = (function(){
     'modules/blockdates',
     'modules/profiles',
     'agendamanager'
-  ],()=> {
-    //try{
-      application.init(agendamanager);
-    //}catch(error){
+  ],(require)=> {
+    try{
+      //if(require){
+        application.init(agendamanager);
+      //}
+
+    }catch(error){
     //  if(agendamanager.config.reloadOnError) location.reload();
-    //}
+      location.reload()
+    }
 
   });
 })();
