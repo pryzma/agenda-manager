@@ -35,7 +35,7 @@ const application = (function(){
 
     }else if(typeof config.debug === 'array'){
       filter = utils.compare(config.debug,modules())
-      
+
     }
 
     if(!msg){
@@ -157,6 +157,7 @@ require = (name,callback) => {
       debug(`application.init : ${config.name}`);
       if(config.modules) {
         loadModules = new Set(config.modules).values()
+        // Fixes issue #3
         initModules(loadModules); // async modules call with load in promise...
       }else{
         // call load; calls page & module; application.oject should be ready & complete...
