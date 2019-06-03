@@ -5,13 +5,11 @@
 const blockdates = (function() {
 
   const main = function() {
-    agendamanager.initPage(()=>{
-      
-    });
+
   }
-  return {
+  application.add('blockdates',{
     name: 'Block Dates',
     color : 'rgb(246, 178, 107)',
     default : main
-  }
+  })
 })();

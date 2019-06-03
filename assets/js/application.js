@@ -1,772 +1,464 @@
-//(() => {
+'use strict'
 
-  // DOM, utils, view, model, controller, UI, application, client
-  'use strict'
+/*
+* Application Client 0.9.5
+* assets/js/application.js
+*/
 
-  const DOM = (function() {
+const application = (function(){
+  let config, // configuration object
+      object = {}, // application object
+      output, // private output
+      position = 0, // private global position
+      ready, // private ready state
+      loadModules,
+      previous; // previous object state
 
-    function create( tag, callback ){
-      let isArray = ( arr ) => Array.isArray(arr);
-      if ( !isArray( tag ) ) return create.call( this, Array.prototype.slice.call( arguments ) )
-      let name = tag[0],
-          attributes = tag[1],
-          element = document.createElement( name ),
-          start = 1
+  const defaults = {
+    template : 'pageLayout',
+    templatePath : 'html/templates/{template}.html',
+    modulesPath : 'js/modules/{module}.js'
+  }
+  const route = () => // gets route from location.hash
+    location.hash.slice(1).split('/');
 
-      if ( typeof attributes === 'object' && attributes !== null && !isArray( attributes ) ) {
-        //for ( let attribute in attributes ) element[ attribute ] = attributes[ attribute]
-        for ( let attribute in attributes ) element.setAttribute(attribute,attributes[ attribute])
-        start = 2
-      }
-      for ( let index = start; index < tag.length; index++ ) {
-        if( isArray( tag[ index ] ) ){
-          element.appendChild(DOM.create( tag[ index ] ) )
-        } else {
-          element.appendChild( document.createTextNode( tag[ index ] ) )
-        }
-      }
-      if( callback ) callback()
-      return element
+  const endpoint = () => // gets default property of config if route not given
+    route()[0] ? route()[0] : config.default;
+
+  const debug = (fn,msg) => {
+    let filter
+    if(typeof config.debug === 'string'
+    && modules().includes(config.debug.split('.')[0])
+    && Object.getOwnPropertyNames(object).includes(config.debug.split('.')[0])){
+      filter = config.debug.split('.')[0]
+
+
+    }else if(typeof config.debug === 'array'){
+      filter = utils.compare(config.debug,modules())
+
     }
 
-    function insert( content, callback ){
-      let output, main = UI.main();
-      content.output ? output = content.output : output = config.output;
-      if( !typeof output === 'object'  ) output = main.querySelector( output )
-      if ( typeof content === 'object'  ) {
-        if( content.html ){
-          if( content.append ) {
-            output.appendChild( DOM.create( content.tag, { id : content.id }, content.html ) )
-          }else {
-              output.innerHTML = content.html
-          }
-        } else {
-          output.innerHTML = ''
-          output.appendChild( content )
-        }
+    if(!msg){
+      if(typeof fn === 'string'){
+        console.log(fn)
+        //fn = fn.split(' : ')[0]
+        //msg = fn.split(' : ')[1]
+
+      }else if (typeof fn === 'object') {
+        console.log(fn)
+      }
+
+    }
+    //debugLog.push({fn : fn,msg : msg})
+    debugLog.push(fn)
+  }, debugLog = [],
+  element = {},
+  elements = () => {
+    const isElement = (property) =>
+      (typeof config[property] === 'string')
+      && config[property].includes('#');
+    for(let property in config)
+      if(isElement(property)) element[property] = $(config[property]);
+    debug(`application.elements : ${Object.getOwnPropertyNames(element).join(',')}`);
+    return element;
+  },
+//..............................................................................
+
+  add = function(name,module) {
+    //if(application.config.debug) console.log(`application.add : ${name}`);
+    // adds property to application object
+    module ? object[name] = module : require(name);
+    if(module) return module;
+
+  },
+
+//..............................................................................
+
+  remove = function(property) {
+    // removes property from application object
+    const obj = {}
+    for(let _property in object)
+      if(_property != property ) obj[_property] = _property;
+    object = obj;
+  },
+
+//..............................................................................
+require = (name,callback) => {
+  debug(`application.require : ${name}`);
+  $.get(`js/modules/${name}.js`).done(() => {
+    if(callback)callback()
+  }).fail(() => {
+    $.get(`${name}.js`).done(() => {
+      if(callback)callback()
+    }).fail(()=>{
+      console.error(`application.require : ${name} not available`)
+    });
+  });
+},
+//..............................................................................
+  initModules = () => {
+    require(config.modules[position], () =>{ // async request
+      debug(`application.initModules : js/modules/${config.modules[position]}.js loaded`);
+      if(position === config.modules.length-1){
+
+        debug(`application.initModules complete : init load`);
+        load() // init load
+        $(window).on( 'hashchange', () => load() ); // event load
       } else {
-        output.innerHTML = content
+
+        position++; // next position in modules array
+        initModules();
       }
-      if( callback ) callback()
-      return output
-    }
+    });
+  },
+//..............................................................................
+  initConfig = (callback) => {
 
+    $.get(`json/config.json`,(data) =>{
+      config = data;
+      object.config = config;
+      debug(`application.initConfig : json/config.json loaded`);
+      debug(config);
+    }).done(() => {
 
-
-    /* ---------------------------------------------------------------------------
-    *
-    */
-    return {
-      create : create,
-      insert : insert
-
-    }
-  })()
-  /*
-  * ------------------------------------------------------------------------------
-  * utils
-  */
-  const utils = (function(){
-    const getRandomInt = (min, max) =>
-      Math.floor(Math.random() * (max - min + 1)) + min,
-
-    obj = (obj) => {
-        return {
-          properties : Object.getOwnPropertyNames(obj),
-          values : Object.values(obj)
-        }
-    },
-
-    params = (func) => {
-          const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
-          ARGUMENT_NAMES = /([^\s,]+)/g,
-          fnStr = func.toString().replace(STRIP_COMMENTS, ''),
-          result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
-          if(result === null)
-          result = [];
-          return result;
-
-    },
-    elements = (args) => {
-      const argsObj = obj(args);
-      for(let item in argsObj.properties ){
-        args[argsObj.properties[item]] = view.element(argsObj.values[item])
-      }
-      return args
-    },
-    format = (str) => {
-      return str.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/(?:\r\n|\r|\n)/g, '<br>');
-    },
-    isNode = (o) => {
-      return (
-        typeof Node === "object" ? o instanceof Node :
-        o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string"
-      );
-    },
-
-    //Returns true if it is a DOM element
-    isElement = (o) => {
-      return (
-        typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-        o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
-      );
-    },
-    formData = ( form ) => {
-      let data = {},
-      formData = new FormData( form )
-      for( let item of formData.entries() ) data[ item[0] ] = item[1]
-      return data
-    },
-    occurence = (str,find) => (str.match(new RegExp(`${find}`,'g')) || []).length;
-    return{
-      getRandomInt : getRandomInt,
-      obj : obj,
-      params : params,
-      elements : elements,
-      format : format,
-      isNode : isNode,
-      isElement : isElement,
-      formData : formData,
-      occurence : occurence
-    }
-  })()
-  // -----------------------------------------------------------------------------
-  // view
-  const view = (function(){
-    const elements = [],
-    get = function( id ){
-      for( let element of elements ){
-        if( element.id === id ){
-          return element.element
-        }
-      }
-    },
-
-    //...........................................................................
-
-      element = function( element ){
-        if( get( element ) ) return get( element )
-        if( typeof element === 'string' ) {
-          if( element.includes( '.' ) ){
-            element = (() => document.querySelectorAll( element ))()
-          } else {
-             if ( ! element.includes( '#' ) ) element = `#${element}`
-             element = (() => document.querySelector( element ))()
-          }
-        }
-
-        if(element){
-          if( ! element.id ) element.id = `view_element_${elements.length+1}`
-          elements.push( { id : element.id, element : element } )
-        }
-
-        return element
-
-      },
-
-    //...........................................................................
-
-    set = function( _element, content ){
-      if( typeof _element === 'string' ) _element = element( _element )
-
-      if( typeof content === 'object' ) {
-        if(utils.isElement(content))_element.appendChild( content )
-      }else if(typeof content === 'string'){
-        _element.innerHTML = content
-      }
-      return _element
-    },
-
-    //...........................................................................
-
-    txt = function( _element, txt ){
-      txt = document.createTextNode( txt )
-      element( _element ).appendChild( txt )
-      return _element
-    },
-
-    //...........................................................................
-
-    attr = function( _element, attributes ){
-      const properties = Object.getOwnPropertyNames(attributes)
-      for( let attribute in properties ){
-          _element.setAttribute(
-            properties[ attribute ],
-            Object.values( attributes )[ attribute ]
-          )
-
-      }
-      return _element
-    },
-
-    //...........................................................................
-
-    add = function( parent, _element, attributes, content ){
-
-      if( typeof parent === 'string' ) parent = element( parent );
-      if( typeof _element === 'string' ) _element = document.createElement( _element )
-      if( typeof attributes === 'object' ) _element = attr( _element , attributes )
-      if( typeof attributes === 'string' ) content = attributes
-      if( typeof content === 'string' ) txt( _element, content )
-      parent.appendChild( _element )
-      return _element
-    }
-
-
-    //...........................................................................
-    // element prototypes
-    //view.element.txt()
-    element.prototype.txt = function( txt) {
-      return txt( elements[elements.length].element, txt )
-    }
-    //view.element.add()
-    element.prototype.add = function( _element, attributes, content ) {
-      return add( elements[elements.length].element, _element, attributes, content )
-    }
-    //view.element.attr()
-    element.prototype.attr = function( attributes ) {
-      return attr( elements[elements.length].element, attributes )
-    }
-    return {
-      elements : elements,
-      element : element,
-      get : get,
-      add : add,
-      set : set,
-      txt : txt,
-      attr : attr
-    }
-  })()
-  // model
-  const model = (function(){
-   const data = {},
-         components = [],
-         load = (args) => {
-           model.components = args.components
-           for ( let item of model.components ){
-             model.apiRequest({ api : args.api, endpoint : item.endpoint})
-           }
-         },
-
-    //...........................................................................
-
-         obj = utils.obj,
-
-    //...........................................................................
-
-         add = (data) => {
-           for (let item in obj(data).properties)
-             data[obj(data).properties[item]] = obj(data).values[item];
-         },
-
-     //...........................................................................
-
-        get = (id , coll ) => data[ coll ].find( (item) => parseInt(item.id) === parseInt(id) ),
-
-     //...........................................................................
-
-         apiRequest = ( args, callback ) => {
-
-           let xhr = new XMLHttpRequest()
-           if( !args.type ) args[ 'type' ] = 'GET'
-           if( !args.status ) args[ 'status' ] = 200
-
-           xhr.addEventListener( 'load',  ( event ) => {
-             if ( xhr.readyState === 4 && xhr.status === args.status ) {
-               data[args.component] = JSON.parse(event.target.responseText)
-               if(callback) callback( event, args )
-             }
-           })
-           // xhr.open( args.type, `http://${application.apiBasePath()}${args.component}`, true )
-           // console.log(application.apiBasePath())
-           xhr.open( args.type, `http://${args.api}/${args.endpoint}`, true )
-           //xhr.open( args.type, `http://localhost:8081/api/${args.component}`, true )
-           xhr.send( args.data )
-         }
-
-    //...........................................................................
-
-   return {
-     data : data,
-     components : components,
-     get : get,
-     load : load,
-     apiRequest : apiRequest
-   }
-  })()
-  // -----------------------------------------------------------------------------
-  // controller
-  const controller = (function(){
-
-    const actions = [],
-    events = [],
-
-    action = (args)=>actions.push(args),
-    //...........................................................................
-
-    add = function( element, action, callback ){
-      if( typeof element === 'string' ) element = view.element( element )
-      events.push( { event : event, element : element, action : action } )
-      element.addEventListener( action, ( event ) => {
-
-        event.preventDefault()
-        //event.stopPropagation();
-        callback( event )
-        receptor( event )
-      })
-    },
-    //...........................................................................
-
-    receptor = function(event) {
-      const component = event.target.id; // id of element added to controller acts as trigger to component to receptor
-      for (let action of actions) {
-        if (action.component === component) action.do();
-      }
-    },
-
-    //...........................................................................
-
-    component = function(element, event, action) {
-      actions.push({ component: element.id, event : event, do: action });
-    },
-
-    //...........................................................................
-    get = function(event){
-      for( item of events ){
-        if( item === event ) return item
-      }
-    }
-    return {
-      actions : actions,
-      events : events,
-      add : add,
-      component : component
-    }
-  })()
-  // UI
-  const UI = ( function() {
-
-
-    const set = view.set
-    const add = view.add
-
-    return {
-      main : () => application.config.main,
-
-    //...........................................................................
-      addComponent : (args) => {
-        const create = (args) => DOM.create( [
-          args.element,
-          { id : args.id, class : args.class },
-          args.html
-        ])
-        for( let component of args.components )  {
-           this[args.fn] = () => {
-             const element = create( args )
-             if(args.callback) args.callback(element)
-             return element
-           }
-        }
-      },
-      //...........................................................................
-      overviewTable : (args) => {
-        if( ! args.data ) console.error('UI.overview : args.data is undefined');
-        const overviewTable = DOM.create( [
-          'table', { id : `overview_${args.component}`, class : 'table' }
-        ] ),
-        overviewHeader = DOM.create( [ 'thead' ] ),
-        overviewHeaderRow = DOM.create( [ 'tr' ] ),
-        overviewBody = DOM.create( [ 'tbody' ] ),
-        overviewTitle = DOM.create( [ 'h2', `${args.data.length} ${args.title}` ] );
-
-        args.fields = utils.obj(args.fields);
-        for( let header of args.fields.properties) set( overviewHeaderRow, DOM.create( [ 'th', header ]) );
-        set( overviewTable,
-          set( overviewHeader, overviewHeaderRow )
-        );
-
-        for( let entry of args.data ){
-          let overviewRow = DOM.create( [ 'tr', { id : entry.id } ] );
-          if( args.controller ) controller.add(overviewRow,'click',args.controller)
-          for( let item of args.fields.values){
-            let overviewRowField = DOM.create( [ 'td'] )
-            add( overviewRow,
-              set( overviewRowField, item(entry) )
-            );
-          }
-          add( overviewBody, overviewRow )
-        }
-
-        set( args.target, '')
-        set( args.target, overviewTitle )
-        set( args.target,
-          set( overviewTable, overviewBody )
-        )
-        if(args.callback) args.callback()
-      },
-
-    //...........................................................................
-
-      createForm : (args) => {
-        const createForm = make( [
-          'form', { id : `create_form_ ${args.component}`}
-        ] ),
-        createTitle = make( [ 'h2', `Add item` ] );
-        args.fields = utils.obj(args.fields);
-        if( args.controller ) controller.add(createForm,'submit',args.controller)
-      },
-    //...........................................................................
-
-      update : (args) =>{
-
-      },
-    //...........................................................................
-
-      delete : (args) =>{
-
-      }
-
-    }
-  })()
-  window['UI'] = UI
-  /*
-  * application
-  */
-  const application = (function(){
-
-    let applicationModule,applicationObj,config,loadEvent;
-
-    const obj = utils.obj
-    const element = view.element
-    const add = view.add
-    const modules = {}
-    const route = () => location.hash.slice(1).split('/')
-    const getModuleName = (route) => getObj()[route].name;// current module name
-    const getTemplateName = (route) =>
-      getObj()[route].template ?
-      getObj()[route].template
-      : config.template;
-    //
-    const getModules = function(){ // returns array with modules
-      const arrModules = [];
-      for(let module of Object.getOwnPropertyNames(getObj())){
-        // check if application object property is module; exclude default module
-        if(getObj()[module].default && getObj()[module].name && module != config.default){
-          arrModules.push( module );
-        }
-      }
-      return arrModules;
-    }
-    //
-    const initPage = function(_route,callback) {
-
-      if(typeof _route === 'function' ) {
-        callback = _route; // route argument as callback
-        _route = route()[0]
-      }else if (typeof _route === 'object') {
-        if(callback) _route['callback'] = callback;
-        parsePage(_route) // call parser if route is object
+    }).fail(() => {
+      if(object.config){
+        config = object.config; // get config object
       }else{
-        if(!_route) _route = applicationRoute()[0] // get current route if route not provided
+        throw 'initConfig : config not defined'
+        return
+      }
 
-          if(config.debug) console.log(`application.initPage : ${_route}`);
-          updateNav( _route ); // set active nav item
-          setPageTitle( _route ); // set page title
-          loadPage( _route, callback );  // load template, display page (callback to module)
+    }).always(()=>{
+      if(callback)callback()
+    })
+  },
+//..............................................................................
+  init = (( _application ) => { // initialize application
+    // assigns given, existing or merged application object
+    if( _application && object ){ // checks if application object exists
+      if(typeof _application === 'function'){
+         _application()
+      }else{
+        for( let property in object){
+          if(!object[property])
+            object[property] = _application[property];
+        }
+      }
 
+    } else if (_application) {
+      object = _application; // use given object
+    } else {
+      // BUG:
+      //object = application.object; // use existing object
+    }
+    //config = object.config; // get config object
+    initConfig(()=>{
+      debug(`application.init : ${config.name}`);
+      if(config.modules) {
+        loadModules = new Set(config.modules).values()
+        // Fixes issue #3
+        initModules(loadModules); // async modules call with load in promise...
+      }else{
+        // call load; calls page & module; application.oject should be ready & complete...
+        // and in the right order... Let's wait 500 ms and hope everything is OK
+        setTimeout( () => load(), 500)
+        //load()
+        window.addEventListener( 'hashchange', () => load() );
+      }
+      application.config = config; // set config object of application object
+
+
+
+    });
+    return object
+
+  })(),
+
+//..............................................................................
+
+  load = async function() {
+  //load = () => {
+    // calls module with current route in callback of page call
+    const _route = route();
+    const _endpoint = endpoint();
+    const _method = _route[1];
+    const _argument = _route[2];
+
+    await ready
+    if(!object[_endpoint]) // requested module does not exist
+      throw `application.load : requested module ${_route.join('/')} undefined; modules loaded : ${modules().join(',')}`
+    const _module = _method ? object[_endpoint][_method] // module method
+        : object[_endpoint].default // module default
+
+    debug(`application.load : ${_module}`);
+
+    page( function() {// call page
+      //_module(_argument)
+      if(typeof _module === 'function'){
+        _module(_argument); // call module
+      }else{
+        throw `application.load  : ${_module} is not a function`;
       }
 
 
-    }
-    const parsePage = function(args){
-      const route = args.route ? args.route : applicationRoute()[0];
-      if(config.debug) console.log(`application.parsePage : ${JSON.stringify(args)}`);
-      if (args.html) $(config.main).html(args.html)
-      args.nav ? updateNav(args.nav) : updateNav(route);
-      args.title ? setPageTitle( args.title ) : setPageTitle( route );
-      args.callback ? loadPage( route, args.callback ) : loadPage( route );
-    }
-    // set default nav item as active
-    //$( `${config.nav} li#${config.default} a` ).addClass('active');
-    const updateNav = function(route) { // set active nav item
-      if(config.debug) console.log(`application.updateNav : ${route}`);
-      $(`${config.nav} a`).removeClass('active').attr('style','');
-      ( route === '') ?
-      $(`${config.nav} li#${config.default} a`).addClass('active')
-      : $(`${config.nav} li#${applicationRoute()[0]} a`)
-        .addClass('active')
-        .attr(
-          'style',
-          // set top border color of active nav item
-          `border-top: 3px solid ${applicationObj()[applicationRoute()[0]].color}`
-        );
+    });
 
-    }
-    const setPageTitle = function( route ) {  // set page title with application and module name
+  },
 
-      if(route === '') route = config.default;
-      if(config.debug) console.log(`application.setPageTitle : ${route}`);
-      let pageTitle = ( route === '') ?
-      applicationObj().name
-      : `${getModuleName(route)} - ${applicationObj().name}`;
+//..............................................................................
 
-      $('title').html(pageTitle);
-    }
-    const loadPage = function( route, callback ) { // load template html, display page (callback to module)
+  page = ( callback ) => {
+    // displays page from template, execute callback and call render
+    // view.main doesn't exist before first render
 
-      if(route === '') route = config.default; // get default route if route not provided
-      if(config.debug) console.log(`application.loadPage : ${route}`);
-      //console.log(`loadPage : ${route}`)
-      let template = getTemplateName(route); // get default or module template
-      $(config.main).fadeOut(400,() => { // page transition out
-        $(config.main).load(`html/templates/${template}.html`,function() { // load template file
-          $(`#${template} h2`).html(getModuleName(route)); // set template header title
-          if(callback) callback(); // callback (module)
-          $(config.main).fadeIn(); // page transition in
-        });
+    $(config.main).fadeOut(400,() => { // page transition out
+      template( () => { // load template file
+        debug(`application.page : ${config.main} #${template()}`);
+        if(callback) callback(); // callback (module)
+        render(); // render document
+        view.main.fadeIn(); // page transition in
+
       });
+    });
+    return output;
+  },
 
+//..............................................................................
+  templates = {},
+  template = (_route, html, callback) => {
+    // gets template for given or current route
 
+    if(typeof _route === 'function' ) {
+      callback = _route; // route argument as callback
+      _route = endpoint();
+      html = true;
     }
-    // ...........................................................................
+    if(!_route) _route = endpoint();
+    if(!config.template) config.template = defaults.template;
+    let _template,obj = application.object[_route];
 
-    const showModal = function(args){
-      const template = args.template ? args.template : 'modal'; // get template
-      args[ 'template' ] = template
-      template = getTemplate(args); /*
-      // load template file if element does not exist
-      if( ! $(`#${template}`) ) $('#modalContainer').load(`html/templates/${template}.html`);
-      // get items from arguments object & set values
-      const items = Object.getOwnPropertyNames(args);
-      for(let item of items){
-        $(`#${template} .${item}`).html(args[item]);
-      }
-      */
-      template.modal();
-      if(args.onclose) template.on('hidden.bs.modal', args.onclose());
-      if(args.callback) args.callback();
-    }
+    obj.template ? _template = obj.template : _template = config.template
 
-    const getTemplate = function(args){
+    if(!templates[_template]){ // template is not available in templates object
+      if(!config.templatePath) config.templatePath = defaults.templatePath; // get filepath
+      const templatePath = config.templatePath.replace('{template}',_template);
 
-        const template = args.template ? args.template : args;
-        const target = args.target ? args.target : config.main;
-        if( ! $(`#${template}`) ) $(target).load(`html/templates/${template}.html`);
-        const items = Object.getOwnPropertyNames(args);
-        for(let item of items){
-          $(`#${template} .${item}`).html(args[item]);
-        }
-        if(args.callback) args.callback();
-        return $(`#${template}`);
-    }
-    /*
-    //  attempt to attach initPage to each module instance;
-    // (initPage is now called from each module instead)
-    // init is loaded once when the application is loaded
-    // callbefore method is executed before module is excuted in application.load;
+      $.get( `html/templates/${_template}.html`, function( data ) { // get file
+        debug(`application.template : html/templates/${_template}.html loaded`);
+        templates[_template] = data; // add to templates object
+        if(html) $(config.main).html(data); // view.main doesn't exist after first render
 
-    const init = function() {
-      for(let module of Object.getOwnPropertyNames(applicationObj())){
-        // attach initPage as callbefore for each module
-        if(applicationObj()[module].name) agendamanager[ module ][ 'callbefore' ] = initPage
-      }
-    }
-    */
-
-    //...........................................................................
-    const addModule = (module,obj) => modules[ module ] = obj,
-    load = () => {
-
-      const thisApp = applicationModule
-      const thisRoute = route();
-      const endpoint = thisRoute[0] ? thisRoute[0] : thisApp.config.default
-      if(config.debug) console.log(`application.load : ${endpoint}`);
-      if(thisApp.callbefore) thisApp.callbefore()
-      if(thisApp[endpoint].callbefore) thisApp[endpoint].callbefore()
-
-
-      thisRoute[1]
-        ? thisApp[endpoint][thisRoute[1]](thisRoute[2])
-        : thisApp[endpoint].default()
-
-      if(thisApp.callback) thisApp.callback()
-      if(thisApp[endpoint].callback) thisApp[endpoint].callback()
-
-    },
-
-    //...........................................................................
-
-    nav = () => {
-
-      const added = [];
-      for( let item of applicationObj.properties){
-        if( typeof applicationModule[ item ] === 'object' &&  applicationModule[ item ].name ){
-
-          let menuItem = view.add( config.nav, "li",{ id : item })
-          const prefix = config.navMenuItemPrefix ? config.navMenuItemPrefix : '#'
-          view.add( menuItem, "a", { href : `${prefix}${item}`}, applicationModule[ item ].name)
-          added.push(item);
-        }
-      }
-      if(config.debug) console.log(`application.nav : ${added.join(',')}`);
-    },
-
-    //...........................................................................
-
-    init = ( application ) => {
-      applicationModule = application ? application : application.modules;
-      if( applicationModule.init ) applicationModule.init();
-      applicationObj = obj(applicationModule);
-      config = applicationModule.config;
-      if(config.debug) console.log(`application.init : ${applicationModule.name}`);
-
-      if(element(config.nav)) nav();
-      config.loadEvent ? loadEvent = config.loadEvent : loadEvent = 'hashchange'
-      controller.add( window, loadEvent, (event) => load(event) );
-      load()
-
-    },
-
-    //...........................................................................
-
-    call = ( exc, fn, args ) => {
-      if(!args.target) args['target'] = applicationModule.config.main;
-      args['data'] = model.data[args.component]
-      args['config'] = applicationModule.config
-      callbefore( exc, fn, args.target )
-      if(typeof exc === 'string'){
-        window[exc][fn](args)
-      }else if( typeof exc === 'function' ){
-        fn ? exc()[fn](args) : exc(fn)
-      }
-      callback( exc, fn )
-    },
-
-    //...........................................................................
-    hooks = {},
-    exc = ( exc ) =>  {
-      exc = typeof exc === 'function' ? /function ([^(]*)/.exec( exc+'' )[1] : exc
-      return exc
-    },
-    before = ( exc, fn, before ) => {
-      exc = exc(exc)
-      fn ? hooks[ `before:${exc}.${fn}` ] = before : hooks[ `before:${exc}` ] = fn
-    },
-    hook = ( exc, fn, hook) => {
-      exc = exc(exc)
-      fn ? hooks[ `${exc}.${fn}` ] = hook : hooks[ exc ] = fn
-    },
-    //...........................................................................
-    callbefore = (exc, fn ,target ) => {
-      if( typeof exc === 'function' ) exc = /function ([^(]*)/.exec( exc+'' )[1]
-      if( hooks[`before:${exc}.${fn}`] ) hooks[`before:${exc}.${fn}`]()
-    },
-    callback = ( exc, fn ) => {
-      if( typeof exc === 'function' ) exc = /function ([^(]*)/.exec( exc+'' )[1]
-      if( fn && hooks[`${exc}.${fn}`] ) {
-        hooks[`${exc}.${fn}`]()
-      }else if( hooks[exc]){
-        hooks[exc]()
-      }
-    },
-    getObj = () => applicationModule
-
-
-
-    return {
-      modules : modules,
-      add : addModule,
-      route : route,
-      config : config,
-      object : getObj,
-      init : init,
-      call : call,
-      hooks : hooks,
-      before : before,
-      hook : hook,
-      callbefore : callbefore,
-      callback : callback
-    }
-  })()
-  // client
-  const client = (function(){
-
-    function xhr( args ){
-      if(typeof args === 'string') args = { url : args }
-      const xmlhttp = new XMLHttpRequest();
-      if( !args.method ) args[ 'method' ] = 'GET';
-      if( !args.status ) args[ 'status' ] = 200;
-      xmlhttp.open( args.method, args.url, true );
-      xmlhttp.setRequestHeader("Content-Type", "application/json");
-      if(args.data) args.data = JSON.stringify(args.data)
-      xmlhttp.addEventListener( 'load',  ( event ) => {
-        if( xmlhttp.readyState === 4 && xmlhttp.status === args.status ) {
-          if(args.callback) args.callback(event);
-        }
+      }).done(() =>{ // callback in promise
+        if(callback) callback();
       });
-      xmlhttp.send( args.data );
-
+    }else{
+      if(html) {
+        _template = templates[_template]; // get template from templates object
+        view.main.html(_template)
+        if(callback) callback();
+      }
     }
 
-    function xhrp( args ) {
-      if( !args ) args = {}
-      if( !args.type ) args[ 'type' ] = 'GET'
-      if( !args.status ) args[ 'status' ] = 200
-      return new Promise( ( resolve, reject ) => {
-        const xmlhttp = new XMLHttpRequest();
-        xmlhttp.open( args.type, args.url );
-        xmlhttp.setRequestHeader("Content-Type", "application/json");
-        xmlhttp.onload = ( event ) => xmlhttp.status === args.status ? resolve( event ) : reject( Error( event ) )
-        xmlhttp.send( args.data );
+
+    return _template;
+  },
+
+//..............................................................................
+
+  render = ( _route, callback ) => {
+    // updates page with module properties
+    if(typeof _route === 'function' ) {
+      callback = _route; // route argument as callback
+      _route = endpoint();
+    }
+    if(!_route) _route = endpoint();
+
+    let _template = template(_route); // get template
+    //if(prev != application.object ){
+      let thisObj = application.object[_route]
+      $(`#${_template} h2`).html(thisObj.name); // set template header title
+
+      title(_route); // set document title
+      elements(); // set elements
+      if(config.nav) nav(); // set navigation
+      for(let property in object[_route]){
+        if(typeof object[_route][property] === 'string' ){
+          // set values of properties of elements with corresponding class names
+          $(`#${_template} .${property}`).html(str(object[_route][property])); // element html & parse with str
+        }
+      }
+      //output = $(`#${template(_route)}`).html(str($(`#${template(_route)}`).html())); // parse with str
+      output = $(`#${_template}`).html();
+      //$(`#${_template}`).children().each(function(){
+      //  if(this.innerHTML) this.innerHTML = str(this.innerHTML)
+      //});
+      previous = application.object
+      if(callback) callback();
+      for(let event in events) events[event]()
+      debug(`application.render : ${_route} complete`);
+    //}
+    return application;
+  },
+
+//..............................................................................
+
+  nav = () => {
+    // creates/updates nav element
+
+    const prefix = config.navMenuItemPrefix ?
+    config.navMenuItemPrefix : '#';
+
+    view.nav.html('');
+
+    for( let item of modules()){
+
+        let menuItem = $('<li></li>').attr('id',item)
+          .html(`<a href="${prefix}${item}">
+                  ${str(object[ item ].name)}
+                </a>`);
+        view.nav.append(menuItem);
+
+
+    }
+    let debugStr = modules().join(',').replace(endpoint(),`${endpoint()}(active)`)
+    debug(`application.nav : ${debugStr}`);
+
+    const active = `${config.nav} li#${endpoint()} a`;
+    $( active ).addClass('active');
+    if(config.style && object[endpoint()].color ) {
+      $( active ).attr('style',`${str(config.style)}`);
+    }
+    return view.nav;
+  },
+
+//..............................................................................
+
+  title = (route) => {
+    // sets document title with name property
+    if(!route) route = endpoint();
+
+    let pageTitle = ( route === '') ?
+    config.name
+    : `${object[route].name} - ${config.name}`;
+    $('title').html(pageTitle);
+    debug(`application.title : ${pageTitle}`);
+    return pageTitle;
+  },
+
+//..............................................................................
+
+  event = (_element, _event, callback ) => {
+    // adds event to events object
+    if(typeof _element === 'string')
+      element[_element] ?
+      _element = element[_element]
+      : _element = $(_element);
+    if(typeof callback === 'string'){
+      let property = callback;
+      let target = property.includes('.') ?
+      object[property.split('.')[0]]
+        [property.split('.')[1]]
+      : module()[property];
+      _element.val(target);
+      callback = (event) => {
+        property.includes('.') ?
+        object[property.split('.')[0]]
+          [property.split('.')[1]] = event.target.value
+        : module()[property] = event.target.value;
+      }
+    }else if (typeof callback === 'object') {
+      const obj = callback
+      callback = (event) => {
+        if(obj.api){ // bind api request to event
+          $.ajax(obj).done(()=>obj.callback());
+        }
+        if(event.target.class){
+          const property = event.target.class;
+          if(event.target.value) obj[property] = event.target.value;
+        }
+      }
+    }
+    let id
+    if(_element){
+      id = _element.attr('id');
+
+      _element.on(_event,(event) => {
+        callback(event);
+        render(); // event render
       });
     }
-    const request = {}
 
+    let _events = id ?  events[id] : events
+    return _events
+  },
+  events = {},
 
-    const apiRoutes = ( config ) => {
-      const url = `http://${config.server}/${config.api}/`
-      const args = {
-        url : `${url}routes`,
-        callback : setRoutes
+//..............................................................................
+
+  modules = function(){
+    // get modules as array
+    let _modules
+    //if(config.modules){
+    //  _modules = config.modules
+    //} else {
+      _modules = [];
+      for(let property of Object.getOwnPropertyNames(application.object)){
+        let obj = object[property];
+        if(typeof obj.default === 'function' ) _modules.push(property)
       }
-      xhr(args)
-
-    }
-    const setRequest = (item,method) => {
-      // request.[route].[method](args)
-      /*
-      request.products.getAll({ callback : (event) => {
-        	console.log( event.target.responseText )
-        }
-      })
-      */
-      request[item.route][method] = (args)=> {
-        if(method==='post') args = { url : `${url}${item.route}`, data : args.data,method: 'POST',status : 201, callback : args.callback}
-        if(method==='get') args = { url : `${url}${item.route}}/${args.id}`, callback : args.callback}
-        if(method==='getAll') args = { url : `${url}${item.route}}`, callback : args.callback}
-        if(method==='put') args = {data : args.data,url : `${url}${item.route}/${args.id}`,method: 'PUT',status : 201}
-        if(method==='delete') args = {url : `${url}${item.route}/${args.id}`,method: 'DELETE',status : 201}
-        xhr(args)
-      }
-    }
-    const setRoutes = (event) => {
-      const routes = JSON.parse(event.target.responseText)
-      for( let item of routes ){
-        for( let method of item.methods) setRequest(item,method)
-        let module = item.route
-        if( config.application[ module ]) {
-          // provided application has module which matches with route from api
+    //}
+    return _modules;
+  },
+  module = () => object[route()],
 
 
-        }
-      }
-    }
-    return {
-      api : apiRoutes,
-      request : request
-    }
+//..............................................................................
+
+  str = (str) => {
+    // replace {template} strings with module properties
+
+    for(let item of Object.getOwnPropertyNames(application.object[endpoint()]))
+      if(typeof application.object[endpoint()][item] === 'string' )
+        str = str.replace(new RegExp(`{${item}}`, 'g'),application.object[endpoint()][item]);
+
+    for(let property of Object.getOwnPropertyNames(defaults))
+      str = str.replace(new RegExp(`{${property}}`, 'g'),defaults[property]);
+
+    return str
+  },
+  model = {},
+  view = element,
+  controller = (_element, _event, callback ) => {
+    event(_element, _event, callback )
+  }
 
 
-  })()
-
-//});
+  // return public methods & variables
+  return {
+    route : route,
+    endpoint : endpoint,
+    object : object,
+    model : model,
+    modules : modules,
+    module : module,
+    config : config,
+    require : require,
+    add : add,
+    remove : remove,
+    init : init,
+    load : load,
+    event : event,
+    controller : controller,
+    render : render,
+    page : page,
+    nav : nav,
+    element : element,
+    view : view,
+    template : template,
+    templates : templates,
+    title : title,
+    debug : debugLog
+  }
+})();
+const ac = application;
