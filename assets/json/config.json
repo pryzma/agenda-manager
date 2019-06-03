@@ -1,0 +1,21 @@
+{
+  "name" : "Agenda Manager",
+  "modules" : [
+    "dashboard",
+    "shows",
+    "options",
+    "rehearsals",
+    "blockdates",
+    "profiles"
+  ],
+  "default" : "dashboard",
+  "main" : "section#mainContent",
+  "nav" : "nav#headerNav",
+  "template" : "pageLayout",
+  "style" : "border-top: 3px solid {color}",
+  "defaults" : {
+    "template" : "pageLayout",
+    "templatePath" : "html/templates/{template}.html"
+  },
+  "debug" : true
+}
