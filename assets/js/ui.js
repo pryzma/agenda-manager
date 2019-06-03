@@ -1,58 +1,82 @@
-const DOM = (function() {
-
-  function create( tag, callback ){
-    let isArray = ( arr ) => Array.isArray(arr);
-    if ( !isArray( tag ) ) return make.call( this, Array.prototype.slice.call( arguments ) )
-    let name = tag[0],
-        attributes = tag[1],
-        element = document.createElement( name ),
-        start = 1
-
-    if ( typeof attributes === 'object' && attributes !== null && !isArray( attributes ) ) {
-      for ( let attribute in attributes ) element[ attribute ] = attributes[ attribute]
-      start = 2
-    }
-    for ( let index = start; index < tag.length; index++ ) {
-      if( isArray( tag[ index ] ) ){
-        element.appendChild(DOM.create( tag[ index ] ) )
-      } else {
-        element.appendChild( document.createTextNode( tag[ index ] ) )
-      }
-    }
-    if( callback ) callback()
-    return element
-  }
-
-  function insert( content, callback ){
-    let output, main = UI.main;
-    content.output ? output = content.output : output = config.output;
-    if( !typeof output === 'object'  ) output = main.querySelector( output )
-    if ( typeof content === 'object'  ) {
-      if( content.html ){
-        if( content.append ) {
-          output.appendChild( DOM.create( content.tag, { id : content.id }, content.html ) )
-        }else {
-            output.innerHTML = content.html
-        }
-      } else {
-        output.innerHTML = ''
-        output.appendChild( content )
-      }
-    } else {
-      output.innerHTML = content
-    }
-    if( callback ) callback()
-    return output
-  }
+const UI = ( function() {
 
 
 
-  /* ---------------------------------------------------------------------------
-  *
-  */
   return {
-    create : create,
-    insert : insert
+
+  //...........................................................................
+    addComponent : (args) => {
+      const create = (args) => DOM.create( [
+        args.element,
+        { id : args.id, class : args.class },
+        args.html
+      ])
+      for( let component of args.components )  {
+         this[args.fn] = () => {
+           const element = create( args )
+           if(args.callback) args.callback(element)
+           return element
+         }
+      }
+    },
+    //...........................................................................
+    overviewTable : (args) => {
+      if( ! args.data ) console.error('UI.overview : args.data is undefined');
+      const overviewTable = DOM.create( [
+        'table', { id : `overview_${args.component}`, class : 'table' }
+      ] ),
+      overviewHeader = DOM.create( [ 'thead' ] ),
+      overviewHeaderRow = DOM.create( [ 'tr' ] ),
+      overviewBody = DOM.create( [ 'tbody' ] ),
+      overviewTitle = DOM.create( [ 'h2', `${args.data.length} ${args.title}` ] );
+
+      args.fields = utils.obj(args.fields);
+      for( let header of args.fields.properties) set( overviewHeaderRow, DOM.create( [ 'th', header ]) );
+      set( overviewTable,
+        set( overviewHeader, overviewHeaderRow )
+      );
+
+      for( let entry of args.data ){
+        let overviewRow = DOM.create( [ 'tr', { id : entry.id } ] );
+        if( args.controller ) controller.add(overviewRow,'click',args.controller)
+        for( let item of args.fields.values){
+          let overviewRowField = DOM.create( [ 'td'] )
+          add( overviewRow,
+            set( overviewRowField, item(entry) )
+          );
+        }
+        add( overviewBody, overviewRow )
+      }
+
+      set( args.target, '')
+      set( args.target, overviewTitle )
+      set( args.target,
+        set( overviewTable, overviewBody )
+      )
+      if(args.callback) args.callback()
+    },
+
+  //...........................................................................
+
+    createForm : (args) => {
+      const createForm = make( [
+        'form', { id : `create_form_ ${args.component}`}
+      ] ),
+      createTitle = make( [ 'h2', `Add item` ] );
+      args.fields = utils.obj(args.fields);
+      if( args.controller ) controller.add(createForm,'submit',args.controller)
+    },
+  //...........................................................................
+
+    update : (args) =>{
+
+    },
+  //...........................................................................
+
+    delete : (args) =>{
+
+    }
 
   }
 })()
+window['UI'] = UI

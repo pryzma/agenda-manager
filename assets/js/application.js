@@ -187,7 +187,7 @@ require = (name,callback) => {
 
     await ready
     if(!object[_endpoint]) // requested module does not exist
-      throw `application.load : requested module ${_endpoint} undefined; modules loaded : ${modules().join(',')}`
+      throw `application.load : requested module ${_route.join('/')} undefined; modules loaded : ${modules().join(',')}`
     const _module = _method ? object[_endpoint][_method] // module method
         : object[_endpoint].default // module default
 

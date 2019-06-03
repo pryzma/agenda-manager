@@ -3,7 +3,7 @@
 */
 'use strict'
 const profiles = (function(){
-  application.add('intro',{
+  application.add('profiles',{
     name : 'Profiles',
     color : 'rgb(118, 165, 175)',
     default : () => {
