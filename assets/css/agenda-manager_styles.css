@@ -36,6 +36,17 @@ header {
   margin-top: 38px !important;
 
 }
+
+#profile{
+  position: fixed;
+  right: 10px;
+  top: 10px;
+}
+
+#profile a:hover{
+  text-decoration: none;
+}
+
 header nav a {
   border-radius: .25rem .25rem 0 0;
   margin-right: 10px;
@@ -55,9 +66,12 @@ main {
   margin-top: 92px;
 }
 #mainNav {
-  margin-top: -10px;
+  margin-top: 83px;
   /*background-color: #e0efff !important;
   border-right: solid 1px #90c6ff; */
+}
+#mainNav a{
+  text-shadow: 2px 1px 1px #fff
 }
 
 .sidebar {
@@ -66,15 +80,22 @@ main {
   bottom: 0;
   left: 0;
   z-index: 100; /* Behind the navbar */
-  padding: 48px 0 0; /* Height of navbar */
+  padding: 16px 13px 0; /* Height of navbar */
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
   background: linear-gradient(to bottom, rgba(232,241,249,1) 0%,rgba(255,255,255,1) 98%);
 }
 
 .card {
   margin: 5px;
-  background: linear-gradient(to bottom, rgba(255,255,255,1) 39%,rgba(255,255,255,1) 39%,rgba(234,234,234,1) 100%); 
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 39%,rgba(255,255,255,1) 39%,rgba(234,234,234,1) 100%);
 }
+
+
+#dashboardBadges .card{
+  width : 225px;
+}
+
+
 .table{
   margin-top: 10px;
   width:99%;
@@ -111,9 +132,8 @@ main {
   margin-left: 2px;
 }
   .btn-primary{
-    /* http://colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100;Blue+Gloss+Default  */
-    background: linear-gradient(to bottom, #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%);
 
+    background: linear-gradient(to bottom, #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%);
     box-shadow: 1px 1px 2px #000;
     text-shadow: 0 0 5px #666;
   }

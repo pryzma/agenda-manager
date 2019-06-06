@@ -3,9 +3,11 @@
 */
 'use strict'
 const profiles = (function(){
-  return {
+  application.add('profiles',{
     name : 'Profiles',
     color : 'rgb(118, 165, 175)',
-    default : () => agendamanager.initPage()
-  }
+    default : () => {
+
+    }
+  })
 })();

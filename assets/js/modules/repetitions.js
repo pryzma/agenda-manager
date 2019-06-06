@@ -4,11 +4,11 @@
 'use strict'
 const repetitions = (function(){
   const main = function() {
-    agendamanager.initPage()
+
   }
-  return {
+  application.add('repetitons',{
     name : 'Repetitions',
     color : 'rgb(142, 124, 195)',
     default : main
-  }
+  })
 })();

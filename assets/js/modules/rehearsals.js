@@ -4,11 +4,11 @@
 'use strict'
 const rehearsals = (function(){
   const main = function() {
-    agendamanager.initPage()
+
   }
-  return {
+  application.add('rehearsals',{
     name : 'Rehearsals',
     color : 'rgb(142, 124, 195)',
     default : main
-  }
+  })
 })();
