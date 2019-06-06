@@ -159,3 +159,6 @@ main {
 .alert-success{
   background: linear-gradient(to bottom, rgba(157,213,58,0.3) 0%,rgba(161,213,79,0.27) 50%,rgba(128,194,23,0.27) 51%,rgba(124,188,10,0.24) 100%);
 }
+.Inconsolata{
+    font-family: 'Inconsolata', monospace;
+}
