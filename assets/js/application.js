@@ -321,6 +321,7 @@ const application = (function(){
     let _template = template(_route); // get template
     //if(prev != application.object ){
       let thisObj = application.object[_route]
+      if(application.route()[1]) thisObj = application.object[_route][application.route()[1]]()
       $(`#${_template} h2`).html(thisObj.name); // set template header title
 
       title(_route); // set document title
@@ -389,6 +390,12 @@ const application = (function(){
     let pageTitle = ( route === '') ?
     config.name
     : `${object[route].name} - ${config.name}`;
+
+    if(application.route()[1]){
+       pageTitle = `${object[route][application.route()[1]]().name} - ${config.name}`
+
+    }
+
     $('title').html(pageTitle);
     debug(`application.title : ${pageTitle}`);
     return pageTitle;
