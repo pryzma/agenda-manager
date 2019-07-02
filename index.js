@@ -1,7 +1,8 @@
 const dotenv = require('dotenv').config();
 const mysql = require('mysql');
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const uuidv4 = require('uuid/v4');
 const app = express();
 
 app.use(bodyParser.json());
@@ -40,6 +41,20 @@ app.get('/api/accounts', (req, res) => {
     }
   })
 });
+
+app.post('/api/accounts', (req, res) => {
+  let account = req.body;
+  let uuid = uuidv4();
+  account.uuid = uuid;
+  account.isActivated = 0;
+  connection.query('INSERT INTO accounts SET ?', account, (err, result) => {
+    if (!err) {
+      console.log(account);
+    } else {
+      throw err;
+    }
+  })
+})
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Listening to port ${process.env.PORT}`);
