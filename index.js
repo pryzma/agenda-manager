@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const express = require('express');
 const bodyParser = require('body-parser');
 const uuidv4 = require('uuid/v4');
+const sgMail = require('@sendgrid/mail');
 const app = express();
 
 app.use(bodyParser.json());
@@ -53,8 +54,19 @@ app.post('/api/accounts', (req, res) => {
     } else {
       throw err;
     }
-  })
-})
+  });
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const msg = {
+    to: `${account.email}`,
+    from: `info@agendamanager.nl`,
+    subject: `Registration at agendamanager.nl`,
+    text: `Someone has invited you to join Agenda Manager. Visit agendamanager.nl/verify and paste the following code: ${account.uuid}`,
+    html: `Someone has invited you to join Agenda Manager. Visit <a href="https://www.agendamanager.nl/verify">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.uuid}</strong>`,
+  };
+  // Disable actually sending an email, for now
+  // sgMail.send(msg);
+  console.log(msg);
+});
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Listening to port ${process.env.PORT}`);
