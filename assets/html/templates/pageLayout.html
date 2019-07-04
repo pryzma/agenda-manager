@@ -176,17 +176,3 @@
     </div>
   </div>
 </div>
-<script>
-  $('#submitEmail').click(function () {
-    let email = $('#email').val();
-    fetch('/api/accounts', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email: email })
-    })
-      .then((res) => res.json());
-  }) 
-</script>

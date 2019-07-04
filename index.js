@@ -64,7 +64,7 @@ app.post('/api/accounts', (req, res) => {
     html: `Someone has invited you to join Agenda Manager. Visit <a href="https://www.agendamanager.nl/verify">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.uuid}</strong>`,
   };
   // Disable actually sending an email, for now
-  // sgMail.send(msg);
+  sgMail.send(msg);
   console.log(msg);
 });
 
