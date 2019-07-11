@@ -21,7 +21,8 @@ const application = (function(){
 
   const defaults = {
     template : 'pageLayout',
-    templatePath : 'html/templates/{template}.html',
+    templateEngine : 'html',
+    templatePath : '{templateEngine}/templates/{template}.{templateEngine}',
     modulesPath : 'js/modules/{module}.js'
   }
 
@@ -312,6 +313,7 @@ const application = (function(){
     }
     if(!_route) _route = getRoute().endpoint;
     if(!config.template) config.template = defaults.template;
+    if(!config.templateEngine) config.templateEngine = defaults.templateEngine;
     let _template,obj = application.object[_route];
     // BUG: config reference
     obj.template ? _template = obj.template : _template = config.template
@@ -320,6 +322,7 @@ const application = (function(){
       if(!config.templatePath) config.templatePath = defaults.templatePath; // get filepath
       const templatePath = config.templatePath.replace('{template}',_template);
       let template_load_start = new Date;
+      // TODO: mustache / handlebars /ejs
       $.get( `html/templates/${_template}.html`, function( data ) { // get file
         let template_load_end = new Date;
         let template_loadtime = template_load_end - template_load_start;
@@ -376,7 +379,6 @@ const application = (function(){
     let _template = template(_route); // get template
     //if(prev != application.object ){
       let thisObj = application.object[_route]
-      if(application.route()[1]) thisObj = application.object[_route][application.route()[1]]()
       $(`#${_template} h2`).html(thisObj.name); // set template header title
 
       title(_route); // set document title
@@ -457,12 +459,6 @@ const application = (function(){
     let pageTitle = ( route === '') ?
     config.name
     : `${object[route].name} - ${config.name}`;
-
-    if(application.route()[1]){
-       pageTitle = `${object[route][application.route()[1]]().name} - ${config.name}`
-
-    }
-
     $('title').html(pageTitle);
     debug(`application.title : ${pageTitle}`);
     return pageTitle;
@@ -548,6 +544,12 @@ const application = (function(){
     const defaultProps = Object.getOwnPropertyNames(defaults)
     for(let property of defaultProps)
       str = str.replace(new RegExp(`{${property}}`, 'g'),defaults[property]);
+      // TODO: template engines
+   try{
+     if(config.defaults) str = ejs.render(str);
+   }catch(error){
+
+   }
 
     return str
   },

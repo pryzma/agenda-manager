@@ -7,7 +7,9 @@ const profiles = (function(){
     // Main function, place functions related to the profiles page here
     console.log('This is main');
     $('#submitEmail').click(function () {
+
       let email = $('#email').val();
+      console.log(email)
       fetch('/api/accounts', {
         method: 'POST',
         headers: {
@@ -30,6 +32,5 @@ const profiles = (function(){
     color : 'rgb(118, 165, 175)',
     default : main,
     add : add
-  }) 
+  })
 })();
-
