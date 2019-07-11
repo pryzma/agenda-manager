@@ -6,8 +6,8 @@ const uuidv4 = require('uuid/v4');
 const sgMail = require('@sendgrid/mail');
 const app = express();
 
-app.use(bodyParser.json());
-app.use(express.static('assets'));
+const router = express.Router();
+
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -32,7 +32,7 @@ connection.connect((err) => {
   }
 });
 
-app.get('/api/accounts', (req, res) => {
+router.get('/', (req, res) => {
   connection.query('SELECT * from accounts', (err, accounts) => {
     if (!err) {
       res.setHeader('Content-Type', 'application/json');
@@ -43,7 +43,7 @@ app.get('/api/accounts', (req, res) => {
   })
 });
 
-app.post('/api/accounts', (req, res) => {
+router.post('/', (req, res) => {
   let account = req.body;
   let uuid = uuidv4();
   account.uuid = uuid;
@@ -64,10 +64,8 @@ app.post('/api/accounts', (req, res) => {
     html: `Someone has invited you to join Agenda Manager. Visit <a href="https://www.agendamanager.nl/verify">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.uuid}</strong>`,
   };
   // Disable actually sending an email, for now
-  // sgMail.send(msg);
+  sgMail.send(msg);
   console.log(msg);
 });
 
-const server = app.listen(process.env.PORT, () => {
-  console.log(`Listening to port ${process.env.PORT}`);
-});
+module.exports = router;

@@ -8,14 +8,6 @@
     "blockdates",
     "profiles"
   ],
-  "routes" : {
-    "dashboard" : "dashboard",
-    "shows" : "shows",
-    "options" : "options",
-    "rehearsals" : "rehearsals",
-    "blockdates" : "blockdates",
-    "profiles" : "profiles"
-  },
   "default" : "dashboard",
   "main" : "section#mainContent",
   "nav" : "nav#headerNav",
@@ -24,12 +16,6 @@
   "defaults" : {
     "template" : "pageLayout",
     "templatePath" : "html/templates/{template}.html"
-  },
-  "debug" : true,
-  "jshint" : {
-    "undef" : false,
-    "asi" : false,
-    "esversion" : 6,
-    "maxerr" :250
   }
+
 }
