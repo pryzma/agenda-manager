@@ -1,6 +1,7 @@
 const dbconn = (function(){
   const includes = require('./includes');
-  const mysql = includes.mysql;
+  const mysql = includes.mysql,
+        dotenv = includes.dotenv;
   const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
