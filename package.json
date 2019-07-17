@@ -1,6 +1,6 @@
 {
-  "name": "application-server",
-  "version": "0.0.0",
+  "name": "agenda-manager",
+  "version": "0.6.3",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
