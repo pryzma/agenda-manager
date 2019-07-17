@@ -9,4 +9,5 @@ const dbconn = (function(){
     database: process.env.DB_NAME
   });
   return connection;
-})
+});
+module.exports = dbconn;
