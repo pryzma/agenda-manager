@@ -2,6 +2,7 @@ const agendamanager = (function(){
 
   const includes = require('./includes'); // adds npm packages in includes object
   const config = require('./config'); // assets/json/config.json as config object
+  const auth = require('./auth'); // authentication with passport & express-session
   //const routes = require('./routes'); // routes from config
   const cookieParser = includes.cookie_parser;
   const express = includes.express;
