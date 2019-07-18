@@ -23,8 +23,12 @@ const agendamanager = (function(){
   app.use('/', index);
   // set routes with config.routes properties
   for(let _route of Object.getOwnPropertyNames(config.routes)){
-    let _module = require(`./routes/${_route}`);
-    app.use(_route, _module);
+    try{
+      let _module = require(`./routes/${_route}`);
+      app.use(_route, _module);
+    }catch(err){
+      console.log(`Module ./routes/${_route}.js not available');
+    }
   }
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {
