@@ -1,7 +1,7 @@
 const router = function(route,_render){
-  const includes = require('./includes');
-  const express = includes.express;
-  const express_router = express.Router();
+
+  const express = require('express');
+  const router = express.Router();
   const _route = route === 'index' ? '/' : route
   router.get(route, isAuthenticated, function(req, res, next) {
     if(typeof _render(req, res, next) === 'object'){
@@ -9,7 +9,7 @@ const router = function(route,_render){
     }else{
       _render(req, res, next);
     }
-      
+
   });
   function isAuthenticated(req, res, next) {
     if (req.session.user)
