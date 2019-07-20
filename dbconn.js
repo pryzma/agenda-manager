@@ -1,4 +1,4 @@
-const dbconn = (function(){
+
 
   const mysql = require('mysql'),
         dotenv = require('dotenv').config();
@@ -16,6 +16,6 @@ const dbconn = (function(){
       console.log(`Connected!`);
     }
   });
-  return connection;
-});
-module.exports = dbconn;
+  
+
+module.exports = connection;

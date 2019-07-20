@@ -1,4 +1,4 @@
-const agendamanager = (function(){
+//const agendamanager = (function(){
 
   // packages
   const express = require('express'),
@@ -8,15 +8,17 @@ const agendamanager = (function(){
         BetterMemoryStore = require('session-memory-store')(session),
         store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true }),
         cookieParser = require('cookie-parser'),
-        //bodyParser = require('body-parser'),
+        bodyParser = require('body-parser'),
         flash    = require('connect-flash'),
         bcrypt = require('bcrypt'),
+        crypto = require('crypto'),
         passport = require('passport'),
         logger = require('morgan'),
         LocalStrategy  = require('passport-local').Strategy,
         path = require('path');
   // database
   const connection = require('./dbconn');
+
   // routes
   const index = require('./routes/index');
   const app = express();
@@ -29,13 +31,13 @@ const agendamanager = (function(){
      saveUninitialized: true
   }));
   // view engine setup
-  //app.use(expressLayouts);
+  app.use(expressLayouts);
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
   // log requests
   app.use(logger('dev'));
-  //app.use(express.json());
-  //app.use(express.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
   // static directory setup
   app.use(express.static(path.join(__dirname, 'assets')));
@@ -78,21 +80,25 @@ const agendamanager = (function(){
   });
 
   passport.deserializeUser(function(id, done){
-      connection.query("select * from tbl_users where id = "+ id, function (err, rows){
+      connection.query("select * from accounts where id = "+ id, function (err, rows){
           done(err, rows[0]);
       });
   });
 
   app.get('/signin', function(req, res){
+
     res.render('signin',{'message' :req.flash('message')});
+
   });
 
-  app.post("/signin", passport.authenticate('local', {
+  app.post("/signin",
+  passport.authenticate('local', {
       successRedirect: '/',
       failureRedirect: '/signin',
       failureFlash: true
   }), function(req, res, info){
-      res.render('index',{'message' :req.flash('message')});
+      console.log(req)
+      res.render('signin',{'message' :req.flash('message')});
   });
 
   app.get('/logout', function(req, res){
@@ -118,6 +124,6 @@ const agendamanager = (function(){
     res.status(err.status || 500);
     res.render('error');
   });
-  return app
-})();
-module.exports = agendamanager;
+//  return app
+//})();
+module.exports = app;
