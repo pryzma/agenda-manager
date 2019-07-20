@@ -20,8 +20,10 @@
   const connection = require('./dbconn');
 
   // routes
-  const index = require('./routes/index');
+  const index = require('./routes/index'),
+        accounts = require('./routes/accounts');
   const app = express();
+
   // session setup
   app.use(session({
      name: 'JSESSION',
@@ -30,15 +32,18 @@
      resave: true,
      saveUninitialized: true
   }));
+
   // view engine setup
   app.use(expressLayouts);
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
+
   // log requests
   app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
+
   // static directory setup
   app.use(express.static(path.join(__dirname, 'assets')));
   // flash messages setup
@@ -48,7 +53,8 @@
   app.use(passport.session());
   // routes setup
   app.use('/', index);
-
+  app.use('/api/accounts', accounts);
+  // passport login
   passport.use('local', new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password',

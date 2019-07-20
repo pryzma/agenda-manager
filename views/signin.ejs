@@ -96,7 +96,7 @@ body {
   <input type="password" name="password" class="form-control" placeholder="Password" autocomplete="new-password" required>
   <div class="checkbox mb-3">
     <label>
-      <input type="checkbox" value="remember-me"> Remember me
+      <input type="checkbox" id="remember"> Remember me
     </label>
   </div>
   <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
@@ -108,6 +108,36 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <!-- popper -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js" integrity="sha384-L2pyEeut/H3mtgCBaUNw7KWzp5n9+4pDQiExs933/5QfaTh8YStYFFkOzSoXjlTb" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function() {
 
+    const remember = $.cookie('remember');
+    if (remember == 'true'){
+      const email = $.cookie('email');
+      const password = $.cookie('password');
+      // autofill the fields
+      $('#email').val(email);
+      $('#password').val(password);
+    }
+
+
+    $("#login").submit(function() {
+        if ($('#remember').is(':checked')) {
+            var email = $('#email').val();
+            var password = $('#password').val();
+
+            // set cookies to expire in 14 days
+            $.cookie('email', email, { expires: 14 });
+            $.cookie('password', password, { expires: 14 });
+            $.cookie('remember', true, { expires: 14 });
+        }else{
+            // reset cookies
+            $.cookie('email', null);
+            $.cookie('password', null);
+            $.cookie('remember', null);
+        }
+  });
+});
+</script>
 </body>
 </html>
