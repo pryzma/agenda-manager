@@ -90,16 +90,17 @@ body {
 	<p><%= message %></p>
 	<% } %>
   <label for="inputEmail" class="sr-only">Email address</label>
-  <input type="email" name="username" class="form-control" placeholder="Email address" required autofocus>
+
+  <input type="email" name="username" class="form-control" placeholder="Email address"  autocomplete="new-email" required autofocus>
   <label for="inputPassword" class="sr-only">Password</label>
-  <input type="password" name="password" class="form-control" placeholder="Password" required>
+  <input type="password" name="password" class="form-control" placeholder="Password" autocomplete="new-password" required>
   <div class="checkbox mb-3">
     <label>
       <input type="checkbox" value="remember-me"> Remember me
     </label>
   </div>
   <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-  <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
+
 </form>
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
