@@ -1,10 +1,10 @@
-const dotenv = require('dotenv').config();
-const mysql = require('mysql');
-const express = require('express');
-const bodyParser = require('body-parser');
-const uuidv4 = require('uuid/v4');
-const sgMail = require('@sendgrid/mail');
-const app = express();
+const connection = require('../dbconn'),
+      dotenv = require('dotenv').config(),
+      express = require('express'),
+      bodyParser = require('body-parser'),
+      uuidv4 = require('uuid/v4'),
+      sgMail = require('@sendgrid/mail'),
+      app = express();
 
 const router = express.Router();
 
@@ -16,21 +16,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
-
-connection.connect((err) => {
-  if (err) {
-    throw err;
-  }
-  else {
-    console.log(`Connected!`);
-  }
-});
 
 router.get('/', (req, res) => {
   connection.query('SELECT * from accounts', (err, accounts) => {
@@ -62,8 +47,8 @@ router.post('/', (req, res) => {
     from: `info@agendamanager.nl`,
     subject: `Registration at agendamanager.nl`,
     text: `Someone has invited you to join Agenda Manager. Visit agendamanager.nl/verify and paste the following code: ${account.uuid}`,
-    html: `Someone has invited you to join Agenda Manager. Visit <a href="https://www.agendamanager.nl/verify">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.uuid}</strong>`,
-  };
+    html: `Someone has invited you to join Agenda Manager. Visit <a href="https://www.agendamanager.nl/verify?uuid=${account.uuid}">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.uuid}</strong>`,
+  }
   // Disable actually sending an email, for now
   sgMail.send(msg);
   console.log(msg);
