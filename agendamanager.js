@@ -10,19 +10,30 @@
         cookieParser = require('cookie-parser'),
         bodyParser = require('body-parser'),
         flash    = require('connect-flash'),
-        bcrypt = require('bcrypt'),
+        bcrypt = require('bcryptjs'),
         crypto = require('crypto'),
         passport = require('passport'),
         logger = require('morgan'),
         LocalStrategy  = require('passport-local').Strategy,
         path = require('path');
+
+  const app = express();
   // database
   const connection = require('./dbconn');
-
+  // models
+  const models = require('./models');
+  //Sync Database
+  models.sequelize.sync().then(function() {
+    console.log('Nice! Database looks fine')
+  }).catch(function(err) {
+    console.error(err, "Something went wrong with the Database Update!")
+  });
   // routes
   const index = require('./routes/index'),
         accounts = require('./routes/accounts');
-  const app = express();
+
+
+  
 
   // session setup
   app.use(session({
@@ -130,6 +141,10 @@
     res.status(err.status || 500);
     res.render('error');
   });
+
+
+  
+
 //  return app
 //})();
 module.exports = app;
