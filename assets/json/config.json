@@ -1,5 +1,6 @@
 {
   "name" : "Agenda Manager",
+  "require" : [ "agendamanager" ],
   "modules" : [
     "dashboard",
     "shows",
