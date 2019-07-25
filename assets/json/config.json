@@ -13,9 +13,11 @@
     "dashboard" : "dashboard",
     "shows" : "shows",
     "options" : "options",
+    "options/add" : "options.add",
     "rehearsals" : "rehearsals",
     "blockdates" : "blockdates",
-    "profiles" : "profiles"
+    "profiles" : "profiles",
+    "profiles/add" : "profiles.add"
   },
   "default" : "dashboard",
   "main" : "section#mainContent",

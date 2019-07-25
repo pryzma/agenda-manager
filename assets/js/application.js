@@ -230,15 +230,16 @@ const application = (function(){
 
 //..............................................................................
   getRoute = (_route) => {
+    
     _route = _route ? _route : hash()
     if(!_route) _route = endpoint() // get config.default if hash route not provided
 
     let _parameter,_endpoint;
-    const routesProps = Object.getOwnPropertyNames(object.routes);
+    const routesProps = Object.getOwnPropertyNames(config.routes);
     for(let route of routesProps){
-      if(_route.includes(route)){ // match route with config.routes properties
+      if(_route===route){ // match route with config.routes properties
         _parameter = _route != route ? _route.replace(`${route}/`,'') : null;
-        _endpoint = object.routes[route].split('.'); // _endpoint array for module route
+        _endpoint = config.routes[route].split('.'); // _endpoint array for module route
         break;
       }
     }
@@ -256,20 +257,21 @@ const application = (function(){
       _route = getRoute();
     }
     if(!_route) _route = getRoute();
+    console.log(_route)
     const _endpoint = _route.endpoint;
     if(_endpoint){
       // module route
 
       const _module = _endpoint[1] ?
       object[_endpoint[0]][_endpoint[1]]
-      : object[_endpoint[0]].default;
+      : object[_endpoint[0]];
       if(endpoint[2]) _module = _endpoint[3] ?
       _module[_endpoint[2]][_endpoint[3]]
       : _module[_endpoint[2]].default;
 
       page(() => { // call page
-        if(typeof _module === 'function'){
-          _module(_route.parameter); // call module
+        if(typeof _module.default === 'function'){
+          _module.default(_route.parameter); // call module
         } else {
           throw `application.moduleRouter  : ${typeof module} ${module} is not a function`;
         }
@@ -314,7 +316,7 @@ const application = (function(){
     if(!_route) _route = getRoute().endpoint;
     if(!config.template) config.template = defaults.template;
     if(!config.templateEngine) config.templateEngine = defaults.templateEngine;
-    let _template,obj = application.object[_route];
+    let _template,obj = _route[1] ? application.object[_route[0]][_route[1]] : application.object[_route];
     // BUG: config reference
     obj.template ? _template = obj.template : _template = config.template
 
@@ -378,7 +380,7 @@ const application = (function(){
 
     let _template = template(_route); // get template
     //if(prev != application.object ){
-      let thisObj = application.object[_route]
+      let thisObj =  _route[1] ? application.object[_route[0]][_route[1]] : application.object[_route];
       $(`#${_template} h2`).html(thisObj.name); // set template header title
 
       title(_route); // set document title
@@ -438,12 +440,13 @@ const application = (function(){
 
     }
 
-    let _endpoint = getRoute().endpoint
+    let _endpoint = getRoute().endpoint[0]
     let debugStr = modules().join(',').replace(_endpoint,`${_endpoint}(active)`)
     debug(`application.nav : ${debugStr}`);
 
     const active = `${config.nav} li#${_endpoint} a`;
     $( active ).addClass('active');
+    console.log()
     if(config.style && object[_endpoint].color ) {
       $( active ).attr('style',`${str(config.style)}`);
     }
@@ -455,10 +458,10 @@ const application = (function(){
   title = (route) => {
     // sets document title with name property
     if(!route) route = getRoute().endpoint;
-
+    const obj = route[1] ? application.object[route[0]][route[1]] : application.object[route];
     let pageTitle = ( route === '') ?
     config.name
-    : `${object[route].name} - ${config.name}`;
+    : `${obj.name} - ${config.name}`;
     $('title').html(pageTitle);
     debug(`application.title : ${pageTitle}`);
     return pageTitle;
@@ -536,11 +539,12 @@ const application = (function(){
 
   str = (str) => {
     // replace {template} strings with module properties
-    const _endpoint = getRoute().endpoint;
-    const objProps = Object.getOwnPropertyNames(application.object[_endpoint])
+    const _endpoint = getRoute().endpoint[0];
+    const obj = application.object[_endpoint];
+    const objProps = Object.getOwnPropertyNames(obj)
     for(let item of objProps)
-      if(typeof application.object[_endpoint][item] === 'string' )
-        str = str.replace(new RegExp(`{${item}}`, 'g'),application.object[_endpoint][item]);
+      if(typeof obj[item] === 'string' )
+        str = str.replace(new RegExp(`{${item}}`, 'g'),obj[item]);
     const defaultProps = Object.getOwnPropertyNames(defaults)
     for(let property of defaultProps)
       str = str.replace(new RegExp(`{${property}}`, 'g'),defaults[property]);

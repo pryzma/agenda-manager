@@ -6,8 +6,12 @@ const options = (function(){
   const main = function(){
 
   }
-  const add = function(){
-
+  const add = {
+    name : 'Add Option',
+    default : function(){
+      console.log('this is add')
+      
+    }
   }
   application.add('options',{
     name : 'Options',

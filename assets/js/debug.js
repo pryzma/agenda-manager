@@ -10,7 +10,9 @@ application.debugger = (callback) => {
     $(`${application.object.config.main} #${application.template()}`).append(_debugger)
     //application.render()
     $('#log').html('')
-    let module = application.object[application.endpoint()],
+    const endpoint = application.endpoint()
+    console.log(typeof endpoint)
+    let module = endpoint[1] ? application.object[endpoint[0]][endpoint[1]] : application.object[endpoint],
         applicationLoadTimeColor,
         moduleLoadTimeColor
         const loadTimeColor = (time) => {

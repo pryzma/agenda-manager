@@ -2,10 +2,19 @@
 * assets/js/modules/profiles.js
 */
 'use strict'
+const addProfile = function(){
+  
+  if(agendamanager.accounts){ //accounts collection
+    application.controller('click','btn#addProfile',function(event){
+
+    });
+  }
+}
 const profiles = (function(){
   const main = function(){
-    // Main function, place functions related to the profiles page here
     console.log('This is main');
+    /*
+    
     $('#submitEmail').click(function () {
 
       let email = $('#email').val();
@@ -19,13 +28,19 @@ const profiles = (function(){
         body: JSON.stringify({ email: email })
       })
         .then((res) => res.json());
-    })
+    }) */
   }
-  const add = function(){
-    console.log(' This is add')
-    return{
-      name : 'Create Profile'
-    }
+  const add = {
+    default : function(){
+      console.log(' This is add');
+      const email = $('#email').val();
+      application.controller('click','#submitEmail',function(event){
+        agendamanager.accounts
+          .create({ email: email })
+          .then((res) => res.json());
+      });
+    },
+    name : 'Add Profile'
   }
   application.add('profiles',{
     name : 'Profiles',

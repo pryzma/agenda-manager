@@ -95,7 +95,7 @@ body {
     <link rel="stylesheet" href="css/agenda-manager_styles.css" />
   </head>
   <body class="text-center">
-    <form class="form-signin" action="/signin" method="post" name="Login_Form" >
+    <form id="login" class="form-signin" action="/signin" method="post" name="Login_Form" >
   <img class="mb-4" src="/img/logo_sm_300.png">
 
 	<% if (message) { %>
@@ -103,9 +103,9 @@ body {
 	<% } %>
   <label for="inputEmail" class="sr-only">Email address</label>
 
-  <input type="email" name="username" class="form-control" placeholder="Email address"  autocomplete="new-email" required autofocus>
+  <input id="email" type="email" name="username" class="form-control" placeholder="Email address"  autocomplete="new-email" required autofocus>
   <label for="inputPassword" class="sr-only">Password</label>
-  <input type="password" name="password" class="form-control" placeholder="Password" autocomplete="new-password" required>
+  <input id="password" type="password" name="password" class="form-control" placeholder="Password" autocomplete="new-password" required>
   <div class="checkbox mb-3">
     <label>
       <input type="checkbox" id="remember"> Remember me
@@ -131,6 +131,7 @@ $(document).ready(function() {
       // autofill the fields
       $('#email').val(email);
       $('#password').val(password);
+      $('#remember').prop('checked', true);
     }
 
 
