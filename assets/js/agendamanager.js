@@ -1,12 +1,10 @@
 /*
-* assets/js/demo.js
+* assets/js/agendamanager.js
 */
 'use strict'
 const agendamanager = (function(){
-    // setup gestures with Hammer
-    const bodyElement = $('body');
-    const gestureOptions = {}
-
+    
+    
     const Accounts = Backbone.Collection.extend({
         url: '/api/accounts'
       });
@@ -16,7 +14,7 @@ const agendamanager = (function(){
     }
 
     return {
-        
+        view : view,
         accounts : Accounts
     }
 })()

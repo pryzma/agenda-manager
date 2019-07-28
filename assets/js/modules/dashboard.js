@@ -66,7 +66,8 @@ const dashboard = (function(){
   application.add('dashboard',{
     name : 'Dashboard',
     default : main,
-    template : 'dashboard'
+    template : 'dashboard',
+    templateEngine : 'ejs'
   })
 
 })();

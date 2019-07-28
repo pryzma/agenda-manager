@@ -40,7 +40,8 @@ const profiles = (function(){
           .then((res) => res.json());
       });
     },
-    name : 'Add Profile'
+    name : 'Add Profile',
+    template : 'addProfile'
   }
   application.add('profiles',{
     name : 'Profiles',

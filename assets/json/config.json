@@ -1,6 +1,6 @@
 {
   "name" : "Agenda Manager",
-  "require" : [ "agendamanager" ],
+  "require" : [ "backbone","agendamanager" ],
   "modules" : [
     "dashboard",
     "shows",

@@ -10,13 +10,11 @@ const application = (function(){
       object = {}, // application object
       output, // private output
       position = 0, // private global position
-      ready, // private ready state
       start,_start,
       finish,_finish,
       loadtime,_loadtime,
-      loadModules,
-      previous;//
-       // previous object state
+      loadModules;//
+      
 //..............................................................................
 
   const defaults = {
@@ -50,7 +48,7 @@ const application = (function(){
     const isElement = (obj,property) =>
       (typeof obj[property] === 'string')
       && obj[property].includes('#');
-    const setElements = (obj) => {
+    const setElements = () => {
       for(let property in config)
         if(isElement(config,property)) element[property] = $(config[property]);
     }
@@ -84,17 +82,6 @@ const application = (function(){
 
   },
 
-//..............................................................................
-
-  update = function(name,obj){
-    for(let module in object){
-      if(module === name ){
-        for(let property in obj)
-          object[module][property] = obj[property];
-        break;
-      }
-    }
-  },
 //..............................................................................
 
   remove = function(name) {
@@ -316,19 +303,20 @@ const application = (function(){
     if(!_route) _route = getRoute().endpoint;
     if(!config.template) config.template = defaults.template;
     if(!config.templateEngine) config.templateEngine = defaults.templateEngine;
-    let _template,obj = _route[1] ? application.object[_route[0]][_route[1]] : application.object[_route];
+    let _template,_templateEngine,obj = _route[1] ? application.object[_route[0]][_route[1]] : application.object[_route];
     // BUG: config reference
-    obj.template ? _template = obj.template : _template = config.template
-
+    obj.template ? _template = obj.template : _template = config.template;
+    obj.templateEngine ? _templateEngine = obj.templateEngine : _templateEngine = config.templateEngine;
     if(!templates[_template]){ // template is not available in templates object
       if(!config.templatePath) config.templatePath = defaults.templatePath; // get filepath
-      const templatePath = config.templatePath.replace('{template}',_template);
       let template_load_start = new Date;
       // TODO: mustache / handlebars /ejs
-      $.get( `html/templates/${_template}.html`, function( data ) { // get file
+      $.get( `${_templateEngine}/templates/${_template}.${_templateEngine}`, function( data ) { // get file
         let template_load_end = new Date;
         let template_loadtime = template_load_end - template_load_start;
-        debug(`application.template : html/templates/${_template}.html load complete in ${template_loadtime} ms`);
+        debug(`application.template : ${_templateEngine}/templates/${_template}.${_templateEngine} load complete in ${template_loadtime} ms`);
+        if(_templateEngine==='ejs')data = ejs.render(data,obj);
+        
         templates[_template] = data; // add to templates object
         // BUG:
         if(html) $(config.main).html(data); // view.main doesn't exist after first render
@@ -404,10 +392,6 @@ const application = (function(){
       }
       //output = $(`#${template(_route)}`).html(str($(`#${template(_route)}`).html())); // parse with str
       output = $(`#${_template}`).html();
-      //$(`#${_template}`).children().each(function(){
-      //  if(this.innerHTML) this.innerHTML = str(this.innerHTML)
-      //});
-      previous = application.object
       if(callback) callback();
       for(let event in events) events[event]()
       _finish = new Date
@@ -592,4 +576,4 @@ const application = (function(){
     debug : []
   }
 })();
-const $a = application;
+

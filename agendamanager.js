@@ -1,4 +1,4 @@
-//const agendamanager = (function(){
+const agendamanager = (function(){
 
   // packages
   const express = require('express'),
@@ -73,11 +73,13 @@
     passwordField: 'password',
     passReqToCallback: true //passback entire req to call back
   } , function (req, username, password, done){
-        console.log(username+' = '+ password);
+    console.log('\x1b[1m')
+    console.log('\x1b[32m',`${username} passport.authenticate() OK`)
+    console.log('\x1b[0m')
         if(!username || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
         var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
         connection.query("select * from accounts where email = ?", [username], function(err, rows){
-            console.log(err);
+            
           if (err) return done(req.flash('message',err));
 
           if(!rows.length){ return done(null, false, req.flash('message','Invalid username or password!')); }
@@ -116,7 +118,7 @@
       failureRedirect: '/signin',
       failureFlash: true
   }), function(req, res, info){
-      console.log(req)
+      
       res.render('signin',{'message' :req.flash('message')});
   });
 
@@ -147,6 +149,6 @@
 
   
 
-//  return app
-//})();
-module.exports = app;
+ return app
+})();
+module.exports = agendamanager;

@@ -1,13 +1,15 @@
 
 
   const mysql = require('mysql'),
-        dotenv = require('dotenv').config();
+        dotenv = require('dotenv').config(),
+        env = process.env.NODE_ENV || "development",
+        config = require("./config/config")()[env];
 
   const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    host: config.host,
+    user: config.username,
+    password: config.password,
+    database: config.database
   });
   connection.connect((err) => {
     if (err) {
