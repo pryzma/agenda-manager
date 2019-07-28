@@ -1,22 +1,20 @@
 const agendamanager = (function(){
 
   // packages
-  const express = require('express'),
+  const createError = require('http-errors'),
+        express = require('express'),
         expressLayouts = require('express-ejs-layouts'),
         session  = require('express-session'),
-        Store = session.Store,
         BetterMemoryStore = require('session-memory-store')(session),
         store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true }),
         cookieParser = require('cookie-parser'),
         bodyParser = require('body-parser'),
         flash    = require('connect-flash'),
-        bcrypt = require('bcryptjs'),
         crypto = require('crypto'),
         passport = require('passport'),
         logger = require('morgan'),
         LocalStrategy  = require('passport-local').Strategy,
         path = require('path');
-
   const app = express();
   // database
   const connection = require('./dbconn');
@@ -30,12 +28,25 @@ const agendamanager = (function(){
   }).catch(function(err) {
     console.error(err, "Something went wrong with the Database Update!")
   });
+  // config
+  const config = require('./assets/json/config.json');
+  app.get('/config', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(config));
+  });
+  const package = require('./package.json');
+  config.version = package.version;
+  app.get('/manifest.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({
+      manifest_version : '0.0.1',
+      version : config.version,
+      name : config.name
+    }));
+  });
   // routes
   const index = require('./routes/index'),
         accounts = require('./routes/accounts');
-
-
-  
 
   // session setup
   app.use(session({
@@ -45,18 +56,17 @@ const agendamanager = (function(){
      resave: true,
      saveUninitialized: true
   }));
-
   // view engine setup
   app.use(expressLayouts);
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'ejs');
-
   // log requests
   app.use(logger('dev'));
+  // bodyparser
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
+  // cookieparser
   app.use(cookieParser());
-
   // static directory setup
   app.use(express.static(path.join(__dirname, 'assets')));
   // flash messages setup
@@ -117,7 +127,7 @@ const agendamanager = (function(){
       successRedirect: '/',
       failureRedirect: '/signin',
       failureFlash: true
-  }), function(req, res, info){
+  }), function(req, res){
       
       res.render('signin',{'message' :req.flash('message')});
   });
@@ -136,7 +146,7 @@ const agendamanager = (function(){
   });
 
   // error handler
-  app.use(function(err, req, res, next) {
+  app.use(function(err, req, res) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

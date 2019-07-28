@@ -158,7 +158,7 @@ const application = (function(){
 //..............................................................................
   initConfig = (callback) => {
 
-    $.get(`json/config.json`,(data) =>{
+    $.get(`config`,(data) =>{
       config = data;
       object.config = config;
       object.default = config.default;

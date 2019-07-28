@@ -5,7 +5,7 @@
 const dashboard = (function(){
 
   const main = function() {
-
+      agendamanager.view()
       dashboardBadges();
 
     //console.log(view.element('#dashboardBadges').innerHTML);

@@ -10,6 +10,9 @@ const backbone = (function(){
                         // get module view object properties
                         if(!obj[prop]) obj[prop] = module.view[prop] 
                     }
+                }else{
+                    console.warn('view is not present')
+                    return;
                 }
                 const el = obj.el ? obj.el : application.config.main;
                 const View = Backbone.View.extend({
@@ -24,6 +27,9 @@ const backbone = (function(){
             },
             model : function(obj){
 
+            },
+            collection : function(obj){
+                
             }
         }
     }else{

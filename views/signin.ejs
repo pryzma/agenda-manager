@@ -124,7 +124,7 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha256-1A78rJEdiWTzco6qdn3igTBv9VupN3Q1ozZNTR4WE/Y=" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function() {
-
+    window.location.hash = '';
     const remember = $.cookie('remember');
     if (remember == 'true'){
       const email = $.cookie('email');
@@ -134,7 +134,6 @@ $(document).ready(function() {
       $('#password').val(password);
       $('#remember').prop('checked', true);
     }
-
 
     $("#login").submit(function() {
         if ($('#remember').is(':checked')) {
