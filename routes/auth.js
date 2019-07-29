@@ -1,6 +1,6 @@
 const authController = require('../controllers/authcontroller.js');
 const passportStrategy = 'local'
-const auth = function(){
+function auth(){
     app.get('/signin', authController.signin);
     
     app.post("/signin", passport.authenticate(passportStrategy, {

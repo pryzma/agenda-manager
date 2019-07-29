@@ -27,6 +27,7 @@
     "passport-local": "^1.0.0",
     "sequelize": "^5.9.4",
     "session-memory-store": "^1.0.0",
+    "sha384": "^1.0.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

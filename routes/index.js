@@ -1,17 +1,26 @@
 
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-/* GET user information after login */
+  router.get('/', isAuthenticated, function(req, res, next) {
+    const config = require('../assets/json/config.json')
+    const cdns = require('../cdns')(config.cdns)
+   
+    /* GET user information after login */
+    const username   = req.session.user.username;
+    const full_name  = req.session.user.full_name;
+  
+    res.render('index', { 
+      username: username, 
+      full_name: full_name, 
+      js : cdns.js, 
+      css : cdns.css 
+    });
+  
+  });
 
-router.get('/', isAuthenticated, function(req, res, next) {
 
-  var username   = req.session.user.username;
-  var full_name  = req.session.user.full_name;
 
-  res.render('index', { username: username, full_name: full_name });
-
-});
 
 function isAuthenticated(req, res, next) {
   if (req.session.user)

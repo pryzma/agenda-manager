@@ -1,5 +1,6 @@
 const agendamanager = (function(){
-
+  // package
+  const package = require('./package.json');
   // packages
   const createError = require('http-errors'),
         express = require('express'),
@@ -16,11 +17,11 @@ const agendamanager = (function(){
         LocalStrategy  = require('passport-local').Strategy,
         path = require('path');
   const app = express();
-  // database
+  // mysql database connection
   const connection = require('./dbconn');
-  // models
+  // sequelize models
   const models = require('./models');
-  //Sync Database
+  // sequelize models sync
   models.sequelize.sync().then(function() {
     console.log('\x1b[1m')
     console.log('\x1b[32m',`${models.sequelize.config.database} models.sequelize.sync() OK`)
@@ -34,8 +35,8 @@ const agendamanager = (function(){
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(config));
   });
-  const package = require('./package.json');
   config.version = package.version;
+
   app.get('/manifest.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({
@@ -44,6 +45,8 @@ const agendamanager = (function(){
       name : config.name
     }));
   });
+  // cdns
+ 
   // routes
   const index = require('./routes/index'),
         accounts = require('./routes/accounts');
@@ -155,7 +158,19 @@ const agendamanager = (function(){
     res.status(err.status || 500);
     res.render('error');
   });
+  var fs = require('fs');
+ 
 
+
+
+ 
+fs.readdir('./assets', function(err, items) {
+    console.log(items);
+ 
+    for (var i=0; i<items.length; i++) {
+        console.log(items[i]);
+    }
+});
 
   
 

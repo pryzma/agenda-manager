@@ -8,19 +8,19 @@
 const application = (function(){
   let config, // configuration object
       object = {}, // application object
-      output, // private output
-      position = 0, // private global position
-      start,_start,
-      finish,_finish,
-      loadtime,_loadtime,
-      loadModules;//
+      output, // private output object
+      position = 0, // private global position integer
+      start,_start, // start timestamp object
+      finish,_finish, // start timestamp object
+      loadtime,_loadtime, // load time integer
+      loadModules; // modules array set values
       
 //..............................................................................
-
+// defaults properties are ovenwritten if defined in assets/json/config.json template function
   const defaults = {
-    template : 'pageLayout',
-    templateEngine : 'html',
-    templatePath : '{templateEngine}/templates/{template}.{templateEngine}',
+    template : 'pageLayout', // file default template assets/[templateEngine]/[template].[templateEngine]
+    templateEngine : 'html', // template file folder & extension
+    templatePath : '{templateEngine}/templates/{template}.{templateEngine}', // template file path
     modulesPath : 'js/modules/{module}.js'
   }
 
@@ -157,7 +157,7 @@ const application = (function(){
   },
 //..............................................................................
   initConfig = (callback) => {
-
+    // get config route from server
     $.get(`config`,(data) =>{
       config = data;
       object.config = config;
@@ -172,8 +172,8 @@ const application = (function(){
       if(object.config){
         config = object.config; // get config object
       }else{
-        throw 'initConfig : config not defined'
-        return
+        // throw error if config object is not available
+        throw 'initConfig : config not defined'; 
       }
 
     }).always(()=>{
