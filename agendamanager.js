@@ -30,12 +30,8 @@ const agendamanager = (function(){
     console.error(err, "Something went wrong with the Database Update!")
   });
   // config
-  const config = require('./assets/json/config.json');
-  app.get('/config', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(config));
-  });
-  config.version = package.version;
+  const config = require('./config')(package,app);
+  
 
   app.get('/manifest.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -45,7 +41,7 @@ const agendamanager = (function(){
       name : config.name
     }));
   });
-  // cdns
+
  
   // routes
   const index = require('./routes/index'),
@@ -158,22 +154,7 @@ const agendamanager = (function(){
     res.status(err.status || 500);
     res.render('error');
   });
-  var fs = require('fs');
  
-
-
-
- 
-fs.readdir('./assets', function(err, items) {
-    console.log(items);
- 
-    for (var i=0; i<items.length; i++) {
-        console.log(items[i]);
-    }
-});
-
-  
-
  return app
 })();
 module.exports = agendamanager;
