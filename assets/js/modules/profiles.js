@@ -3,44 +3,28 @@
 */
 'use strict'
 const addProfile = function(){
-  
   if(agendamanager.accounts){ //accounts collection
-    application.controller('click','btn#addProfile',function(event){
-
+    application.controller('submit','#addProfile form',function(event){
+      const addProfileForm = new FormData(event.target)
+      console.log(addProfileForm)
+      fetch('/api/profiles',{
+        method : 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(addProfileForm)
+      });
     });
   }
 }
 const profiles = (function(){
   const main = function(){
-    console.log('This is main');
-    /*
-    
-    $('#submitEmail').click(function () {
-
-      let email = $('#email').val();
-      console.log(email)
-      fetch('/api/accounts', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email })
-      })
-        .then((res) => res.json());
-    }) */
+   
   }
-  const add = {
-    default : function(){
-      console.log(' This is add');
-      const email = $('#email').val();
-      application.controller('click','#submitEmail',function(event){
-        agendamanager.accounts
-          .create({ email: email })
-          .then((res) => res.json());
-      });
-    },
-    name : 'Add Profile',
+  const add = { 
+    default : addProfile,
+    name : 'Create Profile',
     template : 'addProfile'
   }
   application.add('profiles',{
