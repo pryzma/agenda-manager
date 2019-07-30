@@ -1,3 +1,16 @@
+'use strict'
+
+/*
+* Application Client 0.12 EJS integration
+* assets/js/application-ejs.js
+* TODO: 
+*/
+
+application.ejs = (template) =>{
+    if(!template) template = application.page();
+    application.render('ejs',()=> ejsTemplate(template));
+}
+
 const ejsTemplate = function(template){
     const module = application.module(); // get module object
     const templateEngine = module.templateEngine; // module template engine
@@ -12,8 +25,5 @@ const ejsTemplate = function(template){
     }
     return template;
 }
-application.ejs = (template) =>{
-    if(!template) template = application.page();
-    application.render('ejs',()=> ejsTemplate(template));
-}
+
     

@@ -9,7 +9,8 @@
 */
 // 
 const application = (function(){
-  let config, // configuration object -> initConfig
+  let debug,
+      config, // configuration object -> initConfig
       object = {}, // application object -> initObj
       output, // private output object -> page
       position = 0, // private global position integer -> initModules
@@ -32,7 +33,7 @@ const application = (function(){
       $.get(`js/${name}.js`).done(() => {
         const requireEnd = new Date;
         const requireLoadtime = requireEnd - requireStart
-        debug(`application.require : js/${name}.js load complete in ${requireLoadtime} ms`)
+        if(debug)debug(`application.require : js/${name}.js load complete in ${requireLoadtime} ms`)
         if(callback)callback()
       }).fail(()=>{
          throw `application.require : ${name} not available`
@@ -197,7 +198,8 @@ const application = (function(){
 
       initObj(_application); // assigns given, existing or merged application object
       initConfig(()=>{ // initialize config object
-        require('debug',()=>{ // load debug
+        require('application-debug',()=>{ // load debug
+          debug = application.debug.log;
           debug(`application.init : ${config.name}`);
           if(config.modules) {
             loadModules = new Set(config.modules).values();
@@ -253,7 +255,6 @@ const application = (function(){
       _route = getRoute();
     }
     if(!_route) _route = getRoute();
-    console.log(_route)
     const _endpoint = _route.endpoint;
     if(_endpoint){
       // module route
@@ -404,7 +405,7 @@ const application = (function(){
       _loadtime =  _finish - _start
       thisObj.loadtime = _loadtime
       debug(`application.render ${_event}: ${_route} complete in ${_loadtime} ms`);
-      if(config.debug) application.debugger()
+      //if(config.debug && application.debug) application.debug.debugger()
     //}
     return application;
   },

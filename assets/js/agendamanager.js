@@ -3,10 +3,11 @@
 */
 'use strict'
 const agendamanager = (function(){
-    
-    return {
-        view : application.backbone.view,
-        model : application.backbone.model,
-        render : application.ejs
-    }
-})()
+    const agendamanagerObj = {};
+    // requires application-backbone
+    agendamanagerObj.view = application.backbone.view;
+    agendamanagerObj.model = application.backbone.model;
+    // requires application-ejs
+    agendamanagerObj.render = application.ejs 
+    return agendamanagerObj;
+})();

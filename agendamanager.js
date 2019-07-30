@@ -29,7 +29,17 @@ const agendamanager = (function(){
   }).catch(function(err) {
     console.error(err, "Something went wrong with the Database Update!")
   });
-  // config
+  
+  // session setup
+  app.use(session({
+     name: 'JSESSION',
+     secret: 'MYSECRETISVERYSECRET',
+     store:  store,
+     resave: true,
+     saveUninitialized: true,
+     config : undefined
+  }));
+  // setup config
   const config = require('./config')(package,app);
   
 
@@ -47,14 +57,6 @@ const agendamanager = (function(){
   const index = require('./routes/index'),
         accounts = require('./routes/accounts');
 
-  // session setup
-  app.use(session({
-     name: 'JSESSION',
-     secret: 'MYSECRETISVERYSECRET',
-     store:  store,
-     resave: true,
-     saveUninitialized: true
-  }));
   // view engine setup
   app.use(expressLayouts);
   app.set('views', path.join(__dirname, 'views'));

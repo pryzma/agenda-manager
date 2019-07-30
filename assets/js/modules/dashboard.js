@@ -5,7 +5,12 @@
 const dashboard = (function(){
 
   const main = function() {
-      agendamanager.view()
+      if(agendamanager){
+        agendamanager.view();
+      }else{
+        // reload if agendamanger object is undefined
+        location.reload()
+      }
       dashboardBadges();
 
     //console.log(view.element('#dashboardBadges').innerHTML);
