@@ -4,14 +4,9 @@
 'use strict'
 const agendamanager = (function(){
     
- 
-    // setup requireCallback
-    application.requireCallback = () => {
-       
-    }
-
     return {
-        view : backbone.view,
-        model : backbone.model
+        view : application.backbone.view,
+        model : application.backbone.model,
+        render : application.ejs
     }
 })()

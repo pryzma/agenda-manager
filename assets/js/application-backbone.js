@@ -14,14 +14,14 @@ const application = (function(){
         const requireStart = new Date;
         $.get(`js/${name}.js`).done(() => {
           const requireEnd = new Date;
-          const requireLoadtime = requireEnd - requireStart
+          const requireLoadtime = requireEnd - requireStart;
           debug(`application.require : js/${name}.js load complete in ${requireLoadtime} ms`)
           if(callback)callback()
         }).fail(()=>{
            throw `application.require : ${name} not available`
         });
     }
-    applicationOb.require = require
+    applicationObj.require = require;
     const hash = () => location.hash.slice(1);
     const route = () => hash().split('/');
     const endpoint = () =>
