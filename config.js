@@ -3,7 +3,7 @@ module.exports = function(package,app){
     app.get('/config', (_req, res) => {
       
       res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(config));
+      res.end(JSON.stringify(_config));
     });
     config.version = package.version;
     return config;
