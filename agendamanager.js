@@ -4,10 +4,12 @@ const agendamanager = (function(){
   const express = require('express'),
         app = express(),
         path = require('path');
-
-
+  // dev
+  require('./app/dev')(app);
+  // session
+  require('./app/session')(app) 
   // sequelize
-  require('./app/sequelize')(require('./app/models'));
+  require('./app/sequelize')(require('./models'));
   // manifest
   require('./app/manifest')(app);
   // routes
