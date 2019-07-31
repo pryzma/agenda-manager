@@ -4,7 +4,7 @@ const router = express.Router();
 
   router.get('/', isAuthenticated, function(req, res, next) {
     const config = require('../assets/json/config.json')
-    const cdns = require('../cdns')(config.cdns)
+    const cdns = require('../app/cdns')(config.cdns)
    
     /* GET user information after login */
     const username   = req.session.user.username;

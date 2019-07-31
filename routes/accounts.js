@@ -1,4 +1,4 @@
-const connection = require('../dbconn'),
+const connection = require('../app/dbconn'),
       dotenv = require('dotenv').config(),
       express = require('express'),
       bodyParser = require('body-parser'),
