@@ -1,21 +1,8 @@
 const agendamanager = (function(){
-
-  // packages
-  const express = require('express'),
-        app = express();
-  // requires modules from app directory
-  require('./app')(app,[ 
-      'dev', // development scripts (morgan logger)
-      'session', // express session
-      'sequelize', // sequelize
-      'manifest', // manifest.json
-      'routes', // express router
-      'view', // express view
-      'parser', // cookie & body parser
-      'static', // express static
-      'auth', // passport auth
-      'error' // error handling
-  ]);
- return app
+  // express app
+  const app = require('express')();
+  // requires modules from app directory as defined in config/app.json
+  require('./app')(app);
+  return app
 })();
 module.exports = agendamanager;

@@ -52,6 +52,18 @@
         "routes" : {
             "/" : "index",
             "/api/accounts" : "accounts"
-        }
+        },
+        "require" : [
+            "dev",
+            "session",
+            "sequelize",
+            "manifest",
+            "routes",
+            "view",
+            "parser",
+            "static",
+            "auth",
+            "error"
+        ]
     }
 }

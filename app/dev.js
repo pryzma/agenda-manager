@@ -1,6 +1,8 @@
 const logger = require('morgan'),
-dev = (app)=>{
-    // log requests
-  app.use(logger('dev'));
+dotenv = require('dotenv').config(),
+jshint = require('jshint'),
+dev = (app)=>{ 
+  const env = process.env.NODE_ENV || "development";
+  if(env ==='development') app.use(logger('dev')); // log requests
 }
 module.exports = dev;
