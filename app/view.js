@@ -1,6 +1,7 @@
 const expressLayouts = require('express-ejs-layouts'),
 flash    = require('connect-flash'),
-view = (app,path) =>{
+path = require('path'),
+view = (app) =>{
   
  // view engine setup
   app.use(expressLayouts);
