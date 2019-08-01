@@ -5,7 +5,12 @@
 const dashboard = (function(){
 
   const main = function() {
-
+      if(agendamanager){
+        agendamanager.view();
+      }else{
+        // reload if agendamanger object is undefined
+        location.reload()
+      }
       dashboardBadges();
 
     //console.log(view.element('#dashboardBadges').innerHTML);
@@ -66,7 +71,8 @@ const dashboard = (function(){
   application.add('dashboard',{
     name : 'Dashboard',
     default : main,
-    template : 'dashboard'
+    template : 'dashboard',
+    templateEngine : 'ejs'
   })
 
 })();

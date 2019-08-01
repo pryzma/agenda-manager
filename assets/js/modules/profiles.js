@@ -2,30 +2,30 @@
 * assets/js/modules/profiles.js
 */
 'use strict'
-const profiles = (function(){
-  const main = function(){
-    // Main function, place functions related to the profiles page here
-    console.log('This is main');
-    $('#submitEmail').click(function () {
-
-      let email = $('#email').val();
-      console.log(email)
-      fetch('/api/accounts', {
-        method: 'POST',
+const addProfile = function(){
+  if(agendamanager.accounts){ //accounts collection
+    application.controller('submit','#addProfile form',function(event){
+      const addProfileForm = new FormData(event.target)
+      console.log(addProfileForm)
+      fetch('/api/profiles',{
+        method : 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email: email })
-      })
-        .then((res) => res.json());
-    })
+        body: JSON.stringify(addProfileForm)
+      });
+    });
   }
-  const add = function(){
-    console.log(' This is add')
-    return{
-      name : 'Create Profile'
-    }
+}
+const profiles = (function(){
+  const main = function(){
+   
+  }
+  const add = { 
+    default : addProfile,
+    name : 'Create Profile',
+    template : 'addProfile'
   }
   application.add('profiles',{
     name : 'Profiles',
