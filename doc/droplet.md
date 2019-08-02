@@ -67,7 +67,7 @@ If you're making updates to the Nginx configuration file and don't want to take 
 
 ## **Cron**
 
-Cron is the most used scheduler for Linux. With Cron you can automate repetitive tasks such as pulling changes from the GitHub repository and schedule them. Use [crontab.guru](crontab.guru) to learn how the scheduler works.
+Cron is the most used scheduler for Linux. With Cron you can automate repetitive tasks such as pulling changes from the GitHub repository and schedule them. Use [crontab.guru](https://crontab.guru) to learn how the scheduler works.
 
 List cron tasks:
 
