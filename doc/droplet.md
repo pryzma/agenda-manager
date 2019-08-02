@@ -1,4 +1,12 @@
-# DigitalOcean droplet
+# **DigitalOcean droplet**
+
+## **Table of contents**
+
+1. Preinstallation
+2. Nginx
+3. Cron
+4. Certbot
+5. PHPMyAdmin
 
 ## **Preinstallation**
 
@@ -54,7 +62,7 @@ If you're making updates to the Nginx configuration file and don't want to take 
 
 <br>
 
-## **Cron**
+## **Cron**</a>
 
 Cron is the most used scheduler for Linux. With Cron you can automate repetitive tasks such as pulling changes from the GitHub repository and schedule them. Use [crontab.guru](crontab.guru) to learn how the scheduler works.
 
@@ -76,4 +84,38 @@ As with most tools DigitalOcean has a great tutorial on how to use [Certbot](htt
 
 Below I'll list some things you might glance over when reading this tutorial but which are super important to know to successfully obtain your Let's Encrypt certificate
 
+> Valid IPv4 and IPv6 address
 
+You need a valid **A** record (IPv4) and **AAAA** record (IPv6). Even if you don't use IPv6 yourself it still has to be configured properly otherwise the certbot certificate challenge will fail.
+
+> DNS records
+
+You'll need to set up the DNS records for your domain with a DNS hosting service (in our case, this is Neostrada).
+
+Next, you need to set up the DNS records on DigitalOcean. Log in at DigitalOcean, and go to the networking tab
+
+![text](DNS-record.png)
+
+Each domain and sub-domain needs a valid **A** and **AAAA** record.
+
+> Renewal
+
+Certbot will automatically add a cron task that runs twice every day to check if a certificate renewal is needed. In case you need to test if the auto renewal process works, use this command:
+
+    certbot renew --dry-run
+<br>
+
+## **PHPMyAdmin**
+
+Follow the tutorial [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-with-nginx-on-an-ubuntu-18-04-server).
+
+Disabling root access is recommended, to do so go to:
+
+    /etc/phpmyadmin/config.inc.php
+
+Add (or change) these two lines:
+
+    $cfg['Servers'][$i]['auth_type'] = 'cookie';
+    $cfg['Servers'][$i]['AllowRoot'] = false;
+
+To further secure PMA there are additional steps you can take such as IP-based access. Currently I have not enabled this.
