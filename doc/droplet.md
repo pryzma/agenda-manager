@@ -7,6 +7,7 @@
 3. Cron
 4. Certbot
 5. PHPMyAdmin
+6. PM2
 
 ## **Preinstallation**
 
@@ -17,9 +18,11 @@ For Agendamanager I decided to preinstall NodeJS.
 
 Nginx is a web server.<br>
 DigitalOcean offers great resources on how to setup [Nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04).
-Below I'll list the folder structure and some commands which I commonly use 
+Below I'll list the folder structure and some commands which I commonly use
 
-<br>
+All files that you want to serve with the webserver are in:
+
+    /var/www/html
 
 agendamanager.nl's configuration file can be found in:
 
@@ -62,7 +65,7 @@ If you're making updates to the Nginx configuration file and don't want to take 
 
 <br>
 
-## **Cron**</a>
+## **Cron**
 
 Cron is the most used scheduler for Linux. With Cron you can automate repetitive tasks such as pulling changes from the GitHub repository and schedule them. Use [crontab.guru](crontab.guru) to learn how the scheduler works.
 
@@ -119,3 +122,42 @@ Add (or change) these two lines:
     $cfg['Servers'][$i]['AllowRoot'] = false;
 
 To further secure PMA there are additional steps you can take such as IP-based access. Currently I have not enabled this.
+
+## **PM2**
+
+PM2 is a process manager for NodeJS applications. It's very useful for having a quick overview of all running NodeJS applications and restarting them when needed.
+
+Installation:
+
+    npm install pm2 -g
+
+Starting a NodeJS application:
+
+    pm2 start index.js
+
+(replace index.js with the name of your NodeJS app)
+
+Stopping a NodeJS application:
+
+    pm2 stop index.js
+
+Deleting a NodeJS application from the list of monitored apps (this will not delete the file itself)
+
+    pm2 delete index.js
+
+View all current running applications
+
+    pm2 monit
+
+Save all current processes (when the droplet is offline or reboots this will activate all the saved NodeJS applications on startup)
+
+    pm2 save
+
+Update startup script
+
+    pm2 unstartup
+
+Then:
+
+    pm2 startup
+
