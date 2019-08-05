@@ -1,3 +1,6 @@
+/*
+* app/cdns.js
+*/
 function cdns(cdns){
     let output = {}
     output.js = ''

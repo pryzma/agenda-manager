@@ -1,3 +1,6 @@
+/*
+* app/static.js
+*/
 module.exports =(app)=>{
   const express = require('express'),
   path = require('path');

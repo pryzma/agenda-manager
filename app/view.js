@@ -1,3 +1,6 @@
+/*
+* app/view.js
+*/
 const expressLayouts = require('express-ejs-layouts'),
 flash    = require('connect-flash'),
 path = require('path'),
