@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-
+const render = require('../app/render');
   router.get('/', isAuthenticated, function(req, res, next) {
     const config = require('../assets/json/config.json')
     const cdns = require('../app/cdns')(config.cdns)
@@ -10,7 +10,7 @@ const router = express.Router();
     const username   = req.session.user.username;
     const full_name  = req.session.user.full_name;
   
-    res.render('index', { 
+    render(res,'index', { 
       username: username, 
       full_name: full_name, 
       js : cdns.js, 

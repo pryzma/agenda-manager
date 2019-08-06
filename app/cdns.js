@@ -13,6 +13,7 @@ function cdns(cdns){
         }else if(cdn.type === 'stylesheet'){
             output.css +=stylesheet(cdn.url,cdn.sri);
         }
+        console.log('\x1b[96m',`[cdn]\x1b[0m \x1b[37m${cdn.url}\x1b[0m`)
     }
     
     return output;
