@@ -516,9 +516,13 @@ const application = (function(){
     //}
     return _modules;
   },
-  module = (route) => route ?  object[route] : object[getRoute().endpoint],
-
-
+  //module = (route) => route ?  object[route] : object[getRoute().endpoint],
+  moduleObj = (moduleRoute) => {
+    let obj,route = getRoute(moduleRoute).endpoint;
+    obj = route[1] ? object[route[0]][route[1]] : object[route];
+    return obj;
+  },
+  module = moduleObj,
 //..............................................................................
 
   str = (str) => {
