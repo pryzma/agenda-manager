@@ -68,14 +68,7 @@ const application = (function(){
     
     if(name.includes('.')){
       name = name.split('.');
-      if(name[1]){
-        // add submodule to module object
-        object[name[0]][name[1]] = module;
-      }else {
-        // add module to application object
-        object[name[0]] = module;
-      }
-
+      name[1] ? object[name[0]][name[1]] = module : object[name[0]] = module;
     }else{
       // call require if module object is undefined
       module ? object[name] = module : require(name);
