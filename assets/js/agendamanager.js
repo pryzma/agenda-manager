@@ -14,15 +14,11 @@ const agendamanager = (function(){
     application.agendamanager = agendamanagerObj;
     return agendamanagerObj;
 })();
+
 function serverStatus(){
-    $.ajax({url: '/api/accounts'}).statusCode({ 200 : function(){
-        // everything is OK
-        $('#serverConnectionLost').modal('hide')
-    }},{ 403 : function(){ 
+    $.ajax({url: '/api/accounts'}).statusCode({ 403 : function(){ 
         // no active user session generates 403 @/api/accounts; reload page to get /signin
         location.reload()
-    }}, { 404 : function(){
-        $('#serverConnectionLost').modal()
     }}).fail(function(){
         $('#serverConnectionLost').modal()
     });

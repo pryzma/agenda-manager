@@ -5,7 +5,7 @@
 * assets/js/application-backbone.js
 * TODO: 
 */
-const backbone = (function(){
+const backbone = (function(){ // Backbone mediator
   if(Backbone){
       return {
           // view
@@ -16,7 +16,7 @@ const backbone = (function(){
           collection : backboneCollection
       }
   }else{
-      console.warn('Backbone is not available')
+      console.warn('application-backbone : Backbone is not available')
   }
 })()
 application.backbone = backbone;
