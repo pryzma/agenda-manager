@@ -1,3 +1,6 @@
+/*
+* app/config.js
+*/
 const _config = require('../assets/json/config.json');
 function config(package,app){
   app.get('/config', (_req, res) => {

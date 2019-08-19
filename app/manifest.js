@@ -1,3 +1,6 @@
+/*
+* app/manifest.js
+*/
 const package = require('../package.json'),
 manifest = (app)=>{
     const config = require('./config')(package,app)

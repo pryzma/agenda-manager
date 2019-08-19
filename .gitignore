@@ -1,4 +1,6 @@
 node_modules/
 config/config.json
 .env
+agenda-manager.code-workspace
 *.log
+

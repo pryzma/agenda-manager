@@ -4,9 +4,9 @@
     <h2></h2>
         <form class="needs-validation" novalidate="">
                 <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label for="firstName">First name</label>
-                    <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+                  <div class="col-md-6 mb-3" id="firstName">
+                    <label for="firstName">First name {{value}}</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="" value="" required=""  v-model="value">
                     <div class="invalid-feedback">
                       Valid first name is required.
                     </div>

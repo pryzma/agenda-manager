@@ -1,7 +1,7 @@
 const controller = module.exports = {}
- 
+const render = require('../app/render');
 controller.signin = function(req, res) {
-    res.render('signin',{'message' :req.flash('message')});
+    render(res,'signin',{'message' :req.flash('message')});
 }
 
 controller.logout = function(req, res) {

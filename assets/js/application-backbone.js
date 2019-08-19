@@ -5,7 +5,7 @@
 * assets/js/application-backbone.js
 * TODO: 
 */
-const backbone = (function(){
+const backbone = (function(){ // Backbone mediator
   if(Backbone){
       return {
           // view
@@ -16,7 +16,7 @@ const backbone = (function(){
           collection : backboneCollection
       }
   }else{
-      console.warn('Backbone is not available')
+      console.warn('application-backbone : Backbone is not available')
   }
 })()
 application.backbone = backbone;
@@ -24,6 +24,11 @@ application.backbone = backbone;
 function backboneView(obj){
   const module = application.module(); // get module object
   if(!obj) obj = {} // create empty object if not given
+  /* view : {
+    el :
+    template :
+    render :
+  } */
   if(module.view && typeof module.view === 'object'){ // module has view object property
       for(let prop in module.view){
           // get module view object properties & merge with given or created object

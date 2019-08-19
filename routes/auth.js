@@ -1,3 +1,7 @@
+/*
+* app/auth.js
+*/
+const render = require('../app/render');
 const authController = require('../controllers/authcontroller.js');
 const passportStrategy = 'local'
 function auth(){
@@ -9,7 +13,8 @@ function auth(){
         failureFlash: true
     }), function(req, res, info){
         console.log(req)
-        res.render('signin',{'message' :req.flash('message')});
+        //res.render('signin',{'message' :req.flash('message')});
+        render(res,'signin',{'message' :req.flash('message')})
     });
 
     app.get('/logout', authController.logout);

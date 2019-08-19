@@ -68,14 +68,7 @@ const application = (function(){
     
     if(name.includes('.')){
       name = name.split('.');
-      if(name[1]){
-        // add submodule to module object
-        object[name[0]][name[1]] = module;
-      }else {
-        // add module to application object
-        object[name[0]] = module;
-      }
-
+      name[1] ? object[name[0]][name[1]] = module : object[name[0]] = module;
     }else{
       // call require if module object is undefined
       module ? object[name] = module : require(name);
@@ -523,9 +516,13 @@ const application = (function(){
     //}
     return _modules;
   },
-  module = (route) => route ?  object[route] : object[getRoute().endpoint],
-
-
+  //module = (route) => route ?  object[route] : object[getRoute().endpoint],
+  moduleObj = (moduleRoute) => {
+    let obj,route = getRoute(moduleRoute).endpoint;
+    obj = route[1] ? object[route[0]][route[1]] : object[route];
+    return obj;
+  },
+  module = moduleObj,
 //..............................................................................
 
   str = (str) => {

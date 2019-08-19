@@ -17,7 +17,7 @@ app.use(function (req, res, next) {
 });
 
 
-router.get('/', (req, res) => {
+router.get('/', isAuthenticated, (req, res) => {
   connection.query('SELECT * from accounts', (err, accounts) => {
     if (!err) {
       res.setHeader('Content-Type', 'application/json');
@@ -53,5 +53,13 @@ router.post('/', (req, res) => {
   sgMail.send(msg);
   console.log(msg);
 });
+
+function isAuthenticated(req, res, next) {
+  if (req.session.user)
+      return next();
+
+  // IF A USER ISN'T LOGGED IN, TGIVE BACK 403
+  res.status(403).end();
+}
 
 module.exports = router;

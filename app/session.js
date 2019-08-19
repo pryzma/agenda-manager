@@ -1,3 +1,6 @@
+/*
+* app/session.js
+*/
 const session  = require('express-session'),
 BetterMemoryStore = require('session-memory-store')(session),
 store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true });
