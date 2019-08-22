@@ -4,7 +4,7 @@
 'use strict'
 
 const addProfile = function(){
-  console.log('test')
+  
   new Vue({
     el: '#firstName',
     data: {

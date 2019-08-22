@@ -2,6 +2,7 @@
     "name" : "Agenda Manager",
     "client" :{
         "require" : [ 
+            "application-vue",            
             "application-backbone",
             "application-ejs",
             "agendamanager" 
@@ -25,12 +26,17 @@
             "profiles/add" : "profiles.add"
         },
         "default" : "dashboard",
+        "main" : "section#mainContent",
+        "nav" : "nav#headerNav",
+        "template" : "pageLayout",
+        "style" : "border-top: 3px solid {color}",
         "defaults" : {
             "template" : "pageLayout",
             "templatePath" : "html/templates/{template}.html"
         },
         "cdns" : [
             { "name" : "jQuery", "url" : "https://code.jquery.com/jquery-3.4.1.min.js", "type" : "script", "sri" : "sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" },
+            { "name" : "Vue", "url" : "https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js", "type" : "script", "sri" : "sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY="},
             { "name" : "Bootstrap", "url" : "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css", "type" : "stylesheet", "sri" : "sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY" },
             { "name" : "Bootstrap", "url" : "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js", "type" : "script", "sri" : "sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" },
             { "name" : "Popper", "url" : "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js", "type" : "script", "sri" : "sha384-L2pyEeut/H3mtgCBaUNw7KWzp5n9+4pDQiExs933/5QfaTh8YStYFFkOzSoXjlTb" },
@@ -45,7 +51,16 @@
             { "name" : "Fontawesome", "url" : "https://use.fontawesome.com/releases/v5.6.1/css/all.css", "type" : "stylesheet", "sri" : "sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" }
             
           ],
-        "debug" : true,
+          "icons" : [
+            { "type" : "", "size" : "" }
+          ],
+          "jshint" : {
+            "undef" : false,
+            "asi" : false,
+            "esversion" : 6,
+            "maxerr" :250
+          }, 
+        "debug" : "ejs",
         "manifest" : true
     },
     "server" : {

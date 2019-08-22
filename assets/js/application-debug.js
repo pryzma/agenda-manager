@@ -24,7 +24,17 @@ const debug = (function(){
     DebugLog = [],
     DebuggerLog = (log) => {
         if(log){
-            if(application.object.config.debug)console.log(log)
+            const configDebug = application.object.config.debug;
+            if(typeof configDebug === 'boolean'){
+                console.log(log)
+            
+            }else{
+                if(log.indexOf(configDebug)>0){
+                    console.log(log)
+                }
+            }
+            
+            
             DebugLog.push(log)
         }else{
             const DebuggerLogElement = $('#debugLog')
