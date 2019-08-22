@@ -5,12 +5,7 @@
 
 const addProfile = function(){
   
-  new Vue({
-    el: '#firstName',
-    data: {
-      value: 't',
-    },
-  })
+  
   if(agendamanager.accounts){ //accounts collection
     application.controller('submit','#addProfile form',function(event){
       const addProfileForm = new FormData(event.target)

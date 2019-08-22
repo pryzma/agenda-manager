@@ -46,7 +46,7 @@ auth = (app)=>{
   });
 
   app.get('/signin', function(req, res){
-    const config = require('./config')
+    const config = require('../config/app.json')
     res.render('signin',{'name' : config.name, 'message' :req.flash('message')});
 
   });
