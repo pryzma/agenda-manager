@@ -1,0 +1,245 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Activate account · <%= name %></title>
+
+	<!-- bootstrap  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY=" crossorigin="anonymous" />
+    <!-- Google fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Inconsolata" rel="stylesheet">
+    <!-- fontawesome  -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/img/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/img/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/img/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/img/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/img/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/img/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/img/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/img/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+
+
+    
+    <!-- Custom styles for this template -->
+    <style>
+      body{
+        background-image: url('img/bg.png');
+        background-attachment: fixed;
+      }
+    </style>
+    <link rel="stylesheet" href="css/agenda-manager_styles.css" />
+  </head>
+  <body >
+      <% if (uuid) { %>
+        <%= uuid %>
+        <% } %>
+        <div class="container">
+          <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="img/logo_sm_300.png" alt="">
+            <h2>Activate Account</h2>
+            <p class="lead">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+          </div>
+        
+          <div class="row">
+            <div class="col-md-4 order-md-2 mb-4">
+              <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Your cart</span>
+                <span class="badge badge-secondary badge-pill">3</span>
+              </h4>
+              <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                  <div>
+                    <h6 class="my-0">Product name</h6>
+                    <small class="text-muted">Brief description</small>
+                  </div>
+                  <span class="text-muted">$12</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                  <div>
+                    <h6 class="my-0">Second product</h6>
+                    <small class="text-muted">Brief description</small>
+                  </div>
+                  <span class="text-muted">$8</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                  <div>
+                    <h6 class="my-0">Third item</h6>
+                    <small class="text-muted">Brief description</small>
+                  </div>
+                  <span class="text-muted">$5</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                  <div class="text-success">
+                    <h6 class="my-0">Promo code</h6>
+                    <small>EXAMPLECODE</small>
+                  </div>
+                  <span class="text-success">-$5</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Total (USD)</span>
+                  <strong>$20</strong>
+                </li>
+              </ul>
+        
+              <form class="card p-2">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Promo code">
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-secondary">Redeem</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-8 order-md-1">
+              <h4 class="mb-3">Billing address</h4>
+              <form class="needs-validation" novalidate="">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">First name</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+                    <div class="invalid-feedback">
+                      Valid first name is required.
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="lastName">Last name</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
+                    <div class="invalid-feedback">
+                      Valid last name is required.
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="mb-3">
+                  <label for="username">Username</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">@</span>
+                    </div>
+                    <input type="text" class="form-control" id="username" placeholder="Username" required="">
+                    <div class="invalid-feedback" style="width: 100%;">
+                      Your username is required.
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="mb-3">
+                  <label for="email">Email <span class="text-muted">(Optional)</span></label>
+                  <input type="email" class="form-control" id="email" placeholder="you@example.com">
+                  <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+        
+                <div class="mb-3">
+                  <label for="address">Address</label>
+                  <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
+                  <div class="invalid-feedback">
+                    Please enter your shipping address.
+                  </div>
+                </div>
+        
+                <div class="mb-3">
+                  <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+                  <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
+                </div>
+        
+                <div class="row">
+                  <div class="col-md-5 mb-3">
+                    <label for="country">Country</label>
+                    <select class="custom-select d-block w-100" id="country" required="">
+                      <option value="">Choose...</option>
+                      <option>United States</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Please select a valid country.
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="state">State</label>
+                    <select class="custom-select d-block w-100" id="state" required="">
+                      <option value="">Choose...</option>
+                      <option>California</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Please provide a valid state.
+                    </div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="zip">Zip</label>
+                    <input type="text" class="form-control" id="zip" placeholder="" required="">
+                    <div class="invalid-feedback">
+                      Zip code required.
+                    </div>
+                  </div>
+                </div>
+                
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+              </form>
+            </div>
+          </div>
+        
+          <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">© 2019 Pryzma Development</p>
+            <ul class="list-inline">
+              <li class="list-inline-item"><a href="#">Privacy</a></li>
+              <li class="list-inline-item"><a href="#">Terms</a></li>
+              <li class="list-inline-item"><a href="#">Support</a></li>
+            </ul>
+          </footer>
+        </div>
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
+<!-- bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<!-- popper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js" integrity="sha384-L2pyEeut/H3mtgCBaUNw7KWzp5n9+4pDQiExs933/5QfaTh8YStYFFkOzSoXjlTb" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha256-1A78rJEdiWTzco6qdn3igTBv9VupN3Q1ozZNTR4WE/Y=" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function() {
+    window.location.hash = '';
+    const remember = $.cookie('agendamanager-remember');
+    if (remember && remember !='null'){
+      let email = $.cookie('agendamanager-email'),
+      password = $.cookie('agendamanager-password');
+      // autofill the fields
+      email==='null'? email = undefined : email = email;
+      password==='null'? password = undefined : password = password;
+      if(email)$('#email').val(email);
+      if(password)$('#password').val(password);
+      $('#remember').prop('checked', true);
+    }
+
+    $("#login").submit(function() {
+        if ($('#remember').is(':checked')) {
+            var email = $('#email').val();
+            var password = $('#password').val();
+
+            // set cookies to expire in 14 days
+            $.cookie('agendamanager-email', email, { expires: 14 });
+            $.cookie('agendamanager-password', password, { expires: 14 });
+            $.cookie('agendamanager-remember', true, { expires: 14 });
+        }else{
+            // reset cookies
+            $.cookie('agendamanager-email', null);
+            $.cookie('agendamanager-password', null);
+            $.cookie('agendamanager-remember', null);
+        }
+  });
+});
+</script>
+</body>
+</html>

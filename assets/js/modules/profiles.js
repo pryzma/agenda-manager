@@ -4,8 +4,16 @@
 'use strict'
 
 const addProfile = function(){
+   
+  document.getElementById('addProfileForm').addEventListener('submit',function(event){
+    const addProfileForm = event.target,
+    addProfileFormData = new FormData(addProfileForm);
+    axios.post('api/accounts',addProfileFormData).then(function(res){
+      addProfileForm.innerHTML = `Account ${res.firstName} ${res.lastName} is created; a verification e-mail has been sent to ${res.email}`
+    });
+  });
   
-  
+  /*
   if(agendamanager.accounts){ //accounts collection
     application.controller('submit','#addProfile form',function(event){
       const addProfileForm = new FormData(event.target)
@@ -20,7 +28,9 @@ const addProfile = function(){
       });
     });
   }
+  */
 }
+
 const profiles = (function(){
   const main = function(){
    

@@ -33,14 +33,15 @@ router.post('/', (req, res) => {
   let uuid = uuidv4();
   account.uuid = uuid;
   account.isActivated = 0;
-  /* connection.query('INSERT INTO accounts SET ?', account, (err, result) => {
+   connection.query('INSERT INTO accounts SET ?', account, (err, result) => {
     if (!err) {
       console.log(account);
+      res.end(JSON.stringify(account));
     } else {
       throw err;
     }
   });
-  */
+  
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
     to: `${account.email}`,
