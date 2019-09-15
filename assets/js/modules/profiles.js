@@ -4,14 +4,41 @@
 'use strict'
 
 const addProfile = function(){
-   
-  document.getElementById('addProfileForm').addEventListener('submit',function(event){
-    const addProfileForm = event.target,
-    addProfileFormData = new FormData(addProfileForm);
-    axios.post('api/accounts',addProfileFormData).then(function(res){
-      addProfileForm.innerHTML = `Account ${res.firstName} ${res.lastName} is created; a verification e-mail has been sent to ${res.email}`
-    });
-  });
+    new Vue({
+      el : '#addProfile',
+      data() {
+        return {
+          firstName: '',
+          lastName: '',
+          email: ''
+        };
+    },
+      methods: {
+        submit : function(e) {
+          e.preventDefault();
+          let currentObj = this;
+          console.log(e.target)
+          const form = document.querySelector('form'),
+          formData = new FormData(form)
+          axios.post('api/accounts', formData)
+          .then(function (response) {
+            
+            currentObj.output = response.data;
+            console.log(response.data)
+           })
+          .catch(function (error) {
+            currentObj.output = error;
+            console.log(error)
+          });
+
+        }
+      }
+    })
+    //axios.post('api/accounts',addProfileFormData).then(function(res){
+     // addProfileForm.innerHTML = `Account ${res.firstName} ${res.lastName} is created; a verification e-mail has been sent to ${res.email}`
+    //});
+  }
+
   
   /*
   if(agendamanager.accounts){ //accounts collection
@@ -29,7 +56,8 @@ const addProfile = function(){
     });
   }
   */
-}
+
+//}
 
 const profiles = (function(){
   const main = function(){

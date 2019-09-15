@@ -1,0 +1,25 @@
+const contact =  (sequelize, Sequelize) => {
+    const Contact = sequelize.define('Contact',{
+        id: {
+            type: Sequelize.STRING,
+            notEmpty: true,
+            primaryKey: true
+        },
+        contact_type_id: {type: Sequelize.STRING},
+        first_name: {type: Sequelize.STRING},
+        last_name: {type: Sequelize.STRING},
+        organisation: {type: Sequelize.STRING},
+        street_adress: {type: Sequelize.STRING},
+        postal_code: {type: Sequelize.STRING},
+        city: {type: Sequelize.STRING},
+        state: {type: Sequelize.STRING},
+        country : {type: Sequelize.STRING},
+        street_adress_secondary: {type: Sequelize.STRING},
+        postal_code_secondary: {type: Sequelize.STRING},
+        city_secondary: {type: Sequelize.STRING},
+        state_secondary: {type: Sequelize.STRING},
+        country_secondary : {type: Sequelize.STRING}
+    })
+    return Contact;
+}
+module.exports = contact;

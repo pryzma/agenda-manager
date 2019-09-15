@@ -5,16 +5,13 @@ const connection = require('../app/dbconn'),
       uuidv4 = require('uuid/v4'),
       sgMail = require('@sendgrid/mail'),
       app = express();
-
+      app.use(bodyParser.urlencoded({extended : true}));
+      const bodyParserJSON = app.use(bodyParser.json());
+      
 const router = express.Router();
 
 
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
 
 
 router.get('/', isAuthenticated, (req, res) => {
@@ -28,20 +25,23 @@ router.get('/', isAuthenticated, (req, res) => {
   })
 });
 
-router.post('/', (req, res) => {
+router.post('/', bodyParserJSON, (req, res) => {
+
   let account = req.body;
-  let uuid = uuidv4();
-  account.uuid = uuid;
-  account.isActivated = 0;
-   connection.query('INSERT INTO accounts SET ?', account, (err, result) => {
-    if (!err) {
-      console.log(account);
-      res.end(JSON.stringify(account));
-    } else {
-      throw err;
-    }
-  });
+  console.log(account)
+  res.end()
+  //let uuid = uuidv4();
+  //account.uuid = uuid;
+  //account.isActivated = 0;
+   //connection.query('INSERT INTO accounts SET ?', account, (err, result) => {
+    //if (!err) {
+     // console.log(account);
+      //res.end(JSON.stringify(account));
+    //} else {
+      //throw err;
+    //}
   
+  /*
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
     to: `${account.email}`,
@@ -53,6 +53,7 @@ router.post('/', (req, res) => {
   // Disable actually sending an email, for now
   sgMail.send(msg);
   console.log(msg);
+  */
 });
 
 function isAuthenticated(req, res, next) {
