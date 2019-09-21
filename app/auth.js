@@ -36,12 +36,15 @@ auth = (app)=>{
   ));
 
   passport.serializeUser(function(user, done){
+      console.log(`passport.serializeUser : ${user}`)
       done(null, user.id);
   });
 
   passport.deserializeUser(function(id, done){
-      connection.query("select * from accounts where id = "+ id, function (err, rows){
-          done(err, rows[0]);
+    console.log(`passport.deserializeUser : ${id}`)
+      connection.query(`select * from accounts where id ='${id}'`, function (err, rows){
+          
+        done(err, rows[0]);
       });
   });
 

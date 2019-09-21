@@ -10,13 +10,17 @@ const account = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             notEmpty: true
         },
-        name: {
+        firstName: {
             type: Sequelize.STRING,
             notEmpty: true
         },
-        full_name: {
+        lastName: {
             type: Sequelize.STRING,
             notEmpty: true
+        },
+        isActivated: {
+            type: Sequelize.INTEGER,
+            notEmpty : true
         },
         password: {
             type: Sequelize.STRING,

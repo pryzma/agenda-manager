@@ -8,7 +8,7 @@ const render = require('../app/render');
    
     /* GET user information after login */
     const username   = req.session.user.username;
-    const full_name  = req.session.user.full_name;
+    const full_name  = `${req.session.user.firstName} ${req.session.user.lastName}`;
   
     render(res,'index', { 
       username: username, 
