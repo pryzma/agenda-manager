@@ -5,16 +5,28 @@ const connection = require('../app/dbconn'),
       uuidv4 = require('uuid/v4'),
       sgMail = require('@sendgrid/mail'),
       app = express();
-      app.use(bodyParser.urlencoded({extended : true}));
-      const bodyParserJSON = app.use(bodyParser.json());
+      const  bodyParserJSON = app.use(bodyParser.urlencoded({extended : true}));
+      app.use(bodyParser.json());
       
 const router = express.Router();
 
+//const models = require('../models').db.sequelize.models;
+const models = require('../models').sequelize.models
+const Account = models.account;
 
-
+//const Account = require('../models/Account')(modelsIndex.sequelize,modelsIndex.Sequelize);
 
 
 router.get('/', isAuthenticated, (req, res) => {
+  
+  
+  Account.findAll({order:[['id','DESC']]}).then((accounts) => {
+    res.json(accounts)
+  });
+  //res.setHeader('Content-Type', 'application/json');
+  //res.end(JSON.stringify(accounts));
+  
+  /*
   connection.query('SELECT * from accounts', (err, accounts) => {
     if (!err) {
       res.setHeader('Content-Type', 'application/json');
@@ -23,19 +35,14 @@ router.get('/', isAuthenticated, (req, res) => {
       throw err;
     }
   })
+  */
 });
 
+
 function createAccount(account,req,res){
-  connection.query('INSERT INTO accounts SET ?', account, (err, result) => {
-    
-    if (!err) {
-      console.log(account);
-      res.end(JSON.stringify(account));
-    } else {
-      throw err;
-    }
+  
+  Account.create(account).then((account)=>{
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    console.log(req.session.user)
     const msg = {
       to: `${account.email}`,
       from: `noreply@agendamanager.nl`,
@@ -43,12 +50,25 @@ function createAccount(account,req,res){
       text: `Someone has invited you to join Agenda Manager. Visit agendamanager.nl/verify and paste the following code: ${account.id}`,
       html: `${req.session.user.firstName} ${req.session.user.lastName} has invited you to join Agenda Manager. Visit <a href="http://127.0.0.1:3000/verify?uuid=${account.id}">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.id}</strong>`,
     }
+    sgMail.send(msg);
+    res.json(account)
 
-   sgMail.send(msg);
+  }).catch((err)=>{
+    console.log(err)
+  })
+  // connection.query('INSERT INTO accounts SET ?', account, (err, result) => {
+    
+  //   if (!err) {
+  //     console.log(account);
+  //     res.end(JSON.stringify(account));
+  //   } else {
+  //     throw err;
+  //   }
+    
 
   
 
-  });
+  // });
 }
 
 router.post('/', bodyParserJSON, (req, res) => {

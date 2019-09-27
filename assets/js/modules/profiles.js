@@ -21,7 +21,7 @@ const addProfile = function(){
       console.log(addProfileFormObj)
       axios.post('api/accounts',addProfileFormObj)
       .then(function (account) {
-        $('#addProfileForm').html(`New profile for ${account.firstName} ${account.lastName} has been created and a activation e-mail has been sent to ${account.email}. You will be notified when this account has been activated.`)
+        $('#addProfileForm').html(`New profile for ${addProfileFormObj.firstName} ${addProfileFormObj.lastName} has been created and a activation e-mail has been sent to ${addProfileFormObj.email}. You will be notified when this account has been activated.`)
       }).catch(function(error){
         $('#addProfileForm').html(`A error has occured : ${error}`);
       });
