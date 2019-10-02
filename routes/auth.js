@@ -1,23 +1,21 @@
 /*
-* app/auth.js
+* routes/auth.js
 */
 const render = require('../app/render');
-const authController = require('../controllers/authcontroller.js');
+const controller = require('../controllers/auth');
 const passportStrategy = 'local'
 function auth(){
-    app.get('/signin', authController.signin);
+    app.get('/signin', controller.signin);
     
     app.post("/signin", passport.authenticate(passportStrategy, {
         successRedirect: '/',
         failureRedirect: '/signin',
         failureFlash: true
-    }), function(req, res, info){
-        console.log(req)
-        //res.render('signin',{'message' :req.flash('message')});
+    }), function(req, res){
         render(res,'signin',{'message' :req.flash('message')})
     });
 
-    app.get('/logout', authController.logout);
+    app.get('/logout', controller.logout);
 }
 
 module.exports = auth;

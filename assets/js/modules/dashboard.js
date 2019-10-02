@@ -2,21 +2,15 @@
 * assets/js/modules/dashboard.js
 */
 'use strict'
+
 const dashboard = (function(){
 
   const main = function() {
-      if(agendamanager){
-        agendamanager.view();
-      }else{
-        // reload if agendamanger object is undefined
-        location.reload()
-      }
+  
       dashboardBadges();
 
-    //console.log(view.element('#dashboardBadges').innerHTML);
   }
   
-
   const dashboardBadges = function(){
     const modulesObjArr = [];
     for(let module of application.modules()){
@@ -35,7 +29,6 @@ const dashboard = (function(){
       }
     } 
   
-
     new Vue({
       el: '#dashboardBadges',
       data: {
@@ -44,8 +37,6 @@ const dashboard = (function(){
     });
     
   }
-
-
 
   application.add('dashboard',{
     name : 'Dashboard',

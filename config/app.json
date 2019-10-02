@@ -3,8 +3,8 @@
     "client" :{
         "require" : [ 
             "application-vue",            
-            "application-backbone",
             "application-ejs",
+            "helpers",
             "agendamanager" 
         ],
         "modules" : [

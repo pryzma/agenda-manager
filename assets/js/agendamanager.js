@@ -7,8 +7,8 @@ const agendamanager = (function(){
     
     const agendamanagerObj = {};
     // requires application-backbone
-    agendamanagerObj.view = application.backbone.view;
-    agendamanagerObj.model = application.backbone.model;
+    //agendamanagerObj.view = application.backbone.view;
+    //agendamanagerObj.model = application.backbone.model;
     // requires application-ejs
     agendamanagerObj.render = application.ejs 
     application.agendamanager = agendamanagerObj;

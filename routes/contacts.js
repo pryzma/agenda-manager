@@ -1,5 +1,5 @@
 /*
-* routes/accounts.js
+* routes/contacts.js
 */
 const express = require('express'),
       bodyParser = require('body-parser'),
@@ -8,14 +8,14 @@ const express = require('express'),
       app.use(bodyParser.json());
       
 const router = express.Router();
-const controller = require('../controllers/accounts');
+const controller = require('../controllers/contacts');
 
 router.get('/', controller.isAuthenticated, (req, res) => {
   controller.getAll(req,res);
 });
 
 router.post('/', bodyParserJSON, (req, res) => {
-  controller.createAccount(req,res);
+  controller.createContact(req,res);
 });
 
 module.exports = router;

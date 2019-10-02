@@ -63,7 +63,7 @@ const application = (function(){
 
 //..............................................................................
 // adds (module) property to application object
-  add = function(name,module) {
+  add = function(name,module,callback) {
     //if(application.config.debug) console.log(`application.add : ${name}`);
     
     if(name.includes('.')){
@@ -80,6 +80,7 @@ const application = (function(){
       // add given name to application routes object
       object.routes[name.replace('.','/')] = name;
     }
+    if(typeof callback === 'function') callback()
     if(module) return module;
 
   },
