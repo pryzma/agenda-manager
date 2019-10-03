@@ -14,7 +14,8 @@ controller.createAccount = (req,res) => {
     account.id = uuid;
     account.password = '';
     account.isActivated = 0;
-
+    account.createdBy = req.session.user.id;
+    
     Account.create(account).then((account)=>{
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         const msg = {

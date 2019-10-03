@@ -1,13 +1,9 @@
-const helper = (function (){
-    return {
-        form : (()=>{
-            return {
-                post : (args,callback) => {
-                    formPost(args,callback)
-                }
-            }
-        })()
+
+const helper = (() => {
+    return { form : 
+        { post : (args,callback) => formPost(args,callback) }
     }
+    
 })()
 // 
 function formPost(args,callback){

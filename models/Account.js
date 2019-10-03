@@ -25,6 +25,10 @@ const account = (sequelize, Sequelize) => {
         password: {
             type: Sequelize.STRING,
             notEmpty: true
+        },
+        createdBy: {
+            type: Sequelize.STRING,
+            notEmpty: false
         }
     });
     return Account;

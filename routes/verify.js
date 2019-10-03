@@ -16,8 +16,8 @@ router.get('/',(req,res)=>{
     const uuid = req.query.uuid;
 
     connection.query(`SELECT * FROM accounts WHERE id='${uuid}'`, (err, account) => {
-        console.log(account)
-        if(account){ // uuid is not found in database
+        
+        if(account){ 
             
             res.render('activate',{
                 name : 'Agenda Manager', 
@@ -26,7 +26,7 @@ router.get('/',(req,res)=>{
                 firstName : account[0].firstName,
                 lastName : account[0].lastName
             });
-        }else {
+        }else { // uuid is not found in database
             
             res.end('Account not found!');
         }
@@ -34,6 +34,15 @@ router.get('/',(req,res)=>{
 
 });
 
+function getAccount(id){
+    connection.query(`SELECT * FROM accounts WHERE id='${id}'`, (err, account) => {
+        if(account){
+            return account
+        }else{
+
+        }
+    });
+}
 router.post('/', bodyParserJSON, (req, res) => {// save data from form to database 
     const account = req.body;
     console.log(account)
@@ -41,7 +50,16 @@ router.post('/', bodyParserJSON, (req, res) => {// save data from form to databa
     account.password = crypto.createHash('sha1').update(account.salt).digest('hex');
     connection.query(`UPDATE accounts SET firstName='${account.firstName}',lastName='${account.lastName}',password='${account.password}',isActivated=1 WHERE id='${account.id}'`, (err, result) => {
        if (!err) {
-           console.log(account);
+            const accountCreatedBy = getAccount(account.CreatedBy)
+            sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+            const msg = {
+                to: `${accountCreatedBy.email}`,
+                from: `noreply@agendamanager.nl`,
+                subject: `Agendamanager account ${account.firstName} ${account.lastName} has been activated `,
+                text: ``,
+                html: `The account you created for ${account.firstName} ${account.lastName}(${account.email}) on ${account.createdAt} has been activated `,
+            }
+            sgMail.send(msg);
             res.end(JSON.stringify(account));
           } else {
            throw err;
