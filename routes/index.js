@@ -3,12 +3,12 @@ const express = require('express');
 const router = express.Router();
 const render = require('../app/render');
   router.get('/', isAuthenticated, function(req, res, next) {
-    const config = require('../assets/json/config.json')
-    const cdns = require('../app/cdns')(config.cdns)
+    const config = require('../config/app.json')
+    const cdns = require('../app/cdns')(config.client.cdns)
    
     /* GET user information after login */
     const username   = req.session.user.username;
-    const full_name  = req.session.user.full_name;
+    const full_name  = `${req.session.user.firstName} ${req.session.user.lastName}`;
   
     render(res,'index', { 
       username: username, 

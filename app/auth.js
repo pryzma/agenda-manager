@@ -12,9 +12,9 @@ auth = (app)=>{
     passwordField: 'password',
     passReqToCallback: true //passback entire req to call back
   } , function (req, username, password, done){
-    console.log('\x1b[1m')
-    console.log('\x1b[32m',`${username} passport.authenticate() OK`)
-    console.log('\x1b[0m')
+   
+    console.log('\x1b[1m\x1b[32m',`${username} passport.authenticate() OK\x1b[0m`)
+    
         if(!username || !password ) { return done(null, false, req.flash('message','All fields are required.')); }
         var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
         connection.query("select * from accounts where email = ?", [username], function(err, rows){
@@ -26,7 +26,7 @@ auth = (app)=>{
           var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
           var dbPassword  = rows[0].password;
 
-          if(!(dbPassword == encPassword)){
+          if(dbPassword !== encPassword){
               return done(null, false, req.flash('message','Invalid username or password!'));
            }
            req.session.user = rows[0];
@@ -36,18 +36,21 @@ auth = (app)=>{
   ));
 
   passport.serializeUser(function(user, done){
+      console.log(`passport.serializeUser : ${user}`)
       done(null, user.id);
   });
 
   passport.deserializeUser(function(id, done){
-      connection.query("select * from accounts where id = "+ id, function (err, rows){
-          done(err, rows[0]);
+    console.log(`passport.deserializeUser : ${id}`)
+      connection.query(`select * from accounts where id ='${id}'`, function (err, rows){
+          
+        done(err, rows[0]);
       });
   });
 
   app.get('/signin', function(req, res){
-
-    res.render('signin',{'message' :req.flash('message')});
+    const config = require('../config/app.json')
+    res.render('signin',{'name' : config.name, 'message' :req.flash('message')});
 
   });
 

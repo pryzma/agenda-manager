@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
-    <title>Sign in · Agendamanager</title>
+    <title>Sign in · <%= name %></title>
 
 		<!-- bootstrap  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY=" crossorigin="anonymous" />
@@ -59,6 +59,8 @@ body {
   padding-top: 40px;
   padding-bottom: 40px;
   background-color: #f5f5f5;
+  background-image: url('img/bg.png');
+  background-size: cover;
 }
 
 .form-signin {
@@ -126,12 +128,14 @@ body {
 $(document).ready(function() {
     window.location.hash = '';
     const remember = $.cookie('agendamanager-remember');
-    if (remember){
-      const email = $.cookie('email');
-      const password = $.cookie('password');
+    if (remember && remember !='null'){
+      let email = $.cookie('agendamanager-email'),
+      password = $.cookie('agendamanager-password');
       // autofill the fields
-      $('#email').val(email);
-      $('#password').val(password);
+      email==='null'? email = undefined : email = email;
+      password==='null'? password = undefined : password = password;
+      if(email)$('#email').val(email);
+      if(password)$('#password').val(password);
       $('#remember').prop('checked', true);
     }
 

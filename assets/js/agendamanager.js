@@ -7,8 +7,8 @@ const agendamanager = (function(){
     
     const agendamanagerObj = {};
     // requires application-backbone
-    agendamanagerObj.view = application.backbone.view;
-    agendamanagerObj.model = application.backbone.model;
+    //agendamanagerObj.view = application.backbone.view;
+    //agendamanagerObj.model = application.backbone.model;
     // requires application-ejs
     agendamanagerObj.render = application.ejs 
     application.agendamanager = agendamanagerObj;
@@ -16,8 +16,8 @@ const agendamanager = (function(){
 })();
 
 function serverStatus(){
-    $.ajax({url: '/api/accounts'}).statusCode({ 403 : function(){ 
-        // no active user session generates 403 @/api/accounts; reload page to get /signin
+    $.ajax({url: '/status'}).statusCode({ 403 : function(){ 
+        // no activesession generates 403 @ /status route; reload page to get /signin
         location.reload()
     }}).fail(function(){
         $('#serverConnectionLost').modal()

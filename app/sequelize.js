@@ -4,7 +4,7 @@
 const models = require('../models')
 module.exports = ()=>{
     
-  
+  //console.log(models)
   // sequelize models sync
   models.sequelize.sync().then(function() {
 

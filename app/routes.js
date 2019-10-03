@@ -2,8 +2,7 @@
 * app/routes.js
 */
 module.exports = (app)=>{
-   const http = require('http');
-   const server = http.createServer(app);
+  
    const routes = require('../config/app.json').server.routes;
    console.log(`\x1b[36m[config.server.routes]\x1b[0m \x1b[3mconfig/app.json\x1b[0m`)
    for(const route in routes){

@@ -14,7 +14,7 @@ const vue = function(obj){ // Vue mediator
         if(obj){
             obj.el ? obj.el : application.config.view.default;
             console.log(obj)
-            application.render(()=> new Vue(obj) )
+            application.render('vue',()=> new Vue(obj) )
         }
        
     }else{
