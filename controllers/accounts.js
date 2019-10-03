@@ -23,7 +23,7 @@ controller.createAccount = (req,res) => {
           from: `noreply@agendamanager.nl`,
           subject: `Registration at agendamanager.nl`,
           text: `Someone has invited you to join Agenda Manager. Visit agendamanager.nl/verify and paste the following code: ${account.id}`,
-          html: `${req.session.user.firstName} ${req.session.user.lastName} has invited you to join Agenda Manager. Visit <a href="http://127.0.0.1:3000/verify?uuid=${account.id}">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.id}</strong>`,
+          html: `${req.session.user.firstName} ${req.session.user.lastName} has invited you to join Agenda Manager. Visit <a href="${process.env.REF_URL}verify?uuid=${account.id}">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.id}</strong>`,
         }
         sgMail.send(msg);
         res.json(account);
