@@ -1,5 +1,5 @@
-const account = (sequelize, Sequelize) => {
-    const Account = sequelize.define('account',{
+module.exports = (sequelize, Sequelize) => {
+    return sequelize.define('account',{
         id: {
             type: Sequelize.STRING,
             notEmpty: true,
@@ -31,6 +31,4 @@ const account = (sequelize, Sequelize) => {
             notEmpty: false
         }
     });
-    return Account;
 }
-module.exports = account;

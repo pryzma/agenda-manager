@@ -45,18 +45,22 @@
   <body >
    
         <div class="container">
-          <div class="py-5 text-center">
-            <img class="d-block mx-auto mb-4" src="img/logo_sm_300.png" alt="">
-            <h2>Activate your account,  <%=firstName %> <%= lastName %></h2>
-            <p class="lead">Please complete the form below to complete your account</p>
-          </div>
+    
         
           <div class="row">
 
     
-            <div class="col-md-12 order-md-1">
-              <h4 class="mb-3">Profile Details</h4>
+              <div class="card" style="margin: auto;">
+                  <div class="card-body">
+                  <div class="py-5 text-center">
+                      <img class="d-block mx-auto mb-4" src="img/logo_sm_300.png" alt="">
+                      <h2>Activate your account,  <%=firstName %> <%= lastName %></h2>
+                      <p class="lead">Please complete the form below to activate your account</p>
+                    </div>
+              
               <form class="needs-validation" novalidate="" id="activateProfileForm">
+                  <h4 class="mb-3">Profile Details</h4>
+                  <p></p>
                 <input type="hidden" id="id" name="id" value="">
                 <div class="row">
                   <div class="col-md-6 mb-3">
@@ -87,7 +91,7 @@
                 
                 <div class="mb-3">
                   <label for="email">Repeat Password </label>
-                  <input type="password" class="form-control" id="password" name="password">
+                  <input type="password" class="form-control" id="repeat_password" name="repeat_password">
                   <div class="invalid-feedback">
                     Please enter a valid password
                   </div>
@@ -96,6 +100,7 @@
                 <hr class="mb-4">
                 <button class="btn btn-primary btn-lg btn-block" type="submit">Activate your account</button>
               </form>
+              </div>
             </div>
           </div>
         
@@ -122,12 +127,17 @@ $(document).ready(function() {
       for(let [key,value] of activateProfileFormData.entries()){
         activateProfileFormObj[key] = value
       }
-      axios.post('verify',activateProfileFormObj)
-      .then(function (account) {
-        $('#activateProfileForm').html(`Your account has been activated. <a href="/signin">You can now sign in</a> with the password you provided.`)
-      }).catch(function(error){
-        $('#activateProfileForm').html(`A error has occured : ${error}`);
-      });;
+      if(activateProfileFormObj.password === activateProfileFormObj.repeat_password){
+        axios.post('verify',activateProfileFormObj)
+        .then(function (account) {
+          $('#activateProfileForm').html(`Your account has been activated. <a href="/signin">You can now sign in</a> with the password you provided.`)
+        }).catch(function(error){
+          $('#activateProfileForm').html(`A error has occured : ${error}`);
+        });
+      }else{
+
+      }
+      
 
     });
 });

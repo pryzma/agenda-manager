@@ -71,7 +71,8 @@
             "/" : "index",
             "/verify" : "verify",
             "/status" : "status",
-            "/api/accounts" : "accounts"
+            "/api/accounts" : "accounts",
+            "/api/options" : "options"
         },
         "require" : [
             "dev",

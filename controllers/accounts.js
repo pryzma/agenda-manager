@@ -7,6 +7,7 @@ const uuidv4 = require('uuid/v4'),
       
 const models = require('../models').sequelize.models
 const Account = models.account;
+const Contact = models.Contact;
 const auth = require('./auth')
 controller.createAccount = (req,res) => {
     const account = req.body,
@@ -15,8 +16,9 @@ controller.createAccount = (req,res) => {
     account.password = '';
     account.isActivated = 0;
     account.createdBy = req.session.user.id;
-    
+    console.log(account);
     Account.create(account).then((account)=>{
+        
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         const msg = {
           to: `${account.email}`,
@@ -33,7 +35,9 @@ controller.createAccount = (req,res) => {
     })
 
 }
-
+controller.updateAccount = (req,res) => {
+    
+}
 controller.getAll = (req,res) => {
     Account.findAll({order:[['id','DESC']]}).then((accounts) => {
         res.json(accounts)

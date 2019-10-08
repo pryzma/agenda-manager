@@ -1,5 +1,5 @@
-const contact =  (sequelize, Sequelize) => {
-    const Contact = sequelize.define('Contact',{
+module.exports =  (sequelize, Sequelize) => {
+    return sequelize.define('Contact',{
         id: {
             type: Sequelize.STRING,
             notEmpty: true,
@@ -20,6 +20,4 @@ const contact =  (sequelize, Sequelize) => {
         state_secondary: {type: Sequelize.STRING},
         country_secondary : {type: Sequelize.STRING}
     })
-    return Contact;
 }
-module.exports = contact;

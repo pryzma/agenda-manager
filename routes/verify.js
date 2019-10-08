@@ -18,11 +18,9 @@ router.get('/',(req,res)=>{
     connection.query(`SELECT * FROM accounts WHERE id='${uuid}'`, (err, account) => {
         
         if(account){ 
-            
             res.render('activate',{
                 name : 'Agenda Manager', 
                 uuid : uuid,
-                test : 'test',
                 firstName : account[0].firstName,
                 lastName : account[0].lastName
             });
@@ -35,7 +33,7 @@ router.get('/',(req,res)=>{
 });
 
 function getAccount(id){
-    connection.query(`SELECT * FROM accounts WHERE id='${id}'`, (err, account) => {
+    connection.query(`SELECT * FROM accounts WHERE id='${id}'`, (account) => {
         if(account){
             return account
         }else{
@@ -50,7 +48,7 @@ router.post('/', bodyParserJSON, (req, res) => {// save data from form to databa
     account.password = crypto.createHash('sha1').update(account.salt).digest('hex');
     connection.query(`UPDATE accounts SET firstName='${account.firstName}',lastName='${account.lastName}',password='${account.password}',isActivated=1 WHERE id='${account.id}'`, (err, result) => {
        if (!err) {
-            const accountCreatedBy = getAccount(account.CreatedBy)
+            const accountCreatedBy = getAccount(account.createdBy)
             sgMail.setApiKey(process.env.SENDGRID_API_KEY);
             const msg = {
                 to: `${accountCreatedBy.email}`,

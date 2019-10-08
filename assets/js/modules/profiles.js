@@ -8,7 +8,7 @@ const addProfile = function(){
     el : 'addProfileForm',
     url : 'api/accounts'
   },(res) => {
-    $('#addProfileForm').html(`Account ${res.data.firstName} ${res.data.lastName} is created; a verification e-mail has been sent to ${res.data.email}`)
+    $('#addProfileForm').html(`Account <b>${res.data.firstName} ${res.data.lastName}</b> is created and a verification e-mail to activate this account  has been sent to <b>${res.data.email}</b>`)
   })
       
 },
@@ -18,29 +18,26 @@ profilesDashboardBadge = (profiles) => {
 profileView =(id) => {
   for(const account of  application.object.profiles.accounts){
     if(id === account.id){
-      $('#amModalTitle').html(account.name)
-      $('#amModalBody').html(`This account was created ${account.date}`)
-        
-      $('#amModal').modal()
+      helper.modal({
+        title : account.name,
+        body : `This account was created ${account.date}`
+      })
     }
   }
 },
-  profilesOverview = () => {
-    fetchAccountsData()
-    new Vue({
-      el: '#profilesOverview',
-      data: {
-        profiles: application.object.profiles.accounts
-      },
-      methods: {
-        profileView : (event) => {
-          profileView(event.target.parentElement.id);
-          
-          
-        }
+profilesOverview = () => {
+  helper.table(fetchAccountsData,{
+    el: '#profilesOverview',
+    data: {
+      profiles: application.object.profiles.accounts
+    },
+    methods: {
+      profileView : (event) => {
+        profileView(event.target.parentElement.id);         
       }
-    });
-  }
+    }
+  })
+}
 
 const fetchAccountsData = () => {
   axios.get('api/accounts').then( // fetch accounts data
@@ -64,7 +61,7 @@ const fetchAccountsData = () => {
   )
 }
 
-const profiles = (function(){
+const profiles = (()=>{
   
   application.add('profiles',{
     name : 'Profiles',

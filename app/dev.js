@@ -1,11 +1,15 @@
 /*
 * app/dev.js
 */
-const logger = require('morgan'),
+
+const morgan = require('morgan'),
 dotenv = require('dotenv').config(),
 jshint = require('jshint'),
 dev = (app)=>{ 
-  logger(function (tokens, req, res) {
+  package = require('../package.json')
+  config = require('./config')(package,app)
+  
+  morgan(function (tokens, req, res) {
     return [
       tokens.method(req, res),
       tokens.url(req, res),
@@ -15,6 +19,7 @@ dev = (app)=>{
     ].join(' ')
   })
   const env = process.env.NODE_ENV || "development";
-  if(env ==='development') app.use(logger('dev')); // log requests
+  if(config.npm_lifecycle_event === 'dev') app.use(morgan('dev')); // log requests
+
 }
 module.exports = dev;
