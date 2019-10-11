@@ -6,5 +6,6 @@ module.exports =  (sequelize, Sequelize) => {
             primaryKey: true
         },
         type: {type: Sequelize.STRING},
+        model : {type: Sequelize.STRING},
     })
 }

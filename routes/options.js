@@ -15,6 +15,6 @@ router.get('/', controller.isAuthenticated, (req, res) => {
 });
 
 router.post('/', bodyParserJSON, (req, res) => {
-  controller.createAccount(req,res);
+  controller.createOption(req,res);
 });
 module.exports = router;

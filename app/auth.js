@@ -25,11 +25,14 @@ auth = (app)=>{
           salt = salt+''+password;
           var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
           var dbPassword  = rows[0].password;
-          console.log('\x1b[1m\x1b[32m',`${rows[0].id} passport.authenticate() OK\x1b[0m`)
+          
           if(dbPassword !== encPassword){
+              console.log('\x1b[1m\x1b[31m',`passport.authenticate() Bad Request\x1b[0m`)
               return done(null, false, req.flash('message','Invalid username or password!'));
+              
            }
            req.session.user = rows[0];
+           console.log('\x1b[1m\x1b[32m',`${rows[0].id} passport.authenticate() OK\x1b[0m`)
           return done(null, rows[0]);
         });
       }
@@ -43,7 +46,7 @@ auth = (app)=>{
   passport.deserializeUser(function(id, done){
     
       connection.query(`select * from accounts where id ='${id}'`, function (err, rows){
-          
+        console.log(`passport.deserializeUser : ${id}`)
         done(err, rows[0]);
       });
   });

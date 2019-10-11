@@ -2,29 +2,28 @@
 * assets/js/helpers.js
 */
 const helper = (() => {
-    return { 
-      form : 
-        { post : (args,callback) => formPost(args,callback),
-          fromModel : (args) => formFromModel(args),
-          input : {
-            datepicker : (args) => formInputDatepicker(args)
-            
-          } 
-        },
-      table : (before,args,callback) => {
-        if(typeof before === 'object'){
-          if(typeof args === 'function'){
-            callback = args;
-          }
-          args = before;
+  return { 
+    form : { 
+      post : (args,callback) => formPost(args,callback),
+      fromModel : (args) => formFromModel(args),
+      input : {
+        datepicker : (args) => formInputDatepicker(args)         
+      } 
+    },
+    table : (before,args,callback) => {
+      if(typeof before === 'object'){
+        if(typeof args === 'function'){
+          callback = args;
         }
-        if(typeof before === 'function')before();
-        new Vue(args);
-        if(callback)callback();
-      },
-      modal : (args) => modal(args)
-    }
-    
+        args = before;
+      }
+      if(typeof before === 'function')before();
+      new Vue(args);
+      if(callback)callback();
+    },
+    modal : (args) => modal(args),
+    api : api
+  }
 })() // invoke
 // helper.api
 /*
@@ -32,7 +31,7 @@ helper.api({
   url : 'api/endpoint',
   method : 'get',
   modify : (item) => {
-    // // do something with returned data item
+    // do something with returned data item
   },
   callback : (data) => {
     // do something with returned data
@@ -40,16 +39,16 @@ helper.api({
 })
 */
 function api(args){
-  if(!args.method) args.method = 'get'
+  if(!args.method) args.method = 'get';
   axios[args.method](args.url)
   .then((res) => {
-    const data = []
+    const data = [];
     for(let item of res.data){
-      if(args.modify) item = args.modify(item)
-      data.push(item)
+      if(args.modify) item = args.modify(item);
+      data.push(item);
     }
     if(args.callback) 
-      return args.callback(data)
+      return args.callback(data);
     return data;
   })
 }
@@ -71,15 +70,13 @@ function modal(args){
   const amModal = $('#amModal').modal();
   if(typeof args.save === 'function'){
     $('#amModalSave').on('click',()=>{
-      args.save()
+      args.save();
     });
-    
   }
   if(typeof args.close === 'function'){
     amModal.on('hidden.bs.modal', function (e) {
-      // do something...
       args.close();
-    })
+    });
   }
 }
 // table
@@ -103,7 +100,8 @@ helper.table({
 })
 */
 function table(args){
-  let table = document.createElement('table')
+  let table = document.createElement('table');
+  table.setAttribute('class',args.class);
   const thead = document.createElement('thead'),
         models = application.config.models,
         model = models[args.model],
@@ -125,19 +123,15 @@ function table(args){
       url : args.url,
       callback : (data) => {
         table = tableBody(table,props,data);
-        tableInsert(args,table)
+        tableInsert(args,table);
       }
     }
     if(args.data.modify) apiObj.modify = args.data.modify;
     api(apiObj);
   }else{
-    table = tableBody(table,props,args.data)
-    tableInsert(args,table)
+    table = tableBody(table,props,args.data);
+    tableInsert(args,table);
   }
-
-
-  
- 
 }
 // table insert
 function tableInsert(args,table){
@@ -159,8 +153,7 @@ function tableBody(table,props,data){
     tbody.appendChild(tr);
   }
   table.appendChild(tbody);
-  
-  return table
+  return table;
 }
 
 // form
@@ -168,9 +161,9 @@ function formData(form){
   
   const formData = new FormData(form),
         formObj = {};
-  console.log(formData)
+  console.log(formData);
   for(let [key,value] of formData.entries()){
-    formObj[key] = value
+    formObj[key] = value;
   }
   return formObj
 }
@@ -184,19 +177,18 @@ helper.form.post({
 })
 */
 function formPost(args,callback){
-    const form = document.getElementById(args.el);
-    let formObj;
-    form.addEventListener( 'submit', ( event ) => {
-      formObj = formData(form);
-      event.preventDefault();
-      axios.post(args.url,formObj)
-      .then((formObj) => {
-          callback(formObj)
-        }).catch(function(error){
-        $(args.el).html(`A error has occured : ${error}`);
-      });
-
+  const form = document.getElementById(args.el);
+  let formObj;
+  form.addEventListener( 'submit', ( event ) => {
+    formObj = formData(form);
+    event.preventDefault();
+    axios.post(args.url,formObj)
+    .then((formObj) => {
+      callback(formObj)
+    }).catch(function(error){
+      $(args.el).html(`A error has occured : ${error}`);
     });
+  });
 }
 /*
 helper.form.fromModel({
@@ -220,7 +212,7 @@ function formFromModel(args){
         formBtnSave = document.createElement('button');
         
   for(let prop of props){
-    if(args.fields[prop]){
+    if(args.fields[prop]){ // model property must be defined in fields argument
       const propFormRow =  formRow(prop,args);
       // append row to form
       form.appendChild(propFormRow);
@@ -244,7 +236,6 @@ function formFromModel(args){
       if(args.onSubmit) args.onSubmit();
     } 
   });
-
 }
 // form group row
 function formRow(prop,args){

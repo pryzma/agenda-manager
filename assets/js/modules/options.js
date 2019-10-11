@@ -6,10 +6,10 @@ const options = (function(){
   const main = function(){
 
   }
+  // options/add
   const add = {
     name : 'Add Option',
     default : function(){
-      //create form from model
       helper.form.fromModel({
         model : 'Option',
         fields : {

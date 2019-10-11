@@ -20,7 +20,7 @@ const application = (function(){
       loadModules; // modules array set values
       
 //..............................................................................
-// defaults properties are overwritten if defined in assets/json/config.json
+// defaults properties are overwritten if defined in config/app.json
   const defaults = {
     template : 'pageLayout', // file default template assets/[templateEngine]/[template].[templateEngine]
     templateEngine : 'html', // template file folder & extension

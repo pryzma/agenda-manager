@@ -26,7 +26,7 @@ const debug = (function(){
         if(log){
             const configDebug = application.object.config.debug;
             if(typeof configDebug === 'boolean'){
-                console.log(log)
+                if(configDebug)console.log(log)
             
             }else{
                 if(log.indexOf(configDebug)>0){

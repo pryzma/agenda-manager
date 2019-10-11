@@ -63,7 +63,7 @@
             "esversion" : 6,
             "maxerr" :250
           }, 
-        "debug" : "ejs",
+        "debug" : false,
         "manifest" : true
     },
     "server" : {
@@ -76,6 +76,7 @@
         },
         "require" : [
             "dev",
+            "websocket",
             "session",
             "sequelize",
             "manifest",
