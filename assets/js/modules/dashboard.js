@@ -37,10 +37,43 @@ const dashboard = (function(){
     });
     
   }
+  const ws = (() => {
+    return {
+      name : `WebSocket Client`,
+      default : () => { 
 
+        const wsConnection = application.wsConnection;
+        
+        $('#amModalSave').html('Send Message').on('click',(event)=>{
+          const message = $('#message').val();
+          wsConnection.send(message);
+          $('#message').val('');
+        })
+        //$('#amModalBody').html();
+       
+        helper.modal({
+          title : `WebSocket Client`,
+          body: '<div id="messages"></div><textarea id="message" class="form-control"></textarea>'
+        });
+        $('#messages').before(`<div class="text-muted">Connected as <span class="Inconsolata">${wsConnection.client}</span></div>`)
+       
+        wsConnection.onmessage = function(event) {
+          const data = JSON.parse(event.data)
+          let res = ''
+          for(let item of data){
+            res += `<div><div>${item.utf8Data}</div> <small class="text-muted">from <span class="Inconsolata">${item.from}</span> on ${item.date}</small></div>`
+          }
+          $('#amModalBody #messages').html(res)
+        
+        }
+      }
+    }
+  })()
+  
   application.add('dashboard',{
     name : 'Dashboard',
     default : main,
+    ws : ws,
     template : 'dashboard',
     templateEngine : 'ejs'
   })

@@ -5,7 +5,7 @@ const controller = module.exports = {}
 const uuidv4 = require('uuid/v4'),
       sgMail = require('@sendgrid/mail');
       
-const models = require('../models').sequelize.models
+const models = require('../models').sequelize.models;
 const Account = models.account;
 const Contact = models.Contact;
 

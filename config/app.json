@@ -1,9 +1,11 @@
 {
     "name" : "Agenda Manager",
+    "app" : "agendamanager",
     "client" :{
         "require" : [ 
             "application-vue",            
             "application-ejs",
+            "websocket",
             "helpers",
             "agendamanager" 
         ],
@@ -23,7 +25,8 @@
             "rehearsals" : "rehearsals",
             "blockdates" : "blockdates",
             "profiles" : "profiles",
-            "profiles/add" : "profiles.add"
+            "profiles/add" : "profiles.add",
+            "ws" : "dashboard.ws"
         },
         "default" : "dashboard",
         "main" : "section#mainContent",
@@ -63,7 +66,7 @@
             "esversion" : 6,
             "maxerr" :250
           }, 
-        "debug" : false,
+        "debug" : "initModules",
         "manifest" : true
     },
     "server" : {
@@ -71,12 +74,12 @@
             "/" : "index",
             "/verify" : "verify",
             "/status" : "status",
+            "/config" : "config",
             "/api/accounts" : "accounts",
             "/api/options" : "options"
         },
         "require" : [
             "dev",
-            "websocket",
             "session",
             "sequelize",
             "manifest",
@@ -85,6 +88,7 @@
             "parser",
             "static",
             "auth",
+            "websocket",
             "error"
         ]
     }

@@ -3,8 +3,8 @@
 /**
  * Module dependencies.
  */
-
-const app = require('../agendamanager');
+const config = require('../config/app.json')
+const app = require(`../${config.app}`);
 const debug = require('debug')('application-server:server');
 const http = require('http');
 

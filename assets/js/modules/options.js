@@ -23,7 +23,7 @@ const options = (function(){
     application.object.options.badge = `${options.length} Options added`
   },
   fetchOptionsData = () => {
-    axios.get('api/accounts').then( // fetch accounts data
+    axios.get('api/options').then( 
       (res) => {
         
         const options = []
@@ -43,6 +43,6 @@ const options = (function(){
     default : main,
     add : add
   },() => {
-    fetchOptionsData();
+    //fetchOptionsData();
   })
 })();

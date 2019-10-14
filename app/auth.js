@@ -32,6 +32,7 @@ auth = (app)=>{
               
            }
            req.session.user = rows[0];
+           app.user = rows[0];
            console.log('\x1b[1m\x1b[32m',`${rows[0].id} passport.authenticate() OK\x1b[0m`)
           return done(null, rows[0]);
         });
@@ -72,5 +73,6 @@ auth = (app)=>{
       req.logout();
       res.redirect('/signin');
   });
+  return app
 }
 module.exports = auth;

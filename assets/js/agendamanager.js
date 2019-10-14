@@ -5,28 +5,17 @@
 const agendamanager = (function(){
     //setInterval(serverStatus, 3000); // check status every 3s
     
-    if ('WebSocket' in window){
-        const wsConnection = new WebSocket('ws://127.0.0.1:8080/');
-        // websocket connection is open
-        wsConnection.onopen = function(){
-            //wsConnection.send("Hello server!");
-            //if(!wsConnection.readyState) location.reload();
-        }
-        // websocket connection is closed
-        wsConnection.onclose = function(){
+    websocket({ // websocket connection
+        onclose : () => { // server has closed connection
             $('#serverConnectionLost').modal()
             // check every 3s if server is alive again
             setInterval(serverStatus, 3000); 
-         } // TODO : 403 status
-         wsConnection.onmessage = function(event) {
-             const data = JSON.parse(event.data)
-             
-             if(!data.status) helper.modal({title:data.title,body:data.body})
-         }
-         application.wsConnection = wsConnection
-    }
+        }
+    });
     const agendamanagerObj = {};
-    // requires application-backbone
+    
+    
+    // require application-backbone
     //agendamanagerObj.view = application.backbone.view;
     //agendamanagerObj.model = application.backbone.model;
     // requires application-ejs
