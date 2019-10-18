@@ -13,17 +13,21 @@ module.exports =  (sequelize, Sequelize) => {
             type : Sequelize.DATE,
             notEmpty: true
         },
+        participants : {
+            type : Sequelize.STRING,
+            notEmpty: true
+        },
         time: {
-            type : Sequelize.DATE
+            type : Sequelize.STRING
         },
         timePresence: {
-            type : Sequelize.DATE
+            type : Sequelize.STRING
         },
         timeSoundcheck: {
-            type : Sequelize.DATE
+            type : Sequelize.STRING
         },
         timeStart: {
-            type : Sequelize.DATE
+            type : Sequelize.STRING
         },
         dateDeadline : {
             type : Sequelize.DATE

@@ -1,8 +1,10 @@
 /*
-* app/dev.js
+* app/sequelize.js
 */
 const models = require('../models')
-
+Date.prototype.toJSON = function(){
+  return this.toLocaleString();
+}
 module.exports = ()=>{
     
   //console.log(models)

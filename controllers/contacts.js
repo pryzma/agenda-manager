@@ -23,6 +23,11 @@ controller.getAll = (req,res) => {
     });
 }
 
+
+controller.getOne = (req,res) => {
+    
+}
+
 controller.updateContact = (req,res) => {
 
 }

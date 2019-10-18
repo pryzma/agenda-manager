@@ -21,7 +21,7 @@ module.exports = (app) => {
         httpServer: server
     });
     
-    console.log('\x1b[36m',`[websocket]\x1b[0m  Server started on ws://${env.REF_ADR}:${env.REF_WS_PORT}/ \x1b[0m`)
+    console.log('\x1b[36m',`[websocket]\x1b[0m  Server started on ws://${env.REF_ADR}:${env.REF_WS_PORT}/ on ${(Date()).split('GMT')[0]}\x1b[0m`)
     
     const getUniqueID = () => { // generate unique id
         const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
@@ -46,7 +46,7 @@ module.exports = (app) => {
             if (message.type === 'utf8') {
             
                 message.from = userID;
-                message.date = (new Date());
+                message.date = (new Date().toJSON());
                 messages.push(message);
                 // print recieved message to console
                 console.log('\x1b[36m',`[websocket]\x1b[0m  Message : ${JSON.stringify(message)}`)

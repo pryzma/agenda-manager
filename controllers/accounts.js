@@ -13,11 +13,11 @@ const auth = require('./auth')
 controller.createAccount = (req,res) => {
     
     const account = req.body
-    const contact = {}
+    const contact = {} // create contact
     contact.id = uuidv4();
     account.contact = contact.id;
-    contact.first_name = account.firstName
-    contact.last_name = account.lastName
+    contact.first_name = account.firstName;
+    contact.last_name = account.lastName;
     Contact.create(contact);
     account.id = uuidv4();
     account.password = '';
@@ -45,14 +45,17 @@ controller.createAccount = (req,res) => {
 controller.updateAccount = (req,res) => {
     
 }
+
 controller.deleteAccount = (req,res) => {
 
 }
+
 controller.getAll = (req,res) => {
     Account.findAll({order:[['id','DESC']]}).then((accounts) => {
         res.json(accounts)
     });
 }
+
 controller.getOne = (req,res) => {
     
 }

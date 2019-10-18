@@ -26,7 +26,7 @@ profileView =(id) => {
   }
 },
 profilesOverview = () => {
-  helper.table(fetchAccountsData,{
+  helper.table(fetchProfilesData,{
     el: '#profilesOverview',
     data: {
       profiles: application.object.profiles.accounts
@@ -39,7 +39,7 @@ profilesOverview = () => {
   })
 }
 
-const fetchAccountsData = () => {
+const fetchProfilesData = () => {
   axios.get('api/accounts').then( // fetch accounts data
     (res) => {
       
@@ -75,7 +75,7 @@ const profiles = (()=>{
       template : 'addProfile'
     }
   },() => {
-    fetchAccountsData();
+    fetchProfilesData();
   });
   
 })();
