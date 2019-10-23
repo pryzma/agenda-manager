@@ -80,7 +80,12 @@ helper.modal({
   },
   save : () => {
     // do something on save (primary button is clicked)
-  }
+  },
+  buttons : [
+    { html : 'Button text', onClick : () => {
+      // do something on button click
+    }}
+  ]
 })
 */
 function modal(args){
@@ -93,13 +98,37 @@ function modal(args){
       args.save();
     });
   }
-  if(typeof args.close === 'function'){
-    $amModal.on('hidden.bs.modal', function (e) {
-      $('#amModalTitle').html('');
-      $('#amModalBody').html('');
-      args.close();
-    });
+  console.log(args)
+
+  if(args.buttons){
+    const button_container = document.createElement('div');
+    button_container.setAttribute('id','button_container')
+    const footer = document.getElementById('amModalFooter');
+    for(let button of args.buttons){
+      
+      
+      const button_ = document.createElement('button');
+      button_.setAttribute( 'class', `btn btn-${button.class}`)
+      button_.innerHTML = button.html;
+      if(typeof button.onClick === 'function' ){
+        button_.addEventListener('click', (event)=>{
+          button.onClick(event);
+        })
+        
+      }
+      button_container.appendChild(button_)
+      
+    }
+    footer.appendChild(button_container)
   }
+  
+  $amModal.on('hidden.bs.modal', function (e) {
+    $('#amModalTitle').html('');
+    $('#amModalBody').html('');
+    $('#button_container').remove();
+    if(typeof args.close === 'function') args.close();
+  });
+  
 }
 // table
 /*
@@ -181,7 +210,7 @@ function table(args){
 
   // table insert
   function tableInsert(args,table){
-    if(!args.insert) args.insert = 'append';
+    if(!args.insert) args.insert = 'html';
     if(!args.el) args.el = application.config.main;
     $(args.el)[args.insert](table);
     return table;
@@ -329,7 +358,6 @@ function formFromModel(args){
     }
     
     formRow.appendChild(formInputCol);
-
     return formRow;
   }
 }

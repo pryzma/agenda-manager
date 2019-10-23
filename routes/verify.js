@@ -6,6 +6,7 @@ const connection = require('../app/dbconn'),
       sgMail = require('@sendgrid/mail'),
       flash = require('connect-flash'),
       crypto = require('crypto'),
+      controller = require('../controllers/accounts')
       app = express();
       app.use(bodyParser.urlencoded({extended : true}));
       const bodyParserJSON = app.use(bodyParser.json());
@@ -16,13 +17,14 @@ router.get('/',(req,res)=>{
     const uuid = req.query.uuid;
 
     connection.query(`SELECT * FROM accounts WHERE id='${uuid}'`, (err, account) => {
-        
-        if(account){ 
+        console.log(account)
+        if(account.length > 0){ 
             res.render('activate',{
                 name : 'Agenda Manager', 
                 uuid : uuid,
                 firstName : account[0].firstName,
-                lastName : account[0].lastName
+                lastName : account[0].lastName,
+                createdBy : account[0].createdBy
             });
         }else { // uuid is not found in database
             
@@ -33,22 +35,26 @@ router.get('/',(req,res)=>{
 });
 
 function getAccount(id){
-    connection.query(`SELECT * FROM accounts WHERE id='${id}'`, (account) => {
-        if(account){
-            return account
-        }else{
-
-        }
-    });
+    const account = controller.getOne(id)
+    console.log(`getAccount('${id}') : ${account}`)
+    return account
+       
+ 
 }
+router.post('/', bodyParserJSON, (req, res) => controller.verifyAccount(req,res))
+/*
 router.post('/', bodyParserJSON, (req, res) => {// save data from form to database 
     const account = req.body;
-    console.log(account)
+    
     account.salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6'+account.password;
     account.password = crypto.createHash('sha1').update(account.salt).digest('hex');
     connection.query(`UPDATE accounts SET firstName='${account.firstName}',lastName='${account.lastName}',password='${account.password}',isActivated=1 WHERE id='${account.id}'`, (err, result) => {
-       if (!err) {
+       
+        if (!err) {
+            
+            
             const accountCreatedBy = getAccount(account.createdBy)
+            console.log(`getAccount(req.body.createdBy) : ${JSON.stringify(accountCreatedBy)}`)
             sgMail.setApiKey(process.env.SENDGRID_API_KEY);
             const msg = {
                 to: `${accountCreatedBy.email}`,
@@ -65,6 +71,7 @@ router.post('/', bodyParserJSON, (req, res) => {// save data from form to databa
     });
     
 });
+*/
 module.exports = router
 
 

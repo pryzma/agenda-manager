@@ -2,37 +2,97 @@
 * assets/js/modules/profiles.js
 */
 'use strict'
-const profilesObj = (() => application.object.profiles )()
+//import component from '../components'
+//import {api} from '../server'
 const addProfile = function(){
-  helper.form.post({
+ component.form.post({
     el : 'addProfileForm',
     url : 'api/accounts'
   },(res) => {
+    fetchProfilesData()
     $('#addProfileForm').html(`Account <b>${res.data.firstName} ${res.data.lastName}</b> is created and a verification e-mail to activate this account  has been sent to <b>${res.data.email}</b>`)
   })
       
 },
-profilesDashboardBadge = (profiles) => {
-  application.object.profiles.badge = `${profiles.length} Profiles added`
+profilesDashboardBadge = () => {
+  application.object.profiles.badge = `${application.object.profiles.data.length} Profiles added`
 },
+/*
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+async function profilesDashboardBadge(fetchOptions){
+  await fetchOptions;
+  return `${result.length} Profiles added`;
+}
+*/
+// profileView
 profileView =(id) => {
-  for(const account of  application.object.profiles.accounts){
-    if(id === account.id){
-      helper.modal({
-        title : account.name,
-        body : `This account was created ${account.date}`
-      })
+  
+  const getProfile = (profile)=>profile.id === id,
+  profile = application.object.profiles.data.filter(getProfile)[0];
+  
+  component.modal({
+    title : profile.name,
+    body : `This account was created ${profile.date}`,
+    buttons : [{ html : 'Delete Account', class : 'danger', onClick : (event) => {
+      // TODO : confirm delete
+      const id = event.target.id;
+      //if(Popover){
+        // try{
+          $(`#${id}`).popover({
+            title : 'Confirm Delete Profile',
+            content : `<p>Are you sure you want to delete this profile?</p><p><a href="#" onclick="profileDelete(${profile.id},()=>profilesOverview())" >Confirm</a></p>`
+          });
+        // }catch(err){
+          //  profileDelete(profile.id,()=>profilesOverview());
+        // }
+        
+
+     
+      
+    },hideOnClick : true }]
+  })
+},
+profileDelete = (id,callback) => {
+  
+  fetch('api/accounts', {
+    method : 'DELETE',
+    body : JSON.stringify({id : id}),
+    headers: {'content-type': 'application/json'},
+  }).then((id)=> {
+      console.log(`Account ${id} was deleted`)
+      if(callback)callback();
+    })
+  .catch(err=>console.error(err));
+},
+profilesData = {
+  url : 'api/accounts',
+  modify : (profile) =>{
+    let activated = profile.isActivated == 0 ? 'No' : 'Yes'
+    return {
+      id : profile.id,
+      name : profile.firstName+' '+profile.lastName,
+      date : moment(profile.createdAt).fromNow(),
+      activated : activated
     }
+  },
+  callback : (data) => {
+    application.object.profiles.data = data
+    profilesDashboardBadge();
   }
 },
 profilesOverview = () => {
-  helper.table(fetchProfilesData,{
+  component.table({
+    model : 'account',
     el: '#profilesOverview',
-    data: {
-      profiles: application.object.profiles.accounts
+    class : 'table-striped table-hover',
+    data: profilesData,
+    cols : {
+      name : { label : 'Name' },
+      date : { label : 'Created' },
+      activated : { label : 'Activated' }
     },
     methods: {
-      profileView : (event) => {
+      onRowClick : (event) => {
         profileView(event.target.parentElement.id);         
       }
     }
@@ -40,7 +100,11 @@ profilesOverview = () => {
 }
 
 const fetchProfilesData = () => {
-  axios.get('api/accounts').then( // fetch accounts data
+  // TODO : component.api
+  /*
+  return component.api(profilesData)
+  */
+  return axios.get('api/accounts').then( // fetch accounts data
     (res) => {
       
       const accounts = []
@@ -54,9 +118,10 @@ const fetchProfilesData = () => {
           activated : activated
         })
       }
-      profilesDashboardBadge(accounts)
+      
       // save data to accounts property of profiles module object
-      application.object.profiles.accounts = accounts
+      application.object.profiles.data = accounts
+      profilesDashboardBadge()
     }
   )
 }

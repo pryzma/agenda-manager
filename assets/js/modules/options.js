@@ -3,53 +3,64 @@
 */
 'use strict'
 const options = (function(){
-
   const add = { // options/add
     name : 'Add Option',
     template : 'addOption',
-    default : function(){
-      helper.form.fromModel({
-        before : (data) => {
-          const participantsEls = document.forms[0].elements['participants'],
-                participantsArr = [];
-
-          for(let participantEl of participantsEls){
-          
-            participantsArr.push(participantEl.value)
-          }
-         
-          data.participants = participantsArr;
-        },
-        model : ['Option','Contact'],
-        url : 'api/options',
-        btnSaveTxt : 'Add Option',
-        fields : {
-          name : { label : 'Description' },
-          //header_h5_1 : 'Date & Time',
-          date : { label : 'Date', type : 'date', value : helper.date() },
-          participants : { label : 'Participants', use : participantsCheckBoxes },
-          time : { label : 'Time', type : 'time' },
-          timePresence : { label : 'Time of Presence', type : 'time' },
-          timeSoundcheck : { label : 'Time of Soundcheck', type : 'time' },
-          header_h5_2 : 'Contact Details',
-          organisation : { label : 'Venue' },
-          /*
-          [
-            { is : 'name', label : 'Description' }, // label + input
-            { fields : [ // two inputs + labels in one row
-              { is : 'date', label : 'Date' },
-              { is : 'time', label : 'Time' }
-            ]}
-          ]
-          */
-          
-        },
-        onSubmit : (data) => {
-          $('form').html(`Option for ${data.name} has been added`)
-        },
-        insert : 'append'
-      });
-    }
+    default : () => addOption()
+  },
+  addOption = () => {
+    component.form.fromModel({
+      before : (data) => { // before data is posted
+        // create array from checked participants values
+       /* const participantsEls = document.forms[0].elements['participants:checked'],
+              participantsArr = [];
+            console.log(participantsEls)
+        for(let participantEl of participantsEls)
+          participantsArr.push(participantEl.value);
+        data.participants = participantsArr;
+        */
+       const participants = []
+       $('.participants:checked').each(function() {
+          participants.push($(this).val());
+       });
+       data.participants = participants;
+       console.log(data.participants)
+      },
+      model : ['Option','Contact'],
+      url : 'api/options',
+      btnSaveTxt : 'Add Option',
+      fields : { // fields
+        name : { label : 'Description' },
+        //header_h5_1 : 'Date & Time',
+        date : { label : 'Date', type : 'date', value : component.date() },
+        participants : { label : 'Participants', use : participantsCheckBoxes },
+        time : { label : 'Arrival', type : 'time', value : '12:00' },
+        timePresence : { label : 'Show', type : 'time', value : '12:00' },
+        timeSoundcheck : { label : 'Show', type : 'time', value : '12:00' },
+        timeSets : { label : 'Sets', use : optionTimeFrameSets },
+        header_h5_2 : 'Contact Details',
+        organisation : { label : 'Venue' },
+        street_address : { label : 'Address' },
+        postal_code : { label : 'Postal Code'},
+        city : { label : 'City' }
+        /*
+        [
+          { field : 'name', label : 'Description' }, // label + input
+          { fields : [ // two inputs + labels in one row
+            { is : 'date', label : 'Date' },
+            { is : 'time', label : 'Time' }
+          ]},
+          { header_h4 : 'Some h4 Header' }
+        ]
+        */
+        
+      },
+      onSubmit : (res) => {
+        
+        $('form').html(`Option for <b>${res.data.name}</b> has been added`)
+      },
+      insert : 'append'
+    });
   },
   optionsDashboardBadge = (options) => {
     application.object.options.badge = `${options.length} Options added`
@@ -57,7 +68,7 @@ const options = (function(){
   optionView =(id) => {
     for(const option of  application.object.options.data){
       if(id === option.id){
-        helper.modal({
+        component.modal({
           title : option.name,
           body : `This option was created ${option.date}`
         })
@@ -84,10 +95,27 @@ const options = (function(){
       application.object.options.data = options
     });
   },
+  optionTimeFrameSets = () => {
+    let SetNum = 1;
+    const addSetBtn = document.createElement('button'),
+    addSet = document.createElement('div');
+    addSet.setAttribute('class','row')
+    addSetBtn.innerHTML = '<i class="fas fa-plus"></i> Add New Set'
+    addSetBtn.setAttribute('class','btn btn-light')
+    addSetBtn.addEventListener('click' , (event)=> {
+      event.preventDefault()
+      addSet.parentNode.insertBefore(component.form.input.row({ label : `Start Set #${SetNum}`,type : 'time'}),addSet.nextSibling);
+      addSet.parentNode.insertBefore(component.form.input.row({ label : `End Set #${SetNum}`,type : 'time'}),addSet.nextSibling);
+      
+      SetNum++;
+    })
+    addSet.appendChild(addSetBtn);
+    return addSet;
+  },
   participantsCheckBoxes = () => {
     const participants = document.createElement('div');
     let index = 0;
-    for(let account of application.object.profiles.accounts){
+    for(let account of application.object.profiles.data){
       const formCheck = document.createElement('div');
       formCheck.setAttribute('class','form-check');
       const formCheckInput = document.createElement('input');
@@ -96,6 +124,7 @@ const options = (function(){
       formCheckInput.setAttribute('id',`participants_${account.id}`);
       //formCheckInput.setAttribute('name',`participants[${index}]`);
       formCheckInput.setAttribute('name',`participants`);
+      formCheckInput.setAttribute('class','participants');
       index++;
       formCheck.appendChild(formCheckInput);
       const formCheckLabel = document.createElement('label');

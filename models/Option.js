@@ -26,6 +26,9 @@ module.exports =  (sequelize, Sequelize) => {
         timeSoundcheck: {
             type : Sequelize.STRING
         },
+        timeSets: {
+            type : Sequelize.STRING
+        },
         timeStart: {
             type : Sequelize.STRING
         },

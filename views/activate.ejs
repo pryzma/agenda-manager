@@ -44,24 +44,26 @@
   </head>
   <body >
    
-        <div class="container">
+        <div class="container" style="padding: 50px;">
     
         
           <div class="row">
 
     
-              <div class="card" style="margin: auto;">
+              <div class="card shadow" style="margin: auto;background: none;">
                   <div class="card-body">
                   <div class="py-5 text-center">
                       <img class="d-block mx-auto mb-4" src="img/logo_sm_300.png" alt="">
                       <h2>Activate your account,  <%=firstName %> <%= lastName %></h2>
-                      <p class="lead">Please complete the form below to activate your account</p>
+                      <p class="lead text-muted">Please complete the form below by entering your password to activate your account</p>
                     </div>
               
               <form class="needs-validation" novalidate="" id="activateProfileForm">
-                  <h4 class="mb-3">Profile Details</h4>
+                  <h4 class="mb-3">Enter your password</h4>
                   <p></p>
                 <input type="hidden" id="id" name="id" value="">
+                <input type="hidden" id="createdBy" name="createdBy" value="">
+                <!--
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="firstName">First name</label>
@@ -78,7 +80,7 @@
                     </div>
                   </div>
                 </div>
-        
+                -->
                
         
                 <div class="mb-3">
@@ -119,6 +121,7 @@ $(document).ready(function() {
   $('#id').val('<%= uuid %>');
     $('#firstName').val('<%= firstName %>');
     $('#lastName').val('<%= lastName %>');
+    $('#createdBy').val('<%= createdBy %>');
     const activateProfileForm = document.getElementById('activateProfileForm')
     activateProfileForm.addEventListener( 'submit', ( event ) => {
       event.preventDefault();

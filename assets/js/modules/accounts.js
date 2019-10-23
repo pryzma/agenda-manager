@@ -25,16 +25,28 @@ const accountsOverview = () => helper.table({
 
     },
     onRowClick : (event) => {
+        console.log(event)
         accountView(event.target.parentElement.id);
     }
 });
 const accountView = (id) => {
     for(const account of application.object.accounts.data){
         if(id === account.id){
-          return helper.modal({
+          const args = {
             title : account.name,
-            body : `This account was created ${account.date}`
-          })
+            body : `This account was created ${account.date}`,
+            buttons : [
+                { html : 'Delete Account', class : 'danger', onClick : () => {
+                    axios.delete('api/accounts', {
+                        data : {id : id}
+                    }).then(res => {
+                        accountsOverview()
+                    })
+                }}
+            ]
+          }
+          console.log(args)
+          return helper.modal(args)
         }
     }
 }

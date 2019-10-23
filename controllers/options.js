@@ -12,10 +12,10 @@ const multer = require('multer')
 controller.createOption = (req,res) => {
     //req.body.participants = req.body.participants.map(item => (Array.isArray(item) && item[1]) || null);
     const data = req.body;
-    const contact = {} // contact duplicates check
+    const contact = data // contact duplicates check
     contact.id = uuidv4();
-    contact.organisation = data.organisation;
-    delete data.organisation;
+    //contact.organisation = data.organisation;
+    //delete data.organisation;
     
     const option = data;
     option.id = uuidv4();
@@ -44,7 +44,6 @@ controller.createOption = (req,res) => {
         });
     });
     /* */
-    
     
     
 }

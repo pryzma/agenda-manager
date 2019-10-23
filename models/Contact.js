@@ -17,7 +17,7 @@ module.exports =  (sequelize, Sequelize) => {
         organisation: {
             type: Sequelize.STRING
         },
-        street_adress: {
+        street_address: {
             type: Sequelize.STRING
         },
         postal_code: {
@@ -32,7 +32,7 @@ module.exports =  (sequelize, Sequelize) => {
         country : {
             type: Sequelize.STRING
         },
-        street_adress_secondary: {
+        street_address_secondary: {
             type: Sequelize.STRING
         },
         postal_code_secondary: {

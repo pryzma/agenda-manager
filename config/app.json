@@ -7,6 +7,7 @@
             "application-ejs",
             "websocket",
             "helpers",
+            "components",
             "agendamanager" 
         ],
         "modules" : [
@@ -38,14 +39,11 @@
             "templatePath" : "html/templates/{template}.html"
         },
         "cdns" : [
-            { "name" : "React", "url" : "https://cdnjs.cloudflare.com/ajax/libs/react/16.9.0/umd/react.production.min.js", "type" : "script", "sri" : "sha256-15e7WPERh0o2wO4LNQS156a0LZ6EpYHY9wzApyqie08="},
-            { "name" : "React DOM", "url" : "https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.9.0/umd/react-dom.production.min.js", "type" : "script", "sri" : "sha256-WQOxvuR1poOi0qwIafu9sWYJ4rje3oAn0v7idBItkAM="},
-            { "name" : "jQuery", "url" : "https://code.jquery.com/jquery-3.4.1.min.js", "type" : "script", "sri" : "sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" },
+            
+           
             { "name" : "Vue", "url" : "https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js", "type" : "script", "sri" : "sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY="},
             { "name" : "Axios", "url" : "https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js", "type" : "script", "sri" : "sha256-S1J4GVHHDMiirir9qsXWc8ZWw74PHHafpsHp5PXtjTs="},
             { "name" : "Bootstrap", "url" : "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css", "type" : "stylesheet", "sri" : "sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY" },
-            { "name" : "Bootstrap", "url" : "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js", "type" : "script", "sri" : "sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" },
-            { "name" : "Popper", "url" : "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js", "type" : "script", "sri" : "sha384-L2pyEeut/H3mtgCBaUNw7KWzp5n9+4pDQiExs933/5QfaTh8YStYFFkOzSoXjlTb" },
             { "name" : "Hammer", "url" : "https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js", "type" : "script", "sri" : "sha256-eVNjHw5UeU0jUqPPpZHAkU1z4U+QFBBY488WvueTm88=" },
             { "name" : "Underscore", "url" : "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js", "type" : "script", "sri" : "sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" },
             { "name" : "Backbone", "url" : "https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js", "type" : "script", "sri" : "sha256-OO+KD/bMG3Dr57LO27ZhYL2zYhLP1CJIkCXUUDnFNuc=" },

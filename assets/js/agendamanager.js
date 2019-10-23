@@ -1,17 +1,20 @@
 /*
 * assets/js/agendamanager.js
 */
+//import websocket from './websocket'
 'use strict'
 const agendamanager = (function(){
     //setInterval(serverStatus, 3000); // check status every 3s
     
-    websocket({ // websocket connection
-        onclose : () => { // server has closed connection
-            $('#serverConnectionLost').modal()
-            // check every 3s if server is alive again
-            setInterval(serverStatus, 3000); 
-        }
-    });
+    if(websocket){
+        websocket({ // websocket connection
+            onclose : () => { // server has closed connection
+                $('#serverConnectionLost').modal()
+                // check every 3s if server is alive again
+                setInterval(serverStatus, 3000); 
+            }
+        });
+    }
     const agendamanagerObj = {};
     
     
