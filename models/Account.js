@@ -10,6 +10,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             notEmpty: true
         },
+        profile: {
+            type: Sequelize.STRING,
+            notEmpty: true
+        },
         contact:{
             type: Sequelize.STRING,
             notEmpty: true

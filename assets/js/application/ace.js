@@ -1,7 +1,8 @@
 // Application Client Envoirement
 
-( function ace() {
+( function client() {
     const app = {
+        config : {},
         component : appComponent,
         module : appModule,
         model : appModel,
@@ -35,21 +36,25 @@
     }
     controller = (args) => appController(args),
     router = (args) => appRouter(args)
+    function err(err){
+        throw err
+    }
     // withType
-    function withType(args,callback){
+    function withType(args,type,callback){
         // assign callback to args type
-        const argsType = typeof args[Object.getOwnPropertyNames(args)[0]];
-            switch(argsType){
-                case "string":
+        const argsType = typeof args,
+        err = `withType called with type '${type}', argsType is ${argsType} `;
+            switch(args.prototype){
+                case String:
+                    type === 'string' ? callback() : err(err)
+                    break;
+                case Object:
                     callback();
                     break;
-                case "object":
+                case Function:
                     callback();
                     break;
-                case "function":
-                    callback();
-                    break;
-                case argsType.prototype === Array:
+                case Array:
                     callback();
                     break;
                 
@@ -88,10 +93,21 @@
             
         }
     }
+    // appHistory
+    function appHistory(args){
 
+    }
     // appRouter
+    /*
+    client.router({
+        '/route' : 'module'
+    })
+    */
     function appRouter(args){
+        const routes = Object.getOwnPropertyNames(args)
+        for(const route of routes){
 
+        }
     }
     // appView
     function appView(args) {
@@ -107,6 +123,7 @@
     }
     // appModel
     function appModel(args){
+        const argsType = typeof args;
 
     }
     // appModule
@@ -119,12 +136,13 @@
     }
     return {
         app : app,
-        component : component,
-        module : module,
-        config : config,
+        component : app.component,
+        module : app.module,
+        config : app.config,
         model : model,
         view : view,
         controller : controller,
+        history : app.history,
         router : router
     }
 })()

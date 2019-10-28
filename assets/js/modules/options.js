@@ -12,19 +12,13 @@ const options = (function(){
     component.form.fromModel({
       before : (data) => { // before data is posted
         // create array from checked participants values
-       /* const participantsEls = document.forms[0].elements['participants:checked'],
-              participantsArr = [];
-            console.log(participantsEls)
-        for(let participantEl of participantsEls)
-          participantsArr.push(participantEl.value);
-        data.participants = participantsArr;
-        */
+      
        const participants = []
        $('.participants:checked').each(function() {
           participants.push($(this).val());
        });
        data.participants = participants;
-       console.log(data.participants)
+      
       },
       model : ['Option','Contact'],
       url : 'api/options',
@@ -32,7 +26,7 @@ const options = (function(){
       fields : { // fields
         name : { label : 'Description' },
         //header_h5_1 : 'Date & Time',
-        date : { label : 'Date', type : 'date', value : component.date() },
+        date : { label : 'Date', type : 'date', value : component.date('mm-dd-yyyy') },
         participants : { label : 'Participants', use : participantsCheckBoxes },
         time : { label : 'Arrival', type : 'time', value : '12:00' },
         timePresence : { label : 'Show', type : 'time', value : '12:00' },
@@ -43,16 +37,6 @@ const options = (function(){
         street_address : { label : 'Address' },
         postal_code : { label : 'Postal Code'},
         city : { label : 'City' }
-        /*
-        [
-          { field : 'name', label : 'Description' }, // label + input
-          { fields : [ // two inputs + labels in one row
-            { is : 'date', label : 'Date' },
-            { is : 'time', label : 'Time' }
-          ]},
-          { header_h4 : 'Some h4 Header' }
-        ]
-        */
         
       },
       onSubmit : (res) => {

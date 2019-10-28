@@ -33,23 +33,17 @@ profileView =(id) => {
   component.modal({
     title : profile.name,
     body : `This account was created ${profile.date}`,
-    buttons : [{ html : 'Delete Account', class : 'danger', onClick : (event) => {
-      // TODO : confirm delete
-      const id = event.target.id;
-      //if(Popover){
-        // try{
-          $(`#${id}`).popover({
-            title : 'Confirm Delete Profile',
-            content : `<p>Are you sure you want to delete this profile?</p><p><a href="#" onclick="profileDelete(${profile.id},()=>profilesOverview())" >Confirm</a></p>`
-          });
-        // }catch(err){
-          //  profileDelete(profile.id,()=>profilesOverview());
-        // }
-        
-
+    buttons : [{ 
+      html : 'Delete Account', 
+      class : 'danger',
+      confirm : {
+        msg : `Are you sure you want to delete this account?`,
+        placement : 'bottom',
+        confirm : () => profileDelete(id,()=>profilesOverview()),
+        hideOnConfirm : true
+      }
      
-      
-    },hideOnClick : true }]
+    }]
   })
 },
 profileDelete = (id,callback) => {
@@ -58,7 +52,7 @@ profileDelete = (id,callback) => {
     method : 'DELETE',
     body : JSON.stringify({id : id}),
     headers: {'content-type': 'application/json'},
-  }).then((id)=> {
+  }).then((event)=> {
       console.log(`Account ${id} was deleted`)
       if(callback)callback();
     })

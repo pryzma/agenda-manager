@@ -27,8 +27,8 @@
       <nav id="headerNav" class="my-2 my-md-0 mr-auto">
 
       </nav>
-      <div id="profile" >
-          <a href="#profile"><i class="fas fa-user"></i> <%= full_name %></a> | <a href="/logout" >Logout</a>
+      <div id="accountTopInfo" >
+          <a href="#account"><i class="fas fa-user"></i> <%= full_name %></a> | <a href="/logout" >Logout</a>
       </div>
     </header>
     <main role="main" class="container-fluid">
@@ -43,8 +43,8 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link active" href="#profiles/add">
-              + Create Profile
+            <a class="nav-link active" href="#accounts/add">
+              + Create New Account
             </a>
           </li>
 
@@ -94,9 +94,8 @@
     </div>
   </div>
 </div>
-  <script src="js/jquery.js"></script>
-  <script src="js/bootstrap.js"></script>
-  <script src="js/popper.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha256-fzFFyH01cBVPYzl16KT40wqjhgPtq6FFUB6ckN2+GGw=" crossorigin="anonymous"></script>
     <%- js %>
     <script src="js/ejs.min.js"></script>
     <script src="js/application.js"></script>

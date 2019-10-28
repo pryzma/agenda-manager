@@ -35,14 +35,14 @@ controller.createAccount = (req,res) => {
           from: `noreply@agendamanager.nl`,
           subject: `Registration at agendamanager.nl`,
           text: `Someone has invited you to join Agenda Manager. Visit agendamanager.nl/verify and paste the following code: ${account.id}`,
-          html: `${req.session.user.firstName} ${req.session.user.lastName} has invited you to join Agenda Manager. Visit <a href="${process.env.REF_HTTP_PROTOCOL}://${process.env.REF_URL}verify?uuid=${account.id}">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.id}</strong>`,
+          html: `<div><img src="https://dev.agendamanager.nl/img/logo_sm_300.png" style="margin:auto;" /></div>${req.session.user.firstName} ${req.session.user.lastName} has invited you to join Agenda Manager. Visit <a href="${process.env.REF_HTTP_PROTOCOL}://${process.env.REF_URL}verify?uuid=${account.id}">agendamanager.nl/verify</a> and paste the following code: <br><strong>${account.id}</strong>`,
         }
         sgMail.send(msg);
         res.json(account);
     
     }).catch((err)=>{
         console.log(err)
-    })
+    });
 
 }
 controller.verifyAccount = (req,res) => {
