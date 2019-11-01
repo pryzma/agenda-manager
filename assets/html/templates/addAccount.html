@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h2 class="h2"></h2>
     </div>
-    <p class="lead text-muted">Create a new account; Send e-mail invitation to confirm and complete registration</p>
+    <p class="lead text-muted">Create a new account and send a e-mail to activate account</p>
 
         <form id="addAccountForm" name="addAccountForm" class="needs-validation" novalidate="" @submit.prevent="submit">
 
@@ -27,22 +27,23 @@
        
         
                 <div class="mb-3">
-                  <label for="email">Email <span class="text-muted">(Username)</span></label>
+                  <label for="email">Email <span class="text-muted">(Username)</span> <small class="text-muted">E-mail adress will be used as username for this account & to send a invitation to activate this account</small></label>
                   <input type="email" class="form-control" id="email" name="email" placeholder="user@example.com" v-model="email">
                   <div class="invalid-feedback">
                     Please enter a valid email address.
                   </div>
-                  <small class="text-muted">This e-mail adress will be used as username for this account & to send a invitation to activate this account</small>
+                  
                 </div>
         
                 <div class="mb-3">
                   <label for="profile">Profile <span class="text-muted"></span></label>
+                  <small class="text-muted">Selected profile determines which access rights this account has </small>
                   <select class="form-control" id="profile">
                       <option>Manager</option>
                       <option>Musician</option>
                       <option>Personnel</option>
                   </select>
-                  <small class="text-muted">Selected profile determines which access rights this profile has </small>
+                  
                 </div>
                 
                 <hr class="mb-4">

@@ -4,40 +4,36 @@
 * assets/js/components.js
 */
 
-//import {api} from "./server";r
+//import {api} from "./server";
 const component = (() => {
     
  
   // component.date
   function date(format){
-    let today = new Date();
-    const dd = today.getDate();
-    const mm = today.getMonth() + 1; //January is 0!
+    const now = new Date();
+    let dd = now.getDate();
+    let mm = now.getMonth() + 1; 
   
-    var yyyy = today.getFullYear();
+    const yyyy = now.getFullYear();
     if (dd < 10) dd = '0' + dd;
     if (mm < 10) mm = '0' + mm;
-  
-    //today =  `${yyyy}-${mm}-${dd}`;
     format = format ? format : 'mm-dd-yyyy';
     format = format.replace('dd',dd).replace('mm',mm).replace('yyyy',yyyy);
     return format;
   }
-
+  // component.time
   function time(){
-    let today = new Date();
-    let hh = today.getHours();
+    let now = new Date();
+    let hh = now.getHours();
     hh = hh.toString().length === 1 ? `0${hh}` : hh
-    let mm = today.getMinutes();
+    let mm = now.getMinutes();
     mm = mm.toString().length === 1 ? `${mm}0` : mm
-      
-    
-    
-    today = `${hh}:${mm}`;
+    now = `${hh}:${mm}`;
 
-    return today;
+    return now;
   }
 
+  // component.uid
   function uid(){  // generate unique id
       const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
       return s4() + s4() + '-' + s4();
@@ -61,10 +57,13 @@ const component = (() => {
     axios[args.method](args.url,args.data)
     .then((res) => {
       const data = [];
-      for(let item of res.data){
-        if(args.modify) item = args.modify(item);
-        data.push(item);
+      if(res.data.length > 0){
+        for(let item of res.data){
+          if(args.modify) item = args.modify(item);
+          data.push(item);
+        }
       }
+      
       if(callback) 
         return callback(data);
       if(args.callback) 
@@ -74,24 +73,14 @@ const component = (() => {
     })
   }
  
-  // component.modal
-  /*
-  component.modal({
-    title : 'Title of modal',
-    body : 'Body of modal',
-    close : () => {
-      // do something on close
-    },
-    save : () => {
-      // do something on save (primary button is clicked)
-    },
-    buttons : [
-      { html : 'Button text', onClick : () => {
-        // do something on button click
-      }}
-    ]
-  })
-  */
+
+ // component.repeat
+ /*
+ component.repeat({
+   data : 'api/endpoint',
+   template : '{propName} is replaced'
+ })
+ */
   function repeat(args){
     if(typeof args.data === 'string'){
       const apiObj = args;
@@ -104,14 +93,123 @@ const component = (() => {
     }
     let output = '';
     for(let item of args.data){
+      output =+ args.template;
       for(let dataItem in item ){
-        output =+ args.template.replace(dataItem,`{${item[dataItem]}}`)
+        output.replace(`{${dataItem}}`,item[dataItem])
       }
       
     }
     return output;
   }
+  // component.card
+  /*
+    component.card({
+      title : 'Title of Card',
+      content : 'Content of Card'
+    })
+  */
+  function card(args){
+    const card = document.createElement('div'), 
+    cardBody = document.createElement('div'),
+    cardText = document.createElement('div'),
+    cardFragment = document.createDocumentFragment();
+    card.setAttribute('class','card');
+    cardBody.setAttribute('class','card-body');
 
+    if(args.title){
+      const cardTitle = document.createElement('h6');
+      cardTitle.setAttribute('class','card-title');
+      cardTitle.innerHTML = args.title;
+      card.appendChild(cardTitle);
+    }
+    cardText.setAttribute('class','card-text');
+    cardText.innerHTML = args.content;
+    cardBody.appendChild(cardText);
+    
+    card.appendChild(cardBody);
+    return card;
+  }
+  // component.btn
+  /*
+  component.btn({
+    class : 'primary',
+    txt : 'Button Text',
+    event : ['click',()=>{
+      // do something on click
+    }],
+    confirm : {
+      msg : 'Are you sure?',
+      confirm : () => {
+        console.log("Is confirmed")
+      }
+    }
+  })
+  */
+  function btn(args){
+    const btn = document.createElement('button');
+    if(!args.class) args.class = 'primary'
+    btn.setAttribute('class',`btn btn-${args.class}`);
+    if(!args.id) args.id = uid();
+    btn.setAttribute('id',args.id);
+    btn.innerHTML = args.html ? args.html : args.txt;
+    if(args.event){
+      btn.addEventListener(args.event[0],(event)=>args.event[1](event));
+    }
+
+    if(typeof args.confirm === 'object'){
+      const confirm = () => {
+        args.confirm.confirm();
+        if(args.confirm.hideOnConfirm){
+          $('#amModal').modal('hide');
+        }
+      }
+      const cancel = () => $(btn).popover('hide');
+      
+      args.confirm.trigger = 'focus';
+      args.confirm.content = args.confirm.msg;
+      args.confirm.html = true;
+      $(btn).popover(args.confirm).on('shown.bs.popover', () => {
+        //if(!$('button.confirm')){
+          if(!args.confirm.class) args.confirm.class = 'primary'
+          const $confirmBtn = $('<button></button>')
+            .attr('class',`btn btn-sm btn-${args.confirm.class} confirm`)
+            .html('Confirm')
+            .on('click',confirm);
+          $('.popover-body').append($confirmBtn)
+          const $cancelBtn = $('<button></button>')
+            .attr('class','btn btn-sm cancel')
+            .html('Cancel')
+            .on('click',cancel);
+          $('.popover-body').append($cancelBtn)
+        //}
+        //button_.addEventListener('click',confirm);
+      }).on('hidden.bs.popover', () => {
+          //button_.removeEventListener('click',confirm);
+      });
+      
+    }
+    return btn;
+  }  
+
+
+  // component.modal
+  /*
+  component.modal({
+    title : 'Title of modal',
+    body : 'Body of modal',
+    close : () => {
+      // do something on close
+    },
+    save : () => {
+      // do something on save (primary button is clicked)
+    },
+    buttons : [
+      { txt : 'Button text', onClick : () => {
+        // do something on button click
+      }}
+    ]
+  })
+  */
   function modal(args){
     const $amModal = $('#amModal').modal();
     $('#amModalTitle').html(args.title);
@@ -122,59 +220,17 @@ const component = (() => {
         args.save();
       });
     }
-    
-  
     if(args.buttons){
       const button_container = document.createElement('div');
       button_container.setAttribute('id','button_container')
       const footer = document.getElementById('amModalFooter');
       for(let button of args.buttons){
-        
-        
-        const button_ = document.createElement('button');
-        button_.setAttribute( 'class', `btn btn-${button.class}`)
-        button_.innerHTML = button.html;
-        button.id ? button_.setAttribute('id',button.id) : button_.setAttribute('id',component.uid())
-        
-        if(typeof button.onClick === 'function' ){
-          button_.addEventListener('click', (event)=>{
-            button.onClick(event);
-            if(button.hideOnClick){
-              $amModal.modal('hide');
-            }
-          })
-          
-        }
-        const confirmDeleteAccount = (args) => {
-          button.confirm.confirm(args)
-          if(button.hideOnClick || button.confirm.hideOnConfirm){
-            $amModal.modal('hide');
-          }
-        }
-        if(typeof button.confirm === 'object'){
-          $(button_).popover({
-            content : button.confirm.msg,
-            trigger : 'focus'
-          }).on('shown.bs.popover', () => {
-
-            //if(button.confirm.confirm === 'function'){
-              
-              button_.addEventListener('click',confirmDeleteAccount,true)
-            //}
-          }).on('hidden.bs.popover', () => {
-            button_.removeEventListener('click',confirmDeleteAccount,true)
-          });
-          
-        }
-        if(typeof button.popover === 'object'){
-          $(button_).popover(button.popover)
-        }
+        const button_ = component.btn(button);
         button_container.appendChild(button_)
         
       }
       footer.appendChild(button_container)
     }
-    
     $amModal.on('hidden.bs.modal', function (e) {
       $('#amModalTitle').html('');
       $('#amModalBody').html('');
@@ -186,7 +242,7 @@ const component = (() => {
 
   // tabs 
   /*
-  component.tabs([
+  component.nav.tabs([
     { label : 'Tab#1', content : 'Content for Tab#1' }
   ])
   */
@@ -198,10 +254,11 @@ const component = (() => {
     tabs.setAttribute('role','tablist')
     const tabsContent = document.createElement('div');
     tabsContent.setAttribute('class','tab-content')
-    for(let item in Object.getOwnPropertyNames(args)){
+    for(let item in args){
       const tab = document.createElemen('li'),
       tabLink = document.createElement('a'),
-      tabContent = document.createElement('div')
+      tabContent = document.createElement('div');
+      tabContent.innerHTML = item.content;
       tabId = uid();
       tabLink.setAttribute('href',`#${tabId}`)
       tab.innerHTML = item.label;
@@ -273,10 +330,13 @@ const component = (() => {
       const apiObj = {
         url : args.data.url,
         callback : (data) => {
-          
-          table = tableBody(table,Object.getOwnPropertyNames(data[0]),data,args);
-          
-          tableInsert(args,table);
+          if(data[0]){
+            table = tableBody(table,Object.getOwnPropertyNames(data[0]),data,args);
+            tableInsert(args,table);
+          }else{
+            $(args.el).html('No Data')
+          }
+         
           if(args.data.callback) args.data.callback(data);
         }
       }
@@ -428,7 +488,9 @@ const component = (() => {
         if(prop.split('_')[0] === 'header'){
           const header = document.createElement(prop.split('_')[1])
           header.innerHTML = args.fields[prop]
-          form.appendChild(header)
+          const hr = document.createElement('hr')
+          form.appendChild(header);
+          form.appendChild(hr);
         }else if(prop === 'field'){
           
         }else if(prop === 'fields'){
@@ -489,7 +551,7 @@ const component = (() => {
       if(args.use) argsUse = args.use;
     }
     if( argsUse ){
-      formInputCol.appendChild(argsUse()) 
+      formInputCol.appendChild(argsUse()); 
     }else{
       // input
       const formRowInput = document.createElement('input');
@@ -506,7 +568,7 @@ const component = (() => {
       if(usePropArgs){
         if(args.value) formRowInput.setAttribute('type',args.value);
       }else{
-        if(args.fields[prop].value) formRowInput.setAttribute('value',args.fields[prop].value)
+        if(args.fields[prop].value) formRowInput.setAttribute('value',args.fields[prop].value);
       }
      
       formInputCol.appendChild(formRowInput)
@@ -540,13 +602,64 @@ const component = (() => {
       .html(args.message);
     args.fadeOut = args.fadeOut ? args.fadeOut : 3000;
     $(application.object.config.main).prepend(alert);
-    setTimeout(()=>{
+    if(args.fadeOut){
+      setTimeout(()=>{
       
-      alert.fadeOut(()=>{
-        alert.remove()
-      });
-     
-    },args.fadeOut);
+        alert.fadeOut(()=>{
+          alert.remove()
+        });
+       
+      },args.fadeOut);
+    }
+  }
+  // agenda
+  function agenda(args){
+    const now = new Date();
+    let dd = now.getDate();
+    let mm = now.getMonth() + 1; 
+    const yyyy = now.getFullYear();
+    const days = new Date(yyyy, mm, 0).getDate()+1;
+    let start = 1;
+    const agendaContainer = $('<div></div>')
+      .attr('id','agendaContainer')
+      .attr('class','row')
+      
+    while(start < days ){
+      let weekDay = (new Date(`${yyyy}-${mm}-${start}`)).toString().split(' '),
+      weekDayNum = new Date(`${yyyy}-${mm}-${start}`).getDay()
+
+      let agendaMonthDay = $('<div></div>')
+        .attr('style','height:125px;border:1px solid rgba(234,234,234,1);margin:2px;background:linear-gradient(to bottom,rgba(234,234,234,1)  25%,#fff  100%);')
+        .attr('class','col-md-2')
+      dd===start ? agendaMonthDay.html(`<b>${start} ${weekDay[0]}</b>`) : agendaMonthDay.html(start+' '+weekDay[0])
+      agendaContainer.append(agendaMonthDay)
+      start++;
+    }
+    return agendaContainer;
+  }
+  // editor
+  /*
+  component.editor({
+    data : {
+      url :'api/endpoint',
+      modify : (item)=>{
+        return item
+      }
+    },
+    table : {
+      onRowClick : ()=>{
+
+      }
+    }
+    form : {
+      onSubmit : () ={
+
+      }
+    }
+  })
+  */
+  function editor(args){
+
   }
   return { 
     form : { 
@@ -554,9 +667,9 @@ const component = (() => {
       fromModel : formFromModel,
       data : formData,
       input : {
-        datepicker : (args) => formInputDatepicker(args),
-        timepicker : (args) => formInputTimepicker(args),
-        row : (args) => formRow(args)
+        datepicker : formInputDatepicker,
+        timepicker : formInputTimepicker,
+        row : formRow
       } 
     },
     table : (before,args,callback) => {
@@ -567,18 +680,23 @@ const component = (() => {
         args = before;
       }
       if(typeof before === 'function')before();
-      //new Vue(args);
+      
       table(args);
       if(callback)callback();
     },
+    repeat : repeat,
+    agenda : agenda,
     nav : {
       tabs : navTabs
     },
+    card : card,
+    btn : btn,
     modal : modal,
     alert : alert,
     date : date,
     time : time,
-    uid : uid
+    uid : uid,
+    api : api
   }
 })() // invoke
 //export default component;

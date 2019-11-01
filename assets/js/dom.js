@@ -1,24 +1,30 @@
 /*
 * assets/js/dom.js
 */
-const dom = ((args)=>{
+const DOM = ((args)=>{
   // element
   /*
-dom.element(['div',{id : 'divId'},'content of element']);
-dom.element(['table',{id : 'tableId',class : 'table'},
+DOM.element(['div',{id : 'myDiv'},'content of myDiv']);
+DOM.element(['table',{id : 'myTable',class : 'table'},
     ['thead',
-        ['tr',['th','Header#1'],['th','Header#2'],['th','Header#3'],]
-]])
+        ['tr',['th','Header#1'],['th','Header#2'],['th','Header#3']]
+    ],
+    ['tbody',
+        ['tr',['td','Column#1'],['td','Column#2'],['td','Column#3']]
+    ]
+]);
 */
-  function element( tag, callback ){
-    let isArray = ( arr ) => Array.isArray(arr);
-    if ( !isArray( tag ) ) 
+  function element( args, callback ){
+    const isArray = ( arr ) => Array.isArray(arr);
+    if ( !isArray( args ) ) 
       return element.call( this, Array.prototype.slice.call( arguments ) )
-    let name = tag[0],
-        attributes = tag[1],
+    let name = args[0],
+        attributes = args[1],
         element = document.createElement( name ),
-        start = 1
-
+        start = 1;
+    if(attributes.id){
+      
+    }
     if ( typeof attributes === 'object' && attributes !== null && !isArray( attributes ) ) {
       for ( let attribute in attributes ) 
         element.setAttribute( attribute ,attributes[ attribute ] )

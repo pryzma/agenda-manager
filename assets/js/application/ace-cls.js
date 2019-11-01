@@ -5,13 +5,11 @@ class App {
         
     }
     set config(){
-        axios.get({url : 'config'})
+        fetch('config')
         .then((data)=>{
             this.config = data;
             init();
         })
     }
-    get component(){
-
-    }
+   
 }

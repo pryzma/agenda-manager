@@ -25,7 +25,10 @@ controller.getAll = (req,res) => {
 
 
 controller.getOne = (req,res) => {
-    
+    Contact.findOne(req).then(contact => {
+        return contact.get({ plain: true })
+       
+    });
 }
 
 controller.updateContact = (req,res) => {

@@ -1,5 +1,5 @@
 /*
-* routes/options.js
+* routes/blockdates.js
 */
 const express = require('express'),
       bodyParser = require('body-parser'),
@@ -8,18 +8,13 @@ const express = require('express'),
       app.use(bodyParser.json());
       
 const router = express.Router();
-const controller = require('../controllers/options');
+const controller = require('../controllers/blockdates');
 
 router.get('/', controller.isAuthenticated, (req, res) => {
   controller.getAll(req,res);
 });
 
 router.post('/', bodyParserJSON, (req, res) => {
-  controller.createOption(req,res);
+  controller.createBlockdate(req,res);
 });
-router.delete('/',bodyParserJSON, (req,res) => {
- 
-  controller.deleteOption(req,res);
-});
-
 module.exports = router;

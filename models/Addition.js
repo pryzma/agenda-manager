@@ -1,5 +1,5 @@
-const addition = (sequelize, Sequelize) => {
-    const Profile = sequelize.define('Addition',{
+module.exports = (sequelize, Sequelize) => {
+    return sequelize.define('Addition',{
         id: {
             type: Sequelize.STRING,
             notEmpty: true,
@@ -9,6 +9,4 @@ const addition = (sequelize, Sequelize) => {
         account: {type: Sequelize.STRING},
         date : { type : Sequelize.DATE}
     });
-    return Profile;
 }
-module.exports = addition;

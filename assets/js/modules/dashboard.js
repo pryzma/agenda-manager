@@ -13,7 +13,7 @@ const dashboard = (function(){
   
   const dashboardBadges = function(){
     const modulesObjArr = [];
-    for(let module of application.modules()){
+    for(let module of application.config.menu){
       let moduleObj = application.object[module],
       moduleBadge = typeof moduleObj.badge === 'function' ?  moduleObj.badge() : moduleObj.badge;
       if(module!='dashboard'){

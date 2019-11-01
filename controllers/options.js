@@ -7,13 +7,13 @@ const utils = require('../app/utils');
 const models = require('../models').sequelize.models;
 const Option = models.Option;
 const Contact = models.Contact;
-
+const contactController = require('./contacts')
 const auth = require('./auth')
 const multer = require('multer')
 controller.createOption = (req,res) => {
     //req.body.participants = req.body.participants.map(item => (Array.isArray(item) && item[1]) || null);
-    const data = req.body;
-    const contact = {} // contact duplicates check
+    let data = req.body;
+    let contact = {} // contact duplicates check
     contact.id = uuidv4();
     
     data = utils.fromData(data,contact, // extract & remove properties from data to contact object
@@ -21,8 +21,9 @@ controller.createOption = (req,res) => {
     contact = data[1];
     const option = data[0];
     option.id = uuidv4();
+    option.isConfirmed = 0;
     // participants is array; save to linked table (participants) or as string?
-    data.participants = data.participants.join(','); // as string
+    option.participants = option.participants.join(','); // as string
     /* as linked table (model & controller required)
     for(let participant of data.participants){
         participant = { event : option.id, participant : participant }
@@ -31,8 +32,7 @@ controller.createOption = (req,res) => {
     }
     
     */
-    console.log(data)
-    console.log(contact)
+   
     
     Contact.create(contact).then((contact)=>{
         
@@ -51,12 +51,22 @@ controller.createOption = (req,res) => {
 }
 
 controller.getAll = (req,res) => {
-   Option.findAll({order:[['id','DESC']]}).then((options) => {
+   Option.findAll({where:{isConfirmed:0}}).then((options) => {
         res.json(options)
     });
 }
 
 controller.getOne = (req,res) => {
-    
+    Option.findOne(req).then(option => {
+        return option.get({ plain: true })
+       
+    })
+}
+controller.deleteOption = (req,res) => {
+    Option.destroy({
+        where: req.body
+    }).then(()=>{
+        controller.getAll(req,res);
+    });
 }
 controller.isAuthenticated = auth.isAuthenticated;

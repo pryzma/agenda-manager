@@ -12,19 +12,23 @@
         ],
         "modules" : [
             "dashboard",
-            "shows",
-            "options",
+            "events",    
             "rehearsals",
             "blockdates",
-            "accounts"
+            "account",
+            "accounts",
+            "options"
         ],
+        "menu" : ["dashboard","events","options","accounts","blockdates","rehearsals"],
         "routes" : {
             "dashboard" : "dashboard",
             "shows" : "shows",
             "options" : "options",
             "options/add" : "options.add",
+            "events" : "events",
             "rehearsals" : "rehearsals",
             "blockdates" : "blockdates",
+            "account" : "account",
             "accounts" : "acccounts",
             "accounts/add" : "accounts.add",
             "ws" : "dashboard.ws"
@@ -76,7 +80,12 @@
             "/status" : "status",
             "/config" : "config",
             "/api/accounts" : "accounts",
-            "/api/options" : "options"
+            "/api/contacts" : "contacts",
+            "/api/account" : "account",
+            "/api/options" : "options",
+            "/api/events" : "events",
+            "/api/rehearsals" : "rehearsals",
+            "/api/blockdates" : "blockdates"
         },
         "require" : [
             "dev",

@@ -3,7 +3,21 @@
 */
 'use strict'
 const options = (function(){
-  const add = { // options/add
+  const optionsData = {
+    url : 'api/options',
+    modify : (option) => {
+      //if(application.object.accounts){
+        option.participants = application.object.accounts.get(option.participants).name
+      //}
+      
+      return option
+    },
+    callback : (data) => {
+      application.object.options.data = data;
+      optionsDashboardBadge();
+    }
+  },
+  add = { // options/add
     name : 'Add Option',
     template : 'addOption',
     default : () => addOption()
@@ -12,109 +26,166 @@ const options = (function(){
     component.form.fromModel({
       before : (data) => { // before data is posted
         // create array from checked participants values
-      
-       const participants = []
-       $('.participants:checked').each(function() {
-          participants.push($(this).val());
-       });
-       data.participants = participants;
-      
+        const participants = [];
+        $('.participants:checked').each(function() {
+            participants.push($(this).val());
+        });
+        data.participants = participants;
       },
       model : ['Option','Contact'],
       url : 'api/options',
       btnSaveTxt : 'Add Option',
       fields : { // fields
         name : { label : 'Description' },
-        //header_h5_1 : 'Date & Time',
+        header_h5_1 : 'Option Details',
         date : { label : 'Date', type : 'date', value : component.date('mm-dd-yyyy') },
         participants : { label : 'Participants', use : participantsCheckBoxes },
         time : { label : 'Arrival', type : 'time', value : '12:00' },
         timePresence : { label : 'Show', type : 'time', value : '12:00' },
         timeSoundcheck : { label : 'Show', type : 'time', value : '12:00' },
         timeSets : { label : 'Sets', use : optionTimeFrameSets },
-        header_h5_2 : 'Contact Details',
+        header_h5_2 : 'Location Details',
         organisation : { label : 'Venue' },
         street_address : { label : 'Address' },
         postal_code : { label : 'Postal Code'},
-        city : { label : 'City' }
-        
+        city : { label : 'City' },
+        header_h5_3 : 'Contact Details',
+        first_name : { label : 'First name' },
+        last_name : { label : 'Last name' },
+        email : { label : 'E-mail' }
       },
       onSubmit : (res) => {
-        
-        $('form').html(`Option for <b>${res.data.name}</b> has been added`)
+        component.api(optionsData);
+        window.location.hash = '#options';
+        // TODO : Better solution than seTimeout (wait for options overview when showing component.alert)??
+        setTimeout(()=>{
+          component.alert({
+            class : 'success',
+            message : `<i class="fas fa-calendar-plus"></i> Option <b>${res.data.name} </b> added`
+          });
+        },500);
+        //$('form').html(`Option <b>${res.data.name}</b> has been added`)
+
       },
       insert : 'append'
     });
   },
-  optionsDashboardBadge = (options) => {
-    application.object.options.badge = `${options.length} Options added`
+  optionsDashboardBadge = () => {
+    const optionsDataLength = application.object.options.data.length;
+    let optionsDashboardBadgeLabel
+    if(optionsDataLength === 0){
+      optionsDashboardBadgeLabel = 'No Options added'
+    }else if(optionsDataLength === 1){
+      optionsDashboardBadgeLabel = 'One Option added'
+    }else{
+      optionsDashboardBadgeLabel = `${optionsDataLength} Options added`
+    }
+    application.object.options.badge = optionsDashboardBadgeLabel;
   },
   optionView =(id) => {
-    for(const option of  application.object.options.data){
-      if(id === option.id){
-        component.modal({
-          title : option.name,
-          body : `This option was created ${option.date}`
-        })
-      }
-    }
+    const getOption = (option)=>option.id === id,
+    option = application.object.options.data.filter(getOption)[0];
+
+    component.modal({
+      title : option.name,
+      body : `This option was created ${option.date}`,
+      buttons : [{ 
+        txt : 'Delete Option', 
+        class : 'danger',
+        confirm : {
+          title : '<i class="fas fa-calendar-times"></i> Delete Option',
+          msg : `Are you sure you want to delete this option? <b class="text-danger">You can not undo this action</b><hr>`,
+          placement : 'bottom',
+          confirm : () => optionDelete(id,()=>{
+            optionsOverview();
+            component.alert({
+              class : 'primary',
+              message : `<i class="fas fa-calendar-times"></i> Option <b>${option.name}</b> deleted`
+            })
+          }),
+          hideOnConfirm : true
+        }
+      }]
+    });
+  },
+  optionDelete = (id,callback) => {
+  
+    fetch('api/options', {
+      method : 'DELETE',
+      body : JSON.stringify({id : id}),
+      headers: {'content-type': 'application/json'},
+    }).then(()=> {
+        console.log(`Option ${id} was deleted`)
+        if(callback)callback();
+      })
+    .catch(err=>console.error(err));
   },
   optionsOverview = () => {
-  
-    helper.table(fetchProfilesData,{
+    component.table({
+      model : 'Option',
       el: '#optionsOverview',
-      data: {
-        options: application.object.options.data
+      data : optionsData,
+      class : 'table-striped table-hover',
+      cols : {
+        name : { label : 'Name' },
+        date : { label : 'Date' },
+        participants : { label : 'Participants' }
       },
       methods: {
-        optionView : (event) => {
+        onRowClick : (event) => {
           optionView(event.target.parentElement.id);         
         }
       }
-    })
+    });
+    
   },
   fetchOptionsData = () => { 
-    helper.api({ url : 'api/options' },(options)=>{
-      optionsDashboardBadge(options)
-      application.object.options.data = options
-    });
+    component.api(optionsData);
   },
   optionTimeFrameSets = () => {
-    let SetNum = 1;
+    let SetNum = 1; // Set number
     const addSetBtn = document.createElement('button'),
+    addSetFragment = document.createDocumentFragment(),
     addSet = document.createElement('div');
-    addSet.setAttribute('class','row')
-    addSetBtn.innerHTML = '<i class="fas fa-plus"></i> Add New Set'
-    addSetBtn.setAttribute('class','btn btn-light')
+    addSet.setAttribute('class','row');
+    addSetBtn.innerHTML = '<i class="fas fa-plus"></i> Add New Set';
+    addSetBtn.setAttribute('class','btn btn-light');
     addSetBtn.addEventListener('click' , (event)=> {
-      event.preventDefault()
-      addSet.parentNode.insertBefore(component.form.input.row({ label : `Start Set #${SetNum}`,type : 'time'}),addSet.nextSibling);
-      addSet.parentNode.insertBefore(component.form.input.row({ label : `End Set #${SetNum}`,type : 'time'}),addSet.nextSibling);
-      
+      event.preventDefault();
+      addSet.appendChild(component.form.input.row({ label : `Start Set #${SetNum}`,type : 'time'}));
+      addSet.appendChild(component.form.input.row({ label : `End Set #${SetNum}`,type : 'time'}));
       SetNum++;
-    })
-    addSet.appendChild(addSetBtn);
-    return addSet;
+    });
+    addSetFragment.appendChild(addSetBtn);
+    addSetFragment.appendChild(addSet);
+    return addSetFragment;
   },
   participantsCheckBoxes = () => {
+    // parent container 
     const participants = document.createElement('div');
-    let index = 0;
-    for(let account of application.object.profiles.data){
+    participants.setAttribute('class','card');
+    for(let account of application.object.accounts.data){
+      // checkbox & label container 
       const formCheck = document.createElement('div');
       formCheck.setAttribute('class','form-check');
+      // checkbox
       const formCheckInput = document.createElement('input');
       formCheckInput.setAttribute('type','checkbox');
       formCheckInput.setAttribute('value',account.id);
       formCheckInput.setAttribute('id',`participants_${account.id}`);
-      //formCheckInput.setAttribute('name',`participants[${index}]`);
       formCheckInput.setAttribute('name',`participants`);
       formCheckInput.setAttribute('class','participants');
-      index++;
+
+      
+      // append checkbox to container
       formCheck.appendChild(formCheckInput);
+      // label
       const formCheckLabel = document.createElement('label');
       formCheckLabel.setAttribute('for',`participants_${account.id}`);
-      formCheckLabel.innerHTML = ` &nbsp;${account.name}`
+      formCheckLabel.innerHTML = `<i class="fas fa-user"></i> &nbsp;${account.name}`;
+      // append label to container
       formCheck.appendChild(formCheckLabel);
+      // append container to parent container
       participants.appendChild(formCheck);
     }
     return participants;
@@ -130,6 +201,6 @@ const options = (function(){
     templateEngine : 'ejs',
     add : add
   },() => {
-    fetchOptionsData();
+    component.api(optionsData);
   })
 })();

@@ -24,27 +24,7 @@
   
   
   
-    <div class="table-responsive">
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>Option</th>
-            <th>Date</th>
-            <th>Venue</th>
-            <th>Added</th>
-            
-          </tr>
-        </thead>
-        <tbody id="optionsOverview">
-            <tr class="text-primary" v-bind:id="option.id" v-on:click="optionView" v-for="option in options">
-                <td>{{option.name}}</td>
-                <td>{{option.date}}</td>
-                <td>{{option.organisation}}</td>
-                <td>{{option.created}}</td>
-                
-            </tr>
-          
-        </tbody>
-      </table>
+    <div class="table-responsive"  id="optionsOverview">
+      
     </div>
   </div>

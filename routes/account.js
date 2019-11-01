@@ -1,5 +1,5 @@
 /*
-* routes/options.js
+* routes/account.js
 */
 const express = require('express'),
       bodyParser = require('body-parser'),
@@ -8,18 +8,9 @@ const express = require('express'),
       app.use(bodyParser.json());
       
 const router = express.Router();
-const controller = require('../controllers/options');
+const controller = require('../controllers/account');
 
 router.get('/', controller.isAuthenticated, (req, res) => {
-  controller.getAll(req,res);
+  controller.get(req,res);
 });
-
-router.post('/', bodyParserJSON, (req, res) => {
-  controller.createOption(req,res);
-});
-router.delete('/',bodyParserJSON, (req,res) => {
- 
-  controller.deleteOption(req,res);
-});
-
 module.exports = router;

@@ -414,8 +414,8 @@ const application = (function(){
 
     view.nav.html('');
 
-    for( let item of modules()){
-
+    //for( let item of modules()){
+    for(let item of config.menu){
         let menuItem = $('<li></li>').attr('id',item)
           .html(`<a href="${prefix}${item}">
                   ${str(object[ item ].name)}
