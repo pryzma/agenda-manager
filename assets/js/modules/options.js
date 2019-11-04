@@ -6,9 +6,9 @@ const options = (function(){
   const optionsData = {
     url : 'api/options',
     modify : (option) => {
-      //if(application.object.accounts){
-        option.participants = application.object.accounts.get(option.participants).name
-      //}
+      if(application.object.accounts){
+        //option.participants = application.object.accounts.get(option.participants).name
+      }
       
       return option
     },
@@ -70,6 +70,17 @@ const options = (function(){
       insert : 'append'
     });
   },
+  optionConfirm = (id,callback) =>{
+    fetch('api/options', {
+      method : 'PUT',
+      body : JSON.stringify({id : id,isConfirmed : 1}),
+      headers: {'content-type': 'application/json'},
+    }).then(()=> {
+        console.log(`Option ${id} was confirmed`)
+        if(callback)callback();
+      })
+    .catch(err=>console.error(err));
+  },
   optionsDashboardBadge = () => {
     const optionsDataLength = application.object.options.data.length;
     let optionsDashboardBadgeLabel
@@ -88,9 +99,25 @@ const options = (function(){
 
     component.modal({
       title : option.name,
-      body : `This option was created ${option.date}`,
-      buttons : [{ 
-        txt : 'Delete Option', 
+      body : `Option for ${option.name} on ${moment(option.date).format('LL')}`,
+      buttons : [{
+        txt : 'Confirm Option', 
+        class : 'primary',
+        confirm : {
+          title : '<i class="fas fa-calendar-check"></i> Confirm Option as Event',
+          msg : `Are you sure you want to confirm this option? <hr>`,
+          placement : 'bottom',
+          confirm : () => optionConfirm(id,()=>{
+            optionsOverview();
+            component.alert({
+              class : 'success',
+              message : `<i class="fas fa-calendar-check"></i> Option <b>${option.name}</b> deleted`
+            })
+          }),
+          hideOnConfirm : true
+        }
+      },
+        { txt : 'Delete Option', 
         class : 'danger',
         confirm : {
           title : '<i class="fas fa-calendar-times"></i> Delete Option',
@@ -121,7 +148,7 @@ const options = (function(){
     .catch(err=>console.error(err));
   },
   optionsOverview = () => {
-    component.table({
+   /* component.table({
       model : 'Option',
       el: '#optionsOverview',
       data : optionsData,
@@ -136,11 +163,16 @@ const options = (function(){
           optionView(event.target.parentElement.id);         
         }
       }
-    });
+    }); */
     
-  },
-  fetchOptionsData = () => { 
-    component.api(optionsData);
+    component.calendar({
+      data : optionsData,
+      el : '#optionsOverview',
+      onClick : (event) =>{
+        optionView(event.target.id);
+      }
+    })
+    
   },
   optionTimeFrameSets = () => {
     let SetNum = 1; // Set number
@@ -190,9 +222,6 @@ const options = (function(){
     }
     return participants;
   }
-        
-        
-   
   application.add('options',{
     name : 'Options',
     color : 'rgb(224, 102, 102)',
@@ -200,7 +229,5 @@ const options = (function(){
     template : 'options',
     templateEngine : 'ejs',
     add : add
-  },() => {
-    component.api(optionsData);
-  })
+  },() => component.api(optionsData))
 })();

@@ -34,7 +34,7 @@ const blockdates = (function(){
         }
       }
     }); */
-    $('#overviewTable').html(component.agenda())
+    $('#overviewTable').html(component.calendar())
   },
   blockdateView =(id) => {
     const getBlockdate = (blockdate)=>blockdate.id === id,

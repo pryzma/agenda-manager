@@ -101,6 +101,34 @@ const component = (() => {
     }
     return output;
   }
+  // type; basic type filter 
+  /*
+  const obj = {some : 'object'}
+  component.type(obj,Object,()=>{
+    // do something with obj
+  })
+  */
+  function type(args,type,callback){
+    // assign callback to args type
+    const argsType = typeof args;
+    if(args.prototype != type) err(`component.type called with type '${type}' but argsType is ${argsType} `);
+        switch(args.prototype){
+            case String:
+                callback(args)
+                break;
+            case Array:
+                callback(args);
+                break;
+            case Object:
+                callback(args);
+                break;
+            case Function:
+                callback(args);
+                break;
+            
+            
+        }
+  }
   // component.card
   /*
     component.card({
@@ -157,11 +185,10 @@ const component = (() => {
     }
 
     if(typeof args.confirm === 'object'){
+      const $amModal = $('#amModal')
       const confirm = () => {
         args.confirm.confirm();
-        if(args.confirm.hideOnConfirm){
-          $('#amModal').modal('hide');
-        }
+        if(args.confirm.hideOnConfirm)$amModal.modal('hide');
       }
       const cancel = () => $(btn).popover('hide');
       
@@ -613,53 +640,195 @@ const component = (() => {
     }
   }
   // agenda
-  function agenda(args){
-    const now = new Date();
-    let dd = now.getDate();
-    let mm = now.getMonth() + 1; 
-    const yyyy = now.getFullYear();
-    const days = new Date(yyyy, mm, 0).getDate()+1;
-    let start = 1;
-    const agendaContainer = $('<div></div>')
-      .attr('id','agendaContainer')
-      .attr('class','row')
-      
-    while(start < days ){
-      let weekDay = (new Date(`${yyyy}-${mm}-${start}`)).toString().split(' '),
-      weekDayNum = new Date(`${yyyy}-${mm}-${start}`).getDay()
+  function calendar(args){
+    //const view = args.view ? args.view : 'month'
+    const $documentFragment = $(document.createDocumentFragment());
+    const $calendarTable = $('<table></table>')
+      .attr('class','table table-bordered table-striped'),
+          $calendarTableHeader = $('<thead></thead>')
+ 
+    $calendarTableHeader.html('<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>')
+    $calendarTable.append($calendarTableHeader);
+    const $calendarTableBody = $('<tbody></tbody>')
+    let $calendarTableRow
+    args = args ? args : {}
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const now = new Date(),
+    dd = args.d ? args.d : now.getDate(),
+    mm = args.m ? args.m : now.getMonth() + 1,
+    yyyy = args.y ? args.y : now.getFullYear(),
+    days = new Date(yyyy, mm, 0).getDate()+1;
 
-      let agendaMonthDay = $('<div></div>')
-        .attr('style','height:125px;border:1px solid rgba(234,234,234,1);margin:2px;background:linear-gradient(to bottom,rgba(234,234,234,1)  25%,#fff  100%);')
-        .attr('class','col-md-2')
-      dd===start ? agendaMonthDay.html(`<b>${start} ${weekDay[0]}</b>`) : agendaMonthDay.html(start+' '+weekDay[0])
-      agendaContainer.append(agendaMonthDay)
-      start++;
+    let start = 1;
+    
+    let weekDayNumStart = new Date(`${yyyy}-${mm}-${start}`).getDay(),
+    prevMonth = mm -1,
+    prevMonthDays = new Date(yyyy, prevMonth, 0).getDate()+1,
+    prevMonthStart = prevMonthDays - weekDayNumStart,
+    weekDayNum;
+    
+
+    if(args.data){
+      const apiObj = {
+        url : args.data.url,
+        callback : (data) => {
+          if(data[0]){
+            calendarBuild(data)
+          }else{
+            $(args.el).html('No Data')
+          }
+         
+          if(args.data.callback) args.data.callback(data);
+        }
+      }
+      if(args.data.modify) apiObj.modify = args.data.modify;
+      api(apiObj);
+    }else{
+      calendarBuild()
     }
-    return agendaContainer;
+    function calendarBuild(data){
+      // previous month
+      while(prevMonthStart < prevMonthDays ){
+        weekDayNum = new Date(`${yyyy}-${prevMonth}-${prevMonthStart}`).getDay()
+        if(weekDayNum===0)$calendarTableRow = $('<tr></tr>')
+        let $calendarTableCell = $('<td></td>').attr('style','background-color:#fff;')
+        $calendarTableRow.append($calendarTableCell.html(prevMonthStart).addClass('text-muted'))
+        
+        if(data){
+          for(let item of data){
+  
+            if(item.date.split('T')[0] === `${yyyy}-${prevMonth}-${prevMonthStart}`){
+              // add items for specified date
+              let $eventItem = $('<div></div>').attr('class','event begin end').html(item.name)
+              $calendarTableCell.append($eventItem)
+            }
+          }
+        }
+        if(weekDayNum===6)$calendarTableBody.append($calendarTableRow)
+        prevMonthStart++
+      }
+      // current month
+      while(start < days ){
+
+        if(start.toString().length<2)start = `0${start}`
+        weekDayNum = new Date(`${yyyy}-${mm}-${start}`).getDay()
+        if(weekDayNum===0)$calendarTableRow = $('<tr></tr>')
+        let $calendarTableCell = $('<td></td>')
+        dd === start ? $calendarTableRow.append($calendarTableCell.attr('style','background-color:#dee2e6').html(`<b>${start}</b>`)) : $calendarTableRow.append($calendarTableCell.html(start))
+        if(data){
+          for(let item of data){
+            if(item.date.split('T')[0] === `${yyyy}-${mm}-${start}`){
+              // add items for specified date
+              let $eventItem = $('<div></div>')
+                .attr('class','event begin end')
+                .attr('id',item.id)
+                .html(item.name)
+                .on('click',args.onClick)
+              $calendarTableCell.append($eventItem)
+            }
+          }
+        }
+        if(weekDayNum===6)$calendarTableBody.append($calendarTableRow)
+        start = start/1
+        start++;
+      }
+      $calendarTable.append($calendarTableBody)
+     
+    }
+
+    
+    const $calendarMonths = $('<div></div>').attr('class','dropdown')
+    // calendarMonths dropdown 
+    // https://getbootstrap.com/docs/4.3/components/dropdowns/
+    $calendarMonths.append($('<a></a>')
+      .attr('id','calendarMonths')
+      .attr('class','btn btn-light dropdown-toggle')
+      .attr('role','button')
+      .attr('data-toggle','dropdown')
+      .html(months[mm-1]));
+    const $calendarMonthsMenu = $('<div></div>')
+      .attr('class','dropdown-menu')
+      .attr('aria-labelledby','calendarMonths')
+    months.map(month => {
+      if(month!==months[mm-1]) $calendarMonthsMenu.append(
+        $('<a></a>').attr('class','dropdown-item').html(month)
+      );
+    });
+    $calendarMonths.append($calendarMonthsMenu);
+    $calendarMonths.dropdown()
+    $documentFragment.append($calendarMonths)
+    $documentFragment.append($calendarTable)
+    $(args.el).html($documentFragment)
+    return $documentFragment
   }
-  // editor
+  // editor; all in one CRUD component
   /*
   component.editor({
-    data : {
+    module : 'modulename', // presets module name if not set, or assigns component to (existing) module if set
+    data : { // component.api arguments
       url :'api/endpoint',
-      modify : (item)=>{
+      modify : (item)=>{ // data modifier chain
         return item
+      },
+      callback : (data) => { // data callback chain
+
       }
     },
-    table : {
-      onRowClick : ()=>{
-
-      }
-    }
-    form : {
-      onSubmit : () ={
-
+    use : { // assign module property presets
+      view : {
+        component : 'modal'
+      },
+      overview : {
+        component : 'table',
+        default : true, // use overview as module default
+        methods : {
+          onRowClick : view // assign event method to module property
+        }
       }
     }
   })
   */
   function editor(args){
+    if(!application.object[args.module]){
+      for(property in args.use){
+        application.object[args.module][property] = args.use[property]
+      }
+    }
+    // module presets
+    application.object[args.module].template = 'editor'
+    application.object[args.module].default = editorOverview
+    application.object[args.module].add = { default : editorAdd }
+    application.object[args.module].view = { default : editorView }
+    // set routes
+    application.routes[`${args.module}/add`] = `${args.module}.add`;
+    application.routes[`${args.module}/view`] = `${args.module}.view`;
+    // data config
+    const editorData = {
+      url : args.data.url,
+      modify : args.data.modify,
+      callback : (data) => {
+        application.object[args.module].data = data;
+        args.data.callback()
+      }
+    }
+    // view
+    const editorView = (id) => {
+ 
+      const item = application.object[args.module].data.filter((item) => item.id === id)[0];
+      component[args.view.component](args.view)
+    }
+    const editorOverview = () => {
+      component.table({
+        model : args.table.model,
+        el : args.table.el,
+        data : editorData,
+        class : 'table-striped table-hover',
+        cols : args.table.cols,
 
+      })
+    }
+    //api call
+    api(editorData)
   }
   return { 
     form : { 
@@ -685,7 +854,9 @@ const component = (() => {
       if(callback)callback();
     },
     repeat : repeat,
-    agenda : agenda,
+    type : type,
+    calendar : calendar,
+    editor : editor,
     nav : {
       tabs : navTabs
     },

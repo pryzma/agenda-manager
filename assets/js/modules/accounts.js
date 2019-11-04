@@ -46,9 +46,8 @@ const accounts = (()=>{
    */
    getAccount = (id) => {
      if(application.object.accounts.data){
-      const get = (account)=>account.id === id;
-      return application.object.accounts.data.filter(get)[0];
-     }else{
+      return application.object.accounts.data.filter((account)=>account.id === id)[0];
+     }else{ // fetch data if not available
        component.api(accountsData,(data)=>{
         application.object.accounts.data = data;
         getAccount(id)
