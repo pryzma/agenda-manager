@@ -3,7 +3,7 @@
 */
 'use strict'
 const options = (function(){
-  const optionsData = {
+  const optionsData = { // component.api data arguments
     url : 'api/options',
     modify : (option) => {
       if(application.object.accounts){
@@ -39,10 +39,11 @@ const options = (function(){
         name : { label : 'Description' },
         header_h5_1 : 'Option Details',
         date : { label : 'Date', type : 'date', value : component.date('mm-dd-yyyy') },
+        dateDeadline : { label : 'Deadline', type : 'date', value : component.date('mm-dd-yyyy') },
         participants : { label : 'Participants', use : participantsCheckBoxes },
         time : { label : 'Arrival', type : 'time', value : '12:00' },
         timePresence : { label : 'Show', type : 'time', value : '12:00' },
-        timeSoundcheck : { label : 'Show', type : 'time', value : '12:00' },
+        timeSoundcheck : { label : 'Soundcheck', type : 'time', value : '12:00' },
         timeSets : { label : 'Sets', use : optionTimeFrameSets },
         header_h5_2 : 'Location Details',
         organisation : { label : 'Venue' },
@@ -99,9 +100,18 @@ const options = (function(){
 
     component.modal({
       title : option.name,
-      body : `Option for ${option.name} on ${moment(option.date).format('LL')}`,
-      buttons : [{
-        txt : 'Confirm Option', 
+      body : component.nav.tabs([ // Option Modal Tabs Nav
+        { 
+          label : '<i class="far fa-calendar"></i> Option', 
+          content : `Option for ${option.name} on ${moment(option.date).format('LL')} (${moment(option.date).fromNow()})` 
+        },{ 
+          label : '<i class="fas fa-users"></i> Participants', 
+          content : 'Participants : '+ option.participants 
+        }
+      ]),
+      buttons : [
+        { // Confirm Option as Event Button
+        txt : '<i class="fas fa-calendar-check"></i> Confirm', 
         class : 'primary',
         confirm : {
           title : '<i class="fas fa-calendar-check"></i> Confirm Option as Event',
@@ -111,13 +121,13 @@ const options = (function(){
             optionsOverview();
             component.alert({
               class : 'success',
-              message : `<i class="fas fa-calendar-check"></i> Option <b>${option.name}</b> deleted`
-            })
+              message : `<i class="fas fa-calendar-check"></i> Option <b>${option.name}</b> confirmed as event`
+            });
           }),
           hideOnConfirm : true
         }
-      },
-        { txt : 'Delete Option', 
+      },{ // Delete Button
+        txt : '<i class="fas fa-calendar-times"></i> Delete', 
         class : 'danger',
         confirm : {
           title : '<i class="fas fa-calendar-times"></i> Delete Option',
@@ -128,7 +138,7 @@ const options = (function(){
             component.alert({
               class : 'primary',
               message : `<i class="fas fa-calendar-times"></i> Option <b>${option.name}</b> deleted`
-            })
+            });
           }),
           hideOnConfirm : true
         }
@@ -164,10 +174,18 @@ const options = (function(){
         }
       }
     }); */
-    
+    // TODO : table/calendar view switch, year/month/week views, period select, prev/next period navs
     component.calendar({
       data : optionsData,
       el : '#optionsOverview',
+      btn : {
+        txt : '<b>+</b><i class="fas fa-calendar-plus"></i>',
+        class : 'light btn-sm hover float-right',
+        tooltip : 'Add Option',
+        onClick : ()=>{
+          location.hash = '#options/add'
+        }
+      },
       onClick : (event) =>{
         optionView(event.target.id);
       }

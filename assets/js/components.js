@@ -6,8 +6,48 @@
 
 //import {api} from "./server";
 const component = (() => {
-    
- 
+  const methods = { 
+    form : { 
+      post : formPost,
+      fromModel : formFromModel,
+      data : formData,
+      input : {
+        datepicker : formInputDatepicker,
+        timepicker : formInputTimepicker,
+        row : formRow
+      } 
+    },
+    table : (before,args,callback) => {
+      if(typeof before === 'object'){
+        if(typeof args === 'function'){
+          callback = args;
+        }
+        args = before;
+      }
+      if(typeof before === 'function')before();
+      
+      table(args);
+      if(callback)callback();
+    },
+    repeat : repeat,
+    confirm : confirm,
+    type : type,
+    calendar : calendar,
+    editor : editor,
+    nav : {
+      tabs : navTabs
+    },
+    card : card,
+    btn : btn,
+    modal : modal,
+    alert : alert,
+    date : date,
+    time : time,
+    uid : uid,
+    auth : auth,
+    api : api
+  }
+  // .................................................
   // component.date
   function date(format){
     const now = new Date();
@@ -32,13 +72,55 @@ const component = (() => {
 
     return now;
   }
-
+  // .................................................
   // component.uid
   function uid(){  // generate unique id
       const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
       return s4() + s4() + '-' + s4();
   
   }
+  // .................................................
+  // component.auth
+  /*
+  component.auth({
+    data : {
+      url : 'api/endpoint',
+      model : {
+        'Manager' : {
+          hasAccess : ['*'],
+          isAllowed : ['c','u','d'],
+          isPermitted : ['*']
+        }
+      }
+    }
+  })
+  */
+  const authModels = new Array
+  function auth(args){
+   
+      // authData
+      type(args.data,Object,()=>{
+        let authData 
+        api(args.data,(data)=>{
+          authData = data;
+        });
+      })
+      // authModel
+      type(args.data.model,Object,()=>{
+        const model = args.data.model,
+        modelName = authModels[Object.getOwnPropertyNames(model)[0]];
+        type(args.data.model[modelName],Object,()=>{
+          authModels[modelName] = args.data.model; // add objectto authModels
+        })
+        type(args.data.model[modelName],Array,()=>{
+          for(authModel in args.data.model[modelName])
+            authModels[modelName][authModel] = args.data.model[modelName][authModel]
+        })
+        
+      });
+    
+  }
+  // .................................................
   // component.api
   /*
   component.api({
@@ -52,6 +134,7 @@ const component = (() => {
     }
   })
    */
+ 
   function api(args,callback){
     if(!args.method) args.method = 'get';
     axios[args.method](args.url,args.data)
@@ -73,7 +156,7 @@ const component = (() => {
     })
   }
  
-
+ // .................................................
  // component.repeat
  /*
  component.repeat({
@@ -101,6 +184,7 @@ const component = (() => {
     }
     return output;
   }
+  // .................................................
   // type; basic type filter 
   /*
   const obj = {some : 'object'}
@@ -108,11 +192,16 @@ const component = (() => {
     // do something with obj
   })
   */
+  function err(args){
+    throw args
+  }
   function type(args,type,callback){
     // assign callback to args type
-    const argsType = typeof args;
-    if(args.prototype != type) err(`component.type called with type '${type}' but argsType is ${argsType} `);
-        switch(args.prototype){
+    const argsTypeOf = typeof args,
+          argsPrototype = args.prototype;
+    if( argsPrototype != type ) err(`component.type called with type '${type}' but argsType is ${argsPrototype} `);
+        
+    switch(args.prototype){
             case String:
                 callback(args)
                 break;
@@ -129,8 +218,9 @@ const component = (() => {
             
         }
   }
+  // .................................................
   // component.card
-  /*
+  /* https://getbootstrap.com/docs/4.3/components/card/
     component.card({
       title : 'Title of Card',
       content : 'Content of Card'
@@ -157,8 +247,9 @@ const component = (() => {
     card.appendChild(cardBody);
     return card;
   }
+  // .................................................
   // component.btn
-  /*
+  /* https://getbootstrap.com/docs/4.3/components/buttons/
   component.btn({
     class : 'primary',
     txt : 'Button Text',
@@ -183,8 +274,16 @@ const component = (() => {
     if(args.event){
       btn.addEventListener(args.event[0],(event)=>args.event[1](event));
     }
-
-    if(typeof args.confirm === 'object'){
+    if(args.tooltip){
+      btn.setAttribute('data-toggle','tooltip')
+      btn.setAttribute('data-placement','top')
+      btn.setAttribute('title',args.tooltip)
+      $(btn).tooltip({trigger : 'hover focus'})
+    }
+    // confirm
+    if(typeof args.confirm === 'object'){ 
+      
+      // confirm(args.confirm)
       const $amModal = $('#amModal')
       const confirm = () => {
         args.confirm.confirm();
@@ -195,30 +294,76 @@ const component = (() => {
       args.confirm.trigger = 'focus';
       args.confirm.content = args.confirm.msg;
       args.confirm.html = true;
-      $(btn).popover(args.confirm).on('shown.bs.popover', () => {
-        //if(!$('button.confirm')){
-          if(!args.confirm.class) args.confirm.class = 'primary'
-          const $confirmBtn = $('<button></button>')
+      $(btn).popover(args.confirm).on('shown.bs.popover', () => { // popover is shown
+
+        
+        if(!args.confirm.class) args.confirm.class = 'primary'
+        const $confirmBtn = $('<button></button>')
             .attr('class',`btn btn-sm btn-${args.confirm.class} confirm`)
             .html('Confirm')
-            .on('click',confirm);
-          $('.popover-body').append($confirmBtn)
-          const $cancelBtn = $('<button></button>')
+            .on('click',confirm); // confirm method of confirm object in arguments
+        $('.popover-body').append($confirmBtn)
+        const $cancelBtn = $('<button></button>')
             .attr('class','btn btn-sm cancel')
             .html('Cancel')
             .on('click',cancel);
-          $('.popover-body').append($cancelBtn)
-        //}
-        //button_.addEventListener('click',confirm);
-      }).on('hidden.bs.popover', () => {
+        $('.popover-body').append($cancelBtn)
+      
+      }).on('hidden.bs.popover', () => { // popover is hidden
           //button_.removeEventListener('click',confirm);
       });
       
     }
     return btn;
   }  
+  // .................................................
+  // component.confirm
+  /*
+    component.confirm({
+      el : $('<button>Confirm me</button>),
+      msg : 'Are you sure?',
+      closeModal : true, // confirm closes modal
+      confirm : ()=>{
+        console.log('Is confirmed');
+      }
+    });
+  */
+  function confirm(args){
+   
+      const $amModal = $('$amModal'),
+            $confirmElement = args.el;
+    
+      const confirmEvent = () => {
+        args.confirm.confirm();
+        if(args.confirm.hideOnConfirm)$amModal.modal('hide');
+      }
+      const cancelEvent = () => $confirmElement.popover('hide');
+      
+      args.confirm.trigger = 'focus';
+      args.confirm.content = args.confirm.msg;
+      args.confirm.html = true;
+      $confirmElement.popover(args.confirm).on('shown.bs.popover', () => { // popover is shown
 
+        
+        if(!args.confirm.class) args.confirm.class = 'primary'
+        const $confirmBtn = $('<button></button>')
+            .attr('class',`btn btn-sm btn-${args.confirm.class} confirm`)
+            .html('Confirm')
+            .on('click',confirmEvent); 
+        $('.popover-body').append($confirmBtn)
+        const $cancelBtn = $('<button></button>')
+            .attr('class','btn btn-sm cancel')
+            .html('Cancel')
+            .on('click',cancelEvent);
+        $('.popover-body').append($cancelBtn)
+      
+      }).on('hidden.bs.popover', () => { // popover is hidden
+          //button_.removeEventListener('click',confirm);
+      });
+      
 
+  }
+  // .................................................
   // component.modal
   /*
   component.modal({
@@ -239,9 +384,10 @@ const component = (() => {
   */
   function modal(args){
     const $amModal = $('#amModal').modal();
-    $('#amModalTitle').html(args.title);
-    args.tabs ? $('#amModalBody').html(navTabs(args.tabs)) : $('#amModalBody').html(args.body);  
-    
+    $('#amModalTitle').html(args.title)
+      //.on('shown.bs.modal', () => {
+        args.tabs ? $('#amModalBody').html(navTabs(args.tabs)) : $('#amModalBody').html(args.body);  
+      //});
     if(typeof args.save === 'function'){
       $('#amModalSave').on('click',()=>{
         args.save();
@@ -266,36 +412,58 @@ const component = (() => {
     });
     
   }
-
+  // nav 
+  
+  // .................................................
   // tabs 
-  /*
+  /* https://getbootstrap.com/docs/4.3/components/navs/#tabs
   component.nav.tabs([
     { label : 'Tab#1', content : 'Content for Tab#1' }
   ])
   */
   function navTabs(args) {
-    const tabs = document.createElement('ul'),
+    const tabsElement = document.createElement('ul'),
     tabsFragment = document.createDocumentFragment();
-    tabs.setAttribute('class','nav nav-tabs');
-    tabs.setAttribute('id',`tabs_${uid()}`)
-    tabs.setAttribute('role','tablist')
+    tabsElement.setAttribute('class','nav nav-tabs');
+    tabsElement.setAttribute('id',`tabs_${uid()}`)
+    tabsElement.setAttribute('role','tablist')
     const tabsContent = document.createElement('div');
-    tabsContent.setAttribute('class','tab-content')
-    for(let item in args){
-      const tab = document.createElemen('li'),
+    tabsContent.setAttribute('class','tab-content');
+    const tabs = args;
+    let tabIndex = 0;
+
+    for(let tab of tabs){
+      
+      const tabId = uid(),
+      tabElement = document.createElement('li'),
       tabLink = document.createElement('a'),
-      tabContent = document.createElement('div');
-      tabContent.innerHTML = item.content;
-      tabId = uid();
-      tabLink.setAttribute('href',`#${tabId}`)
-      tab.innerHTML = item.label;
-      tabs.appendChild(tab)
-      tabsContent.appendChild(tabContent)
+      tabContent = document.createElement('div'),
+      tabClass = tabIndex === 0 ? 'tab-pane fade show active' : 'tab-pane fade',
+      tabLinkClass = tabIndex === 0 ? 'nav-link active' : 'nav-link' ;
+      // tabElement
+      tabLink.setAttribute('href',`#${tabId}`);
+      tabLink.setAttribute('class',tabLinkClass);
+      tabLink.setAttribute('role','tab');
+      tabLink.setAttribute('aria-controls',tabId)
+      tabLink.setAttribute('data-toggle','tab');
+      tabLink.innerHTML = tab.label;
+      tabElement.setAttribute('class','nav-item');
+      tabElement.appendChild(tabLink);
+      tabsElement.appendChild(tabElement);
+      // tabContent
+      tabContent.setAttribute('class',tabClass);
+      tabContent.setAttribute('aria-labelledby',`${tabId}-tab`);
+      tabContent.setAttribute('id',tabId);
+      tabContent.setAttribute('role','tabpanel');
+      tabContent.innerHTML = tab.content;
+      tabsContent.appendChild(tabContent);
+      tabIndex++;
     }
-    tabsFragment.appendChild(tabs);
+    tabsFragment.appendChild(tabsElement);
     tabsFragment.appendChild(tabsContent);
-    return tabsFragment
+    return tabsFragment;
   }
+  // .................................................
   // table
   /*
   component.table({
@@ -433,7 +601,7 @@ const component = (() => {
     }
   }
   
-  
+  // .................................................
   // form
   // form.data
   function formData(form){
@@ -445,6 +613,7 @@ const component = (() => {
     
     return formObj
   }
+  // .................................................
   // component.form.post
   /*
   component.form.post({
@@ -468,6 +637,7 @@ const component = (() => {
       });
     });
   }
+  // .................................................
   /*
   component.form.fromModel({
     model : 'modelName',
@@ -612,7 +782,7 @@ const component = (() => {
     return formRow;
   }
 
-
+  // .................................................
   // custom form inputs
   function formInputDatepicker(args){
   
@@ -621,7 +791,7 @@ const component = (() => {
   function formInputTimepicker(args){
     
   }
-  
+  // .................................................
   // alert 
   function alert(args){
     const alert = $('<div></div>')
@@ -639,17 +809,20 @@ const component = (() => {
       },args.fadeOut);
     }
   }
-  // agenda
+  // .................................................
+  // calendar
   function calendar(args){
     //const view = args.view ? args.view : 'month'
     const $documentFragment = $(document.createDocumentFragment());
     const $calendarTable = $('<table></table>')
-      .attr('class','table table-bordered table-striped'),
-          $calendarTableHeader = $('<thead></thead>')
+      .attr('class','table table-calendar table-bordered table-striped'),
+          $calendarTableHeader = $('<thead></thead>'),
+          $calendarTableHeadersWeekDays = $('<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>'),
+          $calendarTableBody = $('<tbody></tbody>')
  
-    $calendarTableHeader.html('<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>')
+    $calendarTableHeader.append($calendarTableHeadersWeekDays)
     $calendarTable.append($calendarTableHeader);
-    const $calendarTableBody = $('<tbody></tbody>')
+  
     let $calendarTableRow
     args = args ? args : {}
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -668,7 +841,7 @@ const component = (() => {
     weekDayNum;
     
 
-    if(args.data){
+    if(args.data){ 
       const apiObj = {
         url : args.data.url,
         callback : (data) => {
@@ -682,7 +855,7 @@ const component = (() => {
         }
       }
       if(args.data.modify) apiObj.modify = args.data.modify;
-      api(apiObj);
+      api(apiObj); // fetch data from api
     }else{
       calendarBuild()
     }
@@ -696,11 +869,13 @@ const component = (() => {
         
         if(data){
           for(let item of data){
-  
+            
             if(item.date.split('T')[0] === `${yyyy}-${prevMonth}-${prevMonthStart}`){
               // add items for specified date
-              let $eventItem = $('<div></div>').attr('class','event begin end').html(item.name)
-              $calendarTableCell.append($eventItem)
+              let $eventItem = $('<div></div>')
+                    .attr('class','event begin end')
+                    .html(`<i class="far fa-calendar"></i> ${item.name}`);
+              $calendarTableCell.append($eventItem);
             }
           }
         }
@@ -714,25 +889,40 @@ const component = (() => {
         weekDayNum = new Date(`${yyyy}-${mm}-${start}`).getDay()
         if(weekDayNum===0)$calendarTableRow = $('<tr></tr>')
         let $calendarTableCell = $('<td></td>')
-        dd === start ? $calendarTableRow.append($calendarTableCell.attr('style','background-color:#dee2e6').html(`<b>${start}</b>`)) : $calendarTableRow.append($calendarTableCell.html(start))
+       // dd = (component.date('dd')/1);
+       
+        dd === (start/1) ? $calendarTableRow.append($calendarTableCell.addClass('today').html(`<b>${start}</b>`)) : $calendarTableRow.append($calendarTableCell.html(start))
+        
+        if(dd > start){
+          $calendarTableCell.addClass('past');
+        }else{
+         if(args.btn){
+          const $calendarTableCellBtn = $(component.btn(args.btn));
+          $calendarTableCellBtn.on('click',()=> args.btn.onClick());
+          $calendarTableCell.append($calendarTableCellBtn);
+         }
+        }
+        
         if(data){
+          
           for(let item of data){
             if(item.date.split('T')[0] === `${yyyy}-${mm}-${start}`){
               // add items for specified date
               let $eventItem = $('<div></div>')
                 .attr('class','event begin end')
                 .attr('id',item.id)
-                .html(item.name)
-                .on('click',args.onClick)
-              $calendarTableCell.append($eventItem)
+                .html(`<i class="far fa-calendar"></i> ${item.name}`)
+                .on('click',args.onClick);
+              $calendarTableCell.append($eventItem);
+              
             }
           }
         }
-        if(weekDayNum===6)$calendarTableBody.append($calendarTableRow)
-        start = start/1
+        if(weekDayNum===6) $calendarTableBody.append($calendarTableRow);
+        start = (start/1)
         start++;
       }
-      $calendarTable.append($calendarTableBody)
+      $calendarTable.append($calendarTableBody);
      
     }
 
@@ -751,30 +941,33 @@ const component = (() => {
       .attr('aria-labelledby','calendarMonths')
     months.map(month => {
       if(month!==months[mm-1]) $calendarMonthsMenu.append(
-        $('<a></a>').attr('class','dropdown-item').html(month)
+        $('<a></a>')
+          .attr('class','dropdown-item')
+          .html(month)
       );
     });
     $calendarMonths.append($calendarMonthsMenu);
-    $calendarMonths.dropdown()
-    $documentFragment.append($calendarMonths)
-    $documentFragment.append($calendarTable)
-    $(args.el).html($documentFragment)
+    $calendarMonths.dropdown();
+    $documentFragment.append($calendarMonths);
+    $documentFragment.append($calendarTable);
+    $(args.el).html($documentFragment);
     return $documentFragment
   }
+  // .................................................
   // editor; all in one CRUD component
   /*
   component.editor({
-    module : 'modulename', // presets module name if not set, or assigns component to (existing) module if set
-    data : { // component.api arguments
+    module : 'modulename',
+    data : {
       url :'api/endpoint',
-      modify : (item)=>{ // data modifier chain
+      modify : (item)=>{
         return item
       },
-      callback : (data) => { // data callback chain
+      callback : (data) => {
 
       }
     },
-    use : { // assign module property presets
+    use : {
       view : {
         component : 'modal'
       },
@@ -782,18 +975,13 @@ const component = (() => {
         component : 'table',
         default : true, // use overview as module default
         methods : {
-          onRowClick : view // assign event method to module property
+          onRowClick : view
         }
       }
     }
   })
   */
   function editor(args){
-    if(!application.object[args.module]){
-      for(property in args.use){
-        application.object[args.module][property] = args.use[property]
-      }
-    }
     // module presets
     application.object[args.module].template = 'editor'
     application.object[args.module].default = editorOverview
@@ -808,66 +996,32 @@ const component = (() => {
       modify : args.data.modify,
       callback : (data) => {
         application.object[args.module].data = data;
-        args.data.callback()
+        args.data.callback();
       }
     }
     // view
     const editorView = (id) => {
  
       const item = application.object[args.module].data.filter((item) => item.id === id)[0];
-      component[args.view.component](args.view)
+      component[args.view.use.component](args.view);
     }
+    // overview
     const editorOverview = () => {
-      component.table({
-        model : args.table.model,
-        el : args.table.el,
+      if(!args.overview.us.class && args.us.overview.component === 'table')
+        args.use.overview.class = 'table-striped table-hover';
+
+      component[args.use.overview.component]({
+        model : args.use.overview.model,
+        el : args.use.overview.el,
         data : editorData,
-        class : 'table-striped table-hover',
-        cols : args.table.cols,
+        class : args.use.overview.class,
+        cols : args.use.overview.cols,
 
       })
     }
     //api call
     api(editorData)
   }
-  return { 
-    form : { 
-      post : formPost,
-      fromModel : formFromModel,
-      data : formData,
-      input : {
-        datepicker : formInputDatepicker,
-        timepicker : formInputTimepicker,
-        row : formRow
-      } 
-    },
-    table : (before,args,callback) => {
-      if(typeof before === 'object'){
-        if(typeof args === 'function'){
-          callback = args;
-        }
-        args = before;
-      }
-      if(typeof before === 'function')before();
-      
-      table(args);
-      if(callback)callback();
-    },
-    repeat : repeat,
-    type : type,
-    calendar : calendar,
-    editor : editor,
-    nav : {
-      tabs : navTabs
-    },
-    card : card,
-    btn : btn,
-    modal : modal,
-    alert : alert,
-    date : date,
-    time : time,
-    uid : uid,
-    api : api
-  }
+  return methods
 })() // invoke
 //export default component;

@@ -2,13 +2,33 @@
 * assets/js/modules/accounts.js
 */
 'use strict'
+// TODO : find out way to use import (can't use if this is fetched)
 //import component from '../components'
 //import {api} from '../server'
 
 
 
 const accounts = (()=>{
-  const addAccount = function(){
+  const accountsData = {
+    url : 'api/accounts',
+    modify : (account) =>{
+      const activated = account.isActivated == 0 ? 'No' : 'Yes',
+            profile =  account.profile ? account.profile : 'Manager'
+
+      return {
+        id : account.id,
+        name : `${account.firstName} ${account.lastName}`,
+        profile : profile,
+        date : moment(account.createdAt).fromNow(),
+        activated : activated
+      }
+    },
+    callback : (data) => {
+      application.object.accounts.data = data;
+      accountsDashboardBadge();
+    }
+  },
+  addAccount = function(){
     component.form.post({
        el : 'addAccountForm',
        url : 'api/accounts'
@@ -21,8 +41,8 @@ const accounts = (()=>{
            class : 'success',
            message : `<i class="fas fa-user-check"></i> Account <b>${res.data.firstName} ${res.data.lastName}</b> created. Activation e-mail to ${res.data.lastName} has been sent. You will be notified by e-mail when this account has been activated by reciever.`
          });
-       },500)
-     })
+       },500);
+     });
    },
    accountsDashboardBadge = () => {
      const accountsDataLength = application.object.accounts.data.length;
@@ -53,18 +73,22 @@ const accounts = (()=>{
         getAccount(id)
        })
      }
-    
    },
    // accountView
    accountView =(id) => {
      
      const account = getAccount(id);
-     
+     // account profile
+     if(!account.profile) account.profile = 'Manager';
      component.modal({
        title : account.name,
-       body : `This account was created ${account.date}`,
+       body : component.nav.tabs([
+        { label : '<i class="fas fa-user"></i> Account', content : 'This account was created '+ account.date },
+        { label : '<i class="fas fa-user-shield"></i> Profile', content : 'This account has profile '+ account.profile },
+        { label : '<i class="fas fa-address-book"></i> Contact',content: account.contact}
+      ]),
        buttons : [{ 
-         txt : 'Delete Account', 
+         txt : '<i class="fas fa-user-times"></i> Delete Account', 
          class : 'danger',
          confirm : {
            title : '<i class="fas fa-user-times"></i> Delete Account',
@@ -92,22 +116,6 @@ const accounts = (()=>{
          if(callback)callback();
     }).catch(err=>console.error(err));
    },
-   accountsData = {
-     url : 'api/accounts',
-     modify : (account) =>{
-       let activated = account.isActivated == 0 ? 'No' : 'Yes'
-       return {
-         id : account.id,
-         name : `${account.firstName} ${account.lastName}`,
-         date : moment(account.createdAt).fromNow(),
-         activated : activated
-       }
-     },
-     callback : (data) => {
-       application.object.accounts.data = data
-       accountsDashboardBadge();
-     }
-   },
    accountsOverview = () => {
      
      component.table({
@@ -117,6 +125,7 @@ const accounts = (()=>{
        data: accountsData,
        cols : {
          name : { label : 'Name' },
+         profile : { label : 'Profile'},
          date : { label : 'Created' },
          activated : { label : 'Activated' }
        },

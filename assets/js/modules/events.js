@@ -29,6 +29,7 @@ const events = (function(){
     }
   },
   eventsOverview = ()=>{
+    /*
     component.table({
       model : 'Option',
       el: '#overviewTable',
@@ -44,6 +45,9 @@ const events = (function(){
           eventView(event.target.parentElement.id);      
         }
       }
+    });*/
+    component.calendar({
+      el : '#overviewTable'
     });
   },
   eventView =(id) => {

@@ -17,6 +17,7 @@ const rehearsals = (function(){
     
   },
   rehearsalsOverview = ()=>{
+    /*
     component.table({
       model : 'Rehearsal',
       el: '#overviewTable',
@@ -32,6 +33,10 @@ const rehearsals = (function(){
           rehearsalView(event.target.parentElement.id);      
         }
       }
+    });
+    */
+    component.calendar({
+      el : '#overviewTable'
     });
   },
   rehearsalView =(id) => {

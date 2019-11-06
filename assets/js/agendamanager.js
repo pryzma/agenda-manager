@@ -15,7 +15,7 @@ const agendamanager = (function(){
             }
         });
     }
-    const agendamanagerObj = {};
+    const agendamanagerObj = new Object;
     
     
     // require application-backbone
