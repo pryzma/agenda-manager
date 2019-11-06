@@ -66,7 +66,7 @@ const rehearsals = (function(){
   
   application.add('rehearsals',{
     name : 'Rehearsals',
-    color : 'rgb(147, 196, 125)',
+    color : 'rgb(243, 217, 88)',
     default : rehearsalsOverview,
     template : 'overview',
     add : rehearsalAdd,

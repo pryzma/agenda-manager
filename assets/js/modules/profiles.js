@@ -4,7 +4,23 @@
 'use strict'
 //import component from '../components'
 //import {api} from '../server'
-const addProfile = function(){
+const profiles = (()=>{
+const profilesData = {
+  url : 'api/accounts',
+  modify : (profile) =>{
+    let activated = profile.isActivated == 0 ? 'No' : 'Yes'
+    return {
+      id : profile.id,
+      name : profile.firstName+' '+profile.lastName,
+      date : moment(profile.createdAt).fromNow(),
+      activated : activated
+    }
+  },
+  callback : (data) => {
+    application.object.profiles.data = data
+    profilesDashboardBadge();
+  }
+},addProfile = function(){
  component.form.post({
     el : 'addProfileForm',
     url : 'api/accounts'
@@ -58,22 +74,6 @@ profileDelete = (id,callback) => {
     })
   .catch(err=>console.error(err));
 },
-profilesData = {
-  url : 'api/accounts',
-  modify : (profile) =>{
-    let activated = profile.isActivated == 0 ? 'No' : 'Yes'
-    return {
-      id : profile.id,
-      name : profile.firstName+' '+profile.lastName,
-      date : moment(profile.createdAt).fromNow(),
-      activated : activated
-    }
-  },
-  callback : (data) => {
-    application.object.profiles.data = data
-    profilesDashboardBadge();
-  }
-},
 profilesOverview = () => {
   component.table({
     model : 'account',
@@ -120,7 +120,7 @@ const fetchProfilesData = () => {
   )
 }
 
-const profiles = (()=>{
+
   
   application.add('profiles',{
     name : 'Profiles',

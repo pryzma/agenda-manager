@@ -112,7 +112,7 @@ const options = (function(){
       buttons : [
         { // Confirm Option as Event Button
         txt : '<i class="fas fa-calendar-check"></i> Confirm', 
-        class : 'primary',
+        class : 'success',
         confirm : {
           title : '<i class="fas fa-calendar-check"></i> Confirm Option as Event',
           msg : `Are you sure you want to confirm this option? <hr>`,
