@@ -1,5 +1,5 @@
-const profile = (sequelize, Sequelize) => {
-    const Profile = sequelize.define('Profile',{
+module.exports = (sequelize, Sequelize) => {
+    return sequelize.define('Profile',{
         id: {
             type: Sequelize.STRING,
             notEmpty: true,
@@ -8,6 +8,4 @@ const profile = (sequelize, Sequelize) => {
         name: {type: Sequelize.STRING},
         auth : {type: Sequelize.STRING}
     });
-    return Profile;
 }
-module.exports = profile

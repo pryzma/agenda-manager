@@ -4,7 +4,7 @@
 'use strict'
 const shows = (function(){
   const main = function() {
-
+    
   }
   const add = function(){
     
@@ -14,6 +14,6 @@ const shows = (function(){
     color : 'rgb(147, 196, 125)',
     default : main,
     add : add,
-    badge : 'This is shows.badge'
+    badge : showsBadge
   })
 })();

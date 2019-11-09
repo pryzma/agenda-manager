@@ -1,12 +1,24 @@
 /*
 * assets/js/agendamanager.js
 */
+//import websocket from './websocket'
 'use strict'
 const agendamanager = (function(){
-    setInterval(serverStatus, 3000); // check login every 3s
+    //setInterval(serverStatus, 3000); // check status every 3s
     
-    const agendamanagerObj = {};
-    // requires application-backbone
+    if(websocket){
+        websocket({ // websocket connection
+            onclose : () => { // server has closed connection
+                $('#serverConnectionLost').modal()
+                // check every 3s if server is alive again
+                setInterval(serverStatus, 3000); 
+            }
+        });
+    }
+    const agendamanagerObj = new Object;
+    
+    
+    // require application-backbone
     //agendamanagerObj.view = application.backbone.view;
     //agendamanagerObj.model = application.backbone.model;
     // requires application-ejs
@@ -22,5 +34,4 @@ function serverStatus(){
     }}).fail(function(){
         $('#serverConnectionLost').modal()
     });
-    
 }

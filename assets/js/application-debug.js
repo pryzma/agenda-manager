@@ -26,8 +26,16 @@ const debug = (function(){
         if(log){
             const configDebug = application.object.config.debug;
             if(typeof configDebug === 'boolean'){
-                console.log(log)
-            
+                if(configDebug)console.log(log)
+            //}else if(configDebug.length){ // filter array
+            }else if( configDebug.constructor === Array){
+                //console.log('array')
+                for(let item in configDebug){
+                    
+                    if(log.indexOf(configDebug[item])>0){
+                        console.log(log)
+                    }
+                }
             }else{
                 if(log.indexOf(configDebug)>0){
                     console.log(log)
@@ -98,23 +106,23 @@ const debug = (function(){
         }
 
     }
-    
+    const loadTimeColor = (time) => {
+        let color
+        if(time<500){
+          color = 'LimeGreen'
+        }else if (time<1000) {
+          color = 'Goldenrod'
+        }else if (time<1500) {
+          color = 'OrangeRed'
+        }else{
+          color = 'red'
+        }
+        return color
+    }
     return {
         debugger : Debugger,
         log : DebuggerLog
     }
+    
 })();
 application.debug = debug;
-const loadTimeColor = (time) => {
-    let color
-    if(time<500){
-      color = 'LimeGreen'
-    }else if (time<1000) {
-      color = 'Goldenrod'
-    }else if (time<1500) {
-      color = 'OrangeRed'
-    }else{
-      color = 'red'
-    }
-    return color
-}

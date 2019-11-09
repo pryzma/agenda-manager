@@ -1,0 +1,1 @@
+insert into accounts(id,email,contact,firstName,lastName,isActivated,password,createdBy,createdAt,updatedAt) values ("64d93f40-4602-4ab5-aea6-f21067019688","ccolombijn@gmail.com",null,"Christoffel","Colombijn",1,"c873a927fefd3221625ce1b0a543e9b6325871f2","64d93f40-4602-4ab5-aea6-f21067019688","2019-10-21 9:10:51","2019-10-21 9:10:51");

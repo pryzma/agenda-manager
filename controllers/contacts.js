@@ -22,4 +22,17 @@ controller.getAll = (req,res) => {
         res.json(accounts)
     });
 }
+
+
+controller.getOne = (req,res) => {
+    Contact.findOne(req).then(contact => {
+        return contact.get({ plain: true })
+       
+    });
+}
+
+controller.updateContact = (req,res) => {
+
+}
+
 controller.isAuthenticated = auth.isAuthenticated;

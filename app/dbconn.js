@@ -18,7 +18,7 @@
       throw err;
     }
     else {
-      console.log('\x1b[1m\x1b[32m',`${config.database} mysql.createConnection() OK\x1b[0m`)
+      //console.log('\x1b[1m\x1b[32m',`db ${config.database} mysql.createConnection() OK\x1b[0m`)
     }
   });
 

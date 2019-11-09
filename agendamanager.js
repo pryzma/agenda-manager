@@ -1,6 +1,6 @@
 
-module.exports = (() => {
+module.exports = (config) => {
   const app = require('express')();
-  require('./app')(app);
+  require('./app')(app,config);
   return app
-})();
+};

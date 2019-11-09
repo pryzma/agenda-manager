@@ -18,4 +18,9 @@ router.post('/', bodyParserJSON, (req, res) => {
   controller.createAccount(req,res);
 });
 
+router.delete('/',bodyParserJSON, (req,res) => {
+ 
+  controller.deleteAccount(req,res);
+});
+
 module.exports = router;
