@@ -32,7 +32,7 @@
     "sha384": "^1.0.0",
     "uuid": "^7.0.3",
     "websocket": "^1.0.30",
-    "ws": "^7.1.2"
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
