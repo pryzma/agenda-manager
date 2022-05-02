@@ -34,7 +34,7 @@
     "ws": "^7.4.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7",
+    "nodemon": "^2.0.16",
     "sequelize-cli": "^6.2.0"
   }
 }
